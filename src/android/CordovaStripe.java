@@ -1,9 +1,19 @@
-package com.zyramedia.cordova.stripe;
+package come.zyramedia.cordova.stripe;
 
-import com.stripe.android.*;
-import org.apache.cordova.*;
-import org.json.JSONArray;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebView;
+
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import com.stripe.android.TokenCallback;
+import com.stripe.android.Stripe;
+import com.stripe.android.model.Card;
+import com.stripe.android.model.Token;
+import com.stripe.android.exception.AuthenticationException;
 
 public class CordovaStripe extends CordovaPlugin {
 
@@ -17,33 +27,12 @@ public class CordovaStripe extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
 
-        if (action.equals("greet")) {
-
-            String name = data.getString(0);
-            String message = "Hello, " + name;
-            callbackContext.success(message);
-
-            return true;
-
+        if (action.equals("setPublishableKey")) {
+            setPublishableKey(data.getString(0), callbackContext);
+        } else if (action.equals("createCardToken")) {
+            createCardToken(data.getJSONObject(0), callbackContext);
         } else {
-
             return false;
-
-        }
-
-        switch(action) {
-
-            case "setPublishableKey":
-                setPublishableKey(data.getString(0), callbackContext);
-                break;
-
-            case "createCardToken":
-                createCardToken(data.getJSONObject(0), callbackContext);
-                break;
-
-            default:
-                return false;
-
         }
 
         return true;
@@ -52,24 +41,36 @@ public class CordovaStripe extends CordovaPlugin {
 
     private void setPublishableKey(String key, final CallbackContext callbackContext) {
 
-        stripeObject.setDefaultPublishableKey(key);
-        callbackContext.success();
+        try {
+            stripeObject.setDefaultPublishableKey(key);
+            callbackContext.success();
+        } catch (AuthenticationException e) {
+            callbackContext.error(e.getMessage());
+        }
 
     }
 
     private void createCardToken(JSONObject creditCard, final CallbackContext callbackContext) {
 
-        stripeObject.createToken(
-            new Card(creditCard.number, creditCard.exp_month, creditCard.exp_year, creditCard.cvc),
-            new TokenCallback() {
-                public void onSuccess(Token token) {
-                    callbackContext.success(token);
-                }
-                public void onError(Exception error) {
-                    callbackContext.error(error);
-                }
-            }
-        );
+        try {
+
+            Card cardObject = new Card(creditCard.getString("number"), creditCard.getInt("expMonth"), creditCard.getInt("expYear"), creditCard.getString("cvc"));
+
+            stripeObject.createToken(
+                    cardObject,
+                    new TokenCallback() {
+                        public void onSuccess(Token token) {
+                            callbackContext.success(token.getId());
+                        }
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
+                    }
+            );
+
+        } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+        }
 
     }
 
