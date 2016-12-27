@@ -13,7 +13,7 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/CordovaStripe.java" target-dir="src/come/zyramedia/cordova/stripe" />
+        <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
 
         <framework src="src/android/CordovaStripe.gradle" custom="true" type="gradleReference" />
 
