@@ -3,6 +3,6 @@
 @interface CordovaStripe : CDVPlugin
 
 - (void) setPublishableKey:(CDVInvokedUrlCommand*)command;
-- (void) greet:(CDVInvokedUrlCommand*)command;
+- (void) createCardToken:(CDVInvokedUrlCommand*)command;
 
 @end
