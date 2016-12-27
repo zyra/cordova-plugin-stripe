@@ -30,7 +30,7 @@
         <header-file src="src/ios/CordovaStripe.h" />
         <source-file src="src/ios/CordovaStripe.m" />
 
-        <framework src="lib/Stripe.framework" custom="true" />
+        <framework src="src/ios/Stripe.framework" custom="true" />
 
     </platform>
 
