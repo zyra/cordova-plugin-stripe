@@ -5,17 +5,21 @@
 
 - (void)setPublishableKey:(CDVInvokedUrlCommand*)command
 {
+    
     NSString* publishableKey = [[command arguments] objectAtIndex:0];
     NSLog(@"Setting publishable key to %@", publishableKey);
     [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:publishableKey];
     CDVPluginResult* result = [CDVPluginResult
                                resultWithStatus: CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    
 }
 
 - (void)createCardToken:(CDVInvokedUrlCommand *)command
 {
+    
     NSDictionary* cardInfo = [[command arguments] objectAtIndex:0];
+    
     STPCardParams* cardParams = [[STPCardParams alloc] init];
     
     cardParams.number = cardInfo[@"number"];
