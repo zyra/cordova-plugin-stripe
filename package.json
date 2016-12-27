@@ -10,5 +10,13 @@
     ]
   },
   "author": "Ibby Hadeed <i.hadeed@zyra.ca>",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zyramedia/cordova-plugin-stripe"
+  },
+  "homepage": "https://github.com/zyramedia/cordova-plugin-stripe",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyramedia/cordova-plugin-stripe"
+  }
 }
