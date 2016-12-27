@@ -1,4 +1,4 @@
-package come.zyramedia.cordova.stripe;
+package com.zyramedia.cordova.stripe;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -54,7 +54,20 @@ public class CordovaStripe extends CordovaPlugin {
 
         try {
 
-            Card cardObject = new Card(creditCard.getString("number"), creditCard.getInt("expMonth"), creditCard.getInt("expYear"), creditCard.getString("cvc"));
+            Card cardObject = new Card(
+                    creditCard.getString("number"),
+                    creditCard.getInt("expMonth"),
+                    creditCard.getInt("expYear"),
+                    creditCard.getString("cvc"),
+                    creditCard.has("name") ? creditCard.getString("name") : null,
+                    creditCard.has("address_line1") ? creditCard.getString("address_line1") : null,
+                    creditCard.has("address_line2") ? creditCard.getString("address_line2") : null,
+                    creditCard.has("address_city") ? creditCard.getString("address_city") : null,
+                    creditCard.has("address_state") ? creditCard.getString("address_state") : null,
+                    creditCard.has("postalCode") ? creditCard.getString("postalCode") : null,
+                    creditCard.has("address_country") ? creditCard.getString("address_country") : null,
+                    creditCard.has("currency") ? creditCard.getString("currency") : null
+            );
 
             stripeObject.createToken(
                     cardObject,
