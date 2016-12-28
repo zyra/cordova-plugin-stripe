@@ -1,5 +1,8 @@
 [![npm](https://img.shields.io/npm/l/express.svg)](https://www.npmjs.com/package/cordova-plugin-stripe)
 
+[![NPM](https://nodei.co/npm/cordova-plugin-stripe.png?stars&downloads)](https://nodei.co/npm/cordova-plugin-stripe/)
+
+
 # Cordova Stripe Plugin
 A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS.
 
