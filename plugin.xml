@@ -31,6 +31,7 @@
         <source-file src="src/ios/CordovaStripe.m" />
 
         <framework src="src/ios/Stripe.framework" custom="true" />
+        <resource-file src="src/ios/Stripe.framework/Stripe.bundle" />
 
     </platform>
 
