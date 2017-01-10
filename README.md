@@ -8,7 +8,7 @@ A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS.
 
 ## Installation
 ```shell
-cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe
+cordova plugin add cordova-plugin-stripe
 ```
 
 ## Usage
