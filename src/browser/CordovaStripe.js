@@ -16,7 +16,13 @@ module.exports = {
     },
     createCardToken: function(cardObject,successCallback,errorCallback){
         try {
-            Stripe.card.createToken(cardObject,successCallback)
+            Stripe.card.createToken(cardObject,function(status,response){
+                if(response.error){
+                    errorCallback(response.error)
+                } else {
+                    successCallback(response.id)
+                }
+            })
         } catch (error) {
             errorCallback(error)
         }
