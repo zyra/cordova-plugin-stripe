@@ -4,7 +4,7 @@
 
 
 # Cordova Stripe Plugin
-A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS.
+A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS. This plugin also provides Browser platform support, see [this section](#browsersupport) for more details.
 
 ## Installation
 ```shell
@@ -63,3 +63,7 @@ Create a credit card token
 * **creditCard**: Credit card information. See example above for available properties. (Object)
 * **success**: Success callback (Function)
 * **error**: Error callback (Function)
+
+
+## Browser support
+This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized. 
