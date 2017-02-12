@@ -4,7 +4,7 @@
 
 
 # Cordova Stripe Plugin
-A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS. This plugin also provides Browser platform support, see [this section](#browsersupport) for more details.
+A Cordova plugin that lets you use Stripe Native SDKs for Android and iOS. This plugin also provides Browser platform support, see [this section](#browser-support) for more details.
 
 ## Installation
 ```shell
