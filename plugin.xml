@@ -34,4 +34,18 @@
 
     </platform>
 
+    <platform name="browser">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="CordovaStripe">
+                <param name="browser-package" value="CordovaStripe" />
+            </feature>
+        </config-file>
+
+        <js-module src="src/browser/CordovaStripe.js" name="CordovaStripe">
+            <runs />
+        </js-module>
+
+    </platform>
+
 </plugin>
