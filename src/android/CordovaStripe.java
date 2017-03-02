@@ -15,6 +15,7 @@ import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
 import com.stripe.android.exception.AuthenticationException;
+import com.stripe.android.util.CardUtils;
 
 public class CordovaStripe extends CordovaPlugin {
 
@@ -34,6 +35,8 @@ public class CordovaStripe extends CordovaPlugin {
             createCardToken(data.getJSONObject(0), callbackContext);
         } else if (action.equals("createBankAccountToken")) {
             createBankAccountToken(data.getJSONObject(0), callbackContext);
+        } else if (action.equals("validateCardNumber")) {
+            validateCardNumber(data.getString(0), callbackContext);
         } else {
             return false;
         }
@@ -117,6 +120,14 @@ public class CordovaStripe extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
         
+    }
+
+    private void validateCardNumber(String cardNumber, final CallbackContext callbackContext) {
+        if (CardUtils.isValidCardNumber(cardNumber)) {
+            callbackContext.success();
+        } else {
+            callbackContext.error("Invalid card number");
+        }
     }
 
 }
