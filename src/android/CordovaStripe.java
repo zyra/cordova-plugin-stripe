@@ -41,6 +41,8 @@ public class CordovaStripe extends CordovaPlugin {
             validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
         } else if (action.equals("validateCVC")) {
             validateCVC(data.getString(0), callbackContext);
+        } else if (action.equals("getCardType")) {
+            getCardType(data.getString(0), callbackContext);
         } else {
             return false;
         }
@@ -143,13 +145,18 @@ public class CordovaStripe extends CordovaPlugin {
         }
     }
 
-    private void validateCVC(String cvc, final CallbackContext callbackContext) {
+    private void validateCVC(final String cvc, final CallbackContext callbackContext) {
         Card card = new Card(null, null, null, cvc);
         if (card.validateCVC()) {
             callbackContext.success();
         } else {
             callbackContext.error("Invalid CVC");
         }
+    }
+
+    private void getCardType(final String cardNumber, final CallbackContext callbackContext) {
+        Card card = new Card(cardNumber, null, null, null);
+        callbackContext.success(card.getBrand());
     }
 
 }
