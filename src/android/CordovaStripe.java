@@ -21,7 +21,7 @@ public class CordovaStripe extends CordovaPlugin {
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        stripeObject = new Stripe();
+        stripeObject = new Stripe(webView.getContext());
     }
 
     @Override
