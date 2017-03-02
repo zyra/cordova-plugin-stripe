@@ -48,6 +48,10 @@ module.exports = {
 
     validateCVC: function(cvc, success, error) {
         exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
+    },
+
+    getCardType: function(cardNumber, success, error) {
+        exec(success, error, "CordovaStripe", "getCardType", [cardNumber])
     }
 
 };
