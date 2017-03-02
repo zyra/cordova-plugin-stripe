@@ -20,6 +20,34 @@ module.exports = {
      */
     createCardToken: function(creditCard, success, error) {
         exec(success, error, "CordovaStripe", "createCardToken", [creditCard]);
+    },
+
+    /**
+     * Create a bank account token
+     * @param bankAccount {Object} Bank account information
+     * @param success {Function} Success callback
+     * @param error {Function} Error callback
+     */
+    createBankAccountToken: function(bankAccount, success, error) {
+        exec(success, error, "CordovaStripe", "createBankAccountToken", [bankAccount]);
+    },
+
+    /**
+     * Validates card number
+     * @param cardNumber {String} Credit card number
+     * @param success {Function} Success callback that will be called if card number is valid
+     * @param error {Function} Error callback that will be called if card number is invalid
+     */
+    validateCardNumber: function(cardNumber, success, error) {
+        exec(success, error, "CordovaStripe", "validateCardNumber", [cardNumber]);
+    },
+
+    validateExpiryDate: function(expMonth, expYear, success, error) {
+        exec(success, error, "CordovaStripe", "validateExpiryDate", [expMonth, expYear]);
+    },
+
+    validateCVC: function(cvc, success, error) {
+        exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
     }
 
 };

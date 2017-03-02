@@ -27,7 +27,7 @@ public class CordovaStripe extends CordovaPlugin {
     }
 
     @Override
-    public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(final String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
 
         if (action.equals("setPublishableKey")) {
             setPublishableKey(data.getString(0), callbackContext);
@@ -37,6 +37,10 @@ public class CordovaStripe extends CordovaPlugin {
             createBankAccountToken(data.getJSONObject(0), callbackContext);
         } else if (action.equals("validateCardNumber")) {
             validateCardNumber(data.getString(0), callbackContext);
+        } else if (action.equals("validateExpiryDate")) {
+            validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
+        } else if (action.equals("validateCVC")) {
+            validateCVC(data.getString(0), callbackContext);
         } else {
             return false;
         }
@@ -45,7 +49,7 @@ public class CordovaStripe extends CordovaPlugin {
 
     }
 
-    private void setPublishableKey(String key, final CallbackContext callbackContext) {
+    private void setPublishableKey(final String key, final CallbackContext callbackContext) {
 
         try {
             stripeObject.setDefaultPublishableKey(key);
@@ -56,7 +60,7 @@ public class CordovaStripe extends CordovaPlugin {
 
     }
 
-    private void createCardToken(JSONObject creditCard, final CallbackContext callbackContext) {
+    private void createCardToken(final JSONObject creditCard, final CallbackContext callbackContext) {
 
         try {
 
@@ -93,7 +97,7 @@ public class CordovaStripe extends CordovaPlugin {
 
     }
     
-    private void createBankAccountToken(JSONObject bankAccount, final CallbackContext callbackContext) {
+    private void createBankAccountToken(final JSONObject bankAccount, final CallbackContext callbackContext) {
         
         try {
 
@@ -122,11 +126,29 @@ public class CordovaStripe extends CordovaPlugin {
         
     }
 
-    private void validateCardNumber(String cardNumber, final CallbackContext callbackContext) {
+    private void validateCardNumber(final String cardNumber, final CallbackContext callbackContext) {
         if (CardUtils.isValidCardNumber(cardNumber)) {
             callbackContext.success();
         } else {
             callbackContext.error("Invalid card number");
+        }
+    }
+
+    private void validateExpiryDate(final Integer expMonth, final Integer expYear, final CallbackContext callbackContext) {
+        Card card = new Card(null, expMonth, expYear, null);
+        if (card.validateExpiryDate()) {
+            callbackContext.success();
+        } else {
+            callbackContext.error("Invalid expiry date");
+        }
+    }
+
+    private void validateCVC(String cvc, final CallbackContext callbackContext) {
+        Card card = new Card(null, null, null, cvc);
+        if (card.validateCVC()) {
+            callbackContext.success();
+        } else {
+            callbackContext.error("Invalid CVC");
         }
     }
 
