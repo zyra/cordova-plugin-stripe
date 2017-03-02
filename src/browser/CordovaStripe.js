@@ -24,9 +24,39 @@ module.exports = {
                 }
             })
         } catch (error) {
-            errorCallback(error)
+            errorCallback(error);
         }
+    },
+
+    validateCardNumber: function(cardNumber, successCallback, errorCallback) {
+        if (Stripe.card.validateCardNumber(cardNumber)) {
+            successCallback();
+        } else {
+            errorCallback('Invalid card number');
+        }
+    },
+
+    validateExpiryDate: function(expMonth, expYear, successCallback, errorCallback) {
+        if (Stripe.card.validateExpiry(expMonth, expYear)) {
+            successCallback();
+        } else {
+            errorCallback('Invalid expiry date');
+        }
+    },
+
+    validateCVC: function(cvc, successCallback, errorCallback) {
+        if (Stripe.card.validateCVC(cvc)) {
+            successCallback();
+        } else {
+            errorCallback('Invalid CVC');
+        }
+    },
+
+    getCardType: function(cardNumber, successCallback) {
+        successCallback(Stripe.card.cardType(cardNumber));
     }
+
+
 
 };
 
