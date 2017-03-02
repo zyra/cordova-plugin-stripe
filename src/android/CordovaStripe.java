@@ -11,6 +11,7 @@ import org.json.JSONArray;
 
 import com.stripe.android.TokenCallback;
 import com.stripe.android.Stripe;
+import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
 import com.stripe.android.exception.AuthenticationException;
@@ -31,6 +32,8 @@ public class CordovaStripe extends CordovaPlugin {
             setPublishableKey(data.getString(0), callbackContext);
         } else if (action.equals("createCardToken")) {
             createCardToken(data.getJSONObject(0), callbackContext);
+        } else if (action.equals("createBankAccountToken")) {
+            createBankAccountToken(data.getJSONObject(0), callbackContext);
         } else {
             return false;
         }
@@ -85,6 +88,35 @@ public class CordovaStripe extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
 
+    }
+    
+    private void createBankAccountToken(JSONObject bankAccount, final CallbackContext callbackContext) {
+        
+        try {
+
+            BankAccount bankAccountObject = new BankAccount(
+                    bankAccount.getString("accountNumber"),
+                    bankAccount.getString("countryCode"),
+                    bankAccount.getString("currency"),
+                    bankAccount.getString("routingNumber")
+            );
+
+            stripeObject.createBankAccountToken(
+                    bankAccountObject,
+                    new TokenCallback() {
+                        public void onSuccess(Token token) {
+                            callbackContext.success(token.getId());
+                        }
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
+                    }
+            );
+            
+        } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+        }
+        
     }
 
 }
