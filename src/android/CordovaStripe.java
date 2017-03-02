@@ -104,11 +104,19 @@ public class CordovaStripe extends CordovaPlugin {
         try {
 
             BankAccount bankAccountObject = new BankAccount(
-                    bankAccount.getString("accountNumber"),
-                    bankAccount.getString("countryCode"),
+                    bankAccount.getString("account_number"),
+                    bankAccount.getString("country_code"),
                     bankAccount.getString("currency"),
-                    bankAccount.getString("routingNumber")
+                    bankAccount.getString("routing_number")
             );
+
+            if (bankAccount.getString("account_holder_name") != null) {
+                bankAccountObject.setAccountHolderName(bankAccount.getString("account_holder_name"));
+            }
+
+            if (bankAccount.getString("account_holder_type") != null) {
+                bankAccountObject.setAccountHolderType(bankAccount.getString("account_holder_type"));
+            }
 
             stripeObject.createBankAccountToken(
                     bankAccountObject,
