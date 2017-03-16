@@ -1,4 +1,5 @@
 var exec = require('cordova/exec');
+var noop = function(){};
 
 module.exports = {
 
@@ -9,6 +10,8 @@ module.exports = {
      * @param error {Function} Error callback
      */
     setPublishableKey: function(key, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "setPublishableKey", [key]);
     },
 
@@ -19,6 +22,8 @@ module.exports = {
      * @param error {Function} Error callback
      */
     createCardToken: function(creditCard, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "createCardToken", [creditCard]);
     },
 
@@ -29,6 +34,8 @@ module.exports = {
      * @param error {Function} Error callback
      */
     createBankAccountToken: function(bankAccount, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "createBankAccountToken", [bankAccount]);
     },
 
@@ -39,18 +46,26 @@ module.exports = {
      * @param error {Function} Error callback that will be called if card number is invalid
      */
     validateCardNumber: function(cardNumber, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "validateCardNumber", [cardNumber]);
     },
 
     validateExpiryDate: function(expMonth, expYear, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "validateExpiryDate", [expMonth, expYear]);
     },
 
     validateCVC: function(cvc, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
     },
 
     getCardType: function(cardNumber, success, error) {
+        success = success || noop;
+        error = error || noop;
         exec(success, error, "CordovaStripe", "getCardType", [cardNumber])
     }
 
