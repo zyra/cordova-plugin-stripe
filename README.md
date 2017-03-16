@@ -18,7 +18,7 @@ First we need to set our publishable key. This can be your test or live key.
 cordova.plugins.stripe.setPublishableKey('pk_test_MyPublishableKey');
 ```
 
-Now we can create a credit card token to send to our backend later on.
+Now we can create a credit card token to send to our backend.
 
 ```javascript
 var card = {
@@ -45,6 +45,19 @@ function onError(errorMessage) {
 }
 
 cordova.plugins.stripe.createCardToken(card, onSuccess, onError);
+
+
+// bank account example
+var bankAccount = {
+  routing_number: '11000000',
+  account_number: '000123456789',
+  account_holder_name: 'John Smith', // optional
+  account_holder_type: 'individual', // optional
+  currency: 'CAD',
+  country_code: 'CA'
+};
+
+cordova.plugins.stripe.createBankAccountToken(bankAccount, onSuccess, onError);
 ```
 
 Once you have the token, you can now send it to your backend so you can charge the customer later on.
@@ -52,18 +65,61 @@ Once you have the token, you can now send it to your backend so you can charge t
 
 ## API
 
-#### setPublishableKey(key, success, error)
-Set the publishable key.
+### setPublishableKey
+```
+setPublishableKey(key, success, error)
+```
 * **key**: Publishable key (string)
-* **success**: Success callback (Function)
-* **error**: Error callback (Function)
+Set the publishable key.
 
-#### createCardToken(creditCard, success, error)
-Create a credit card token
+### createCardToken
+```
+createCardToken(creditCard, success, error)
+```
 * **creditCard**: Credit card information. See example above for available properties. (Object)
-* **success**: Success callback (Function)
-* **error**: Error callback (Function)
+Create a credit card token
 
+### createBankAccountToken
+```
+createBankAccountToken(bankAccount, success, error)
+```
+* **bankAccount**: Bank account information. See example above for available properties. (Object)
+Create a bank account token
+
+### validateCardNumber
+```
+validateCardNumber(cardNumber, success, error)
+```
+* **cardNumber**: Credit card number
+Validate card number. Success callback will be called if valid, and error callback will be called if invalid.
+
+### validateCVC
+```
+validateCVC(cvc, success, error)
+```
+* **cvc**: CVC
+Validate CVC number. Success callback will be called if valid, and error callback will be called if invalid.
+
+### validateExpiryDate
+```
+validateExpiryDate(expMonth, expYear, success, error)
+```
+* **expMonth**: Expiry month (string)
+* **expYear**: 4 digits expiry year (string)
+Validate epxiry date. Success callback will be called if valid, and error callback will be called if invalid.
+
+### getCardType
+```
+getCardType(cardNumber, success)
+```
+* **cardNumber**: Credit card number
+Get card type. Will return one of the following: `Visa`, `MasterCard`, `American Express`, `Discover`, `Diners Club`, `JBC` or `Unknown`.
+
+## Tests
+To test this plugin with `cordova-plugin-test-framework`, run the following command to install the tests:
+```
+cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
+```
 
 ## Browser support
 This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized.
