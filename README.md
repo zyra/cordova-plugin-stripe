@@ -6,10 +6,29 @@
 # Cordova Stripe Plugin
 A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Browser.
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+  - [setPublishableKey](#setpublishablekey)
+  - [createCardToken](#createcardtoken)
+  - [createBankAccountToken](#createbankaccounttoken)
+  - [validateCardNumber](#validatecardnumber)
+  - [validateCVC](#validatecvc)
+  - [validateExpiryDate](#validateexpirydate)
+  - [getCardType](#getcardtype)
+- [Tests](#tests)
+- [Browser Support](#browser-support)
+
+<br>
+<br>
+
 ## Installation
 ```shell
 cordova plugin add cordova-plugin-stripe
 ```
+
+<br>
+<br>
 
 ## Usage
 
@@ -29,7 +48,7 @@ var card = {
   name: 'John Smith', // card holder name (optional)
   address_line1: '123 Some Street', // address line 1 (optional)
   address_line2: 'Suite #220', // address line 2 (optional)
-  address_city: 'Toronto', // city (optional)
+creat  address_city: 'Toronto', // city (optional)
   address_state: 'Ontario', // state/province (optional)
   address_country: 'Canada', // country (optional)
   postal_code: 'L5L5L5', // Postal Code / Zip Code (optional)
@@ -61,6 +80,9 @@ cordova.plugins.stripe.createBankAccountToken(bankAccount, onSuccess, onError);
 ```
 
 Once you have the token, you can now send it to your backend so you can charge the customer later on.
+
+<br>
+<br>
 
 
 ## API
@@ -115,11 +137,17 @@ getCardType(cardNumber, success)
 * **cardNumber**: Credit card number
 Get card type. Will return one of the following: `Visa`, `MasterCard`, `American Express`, `Discover`, `Diners Club`, `JBC` or `Unknown`.
 
+<br>
+<br>
+
 ## Tests
 To test this plugin with `cordova-plugin-test-framework`, run the following command to install the tests:
 ```
 cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 ```
+
+<br>
+<br>
 
 ## Browser support
 This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized.
