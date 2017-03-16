@@ -3,20 +3,20 @@ var secureStripeScript = document.createElement('script');
 secureStripeScript.setAttribute('src','https://js.stripe.com/v2/');
 document.getElementsByTagName('head')[0].appendChild(secureStripeScript);
 
-module.exports = {
+var stripe = {
 
-    setPublishableKey: function(key, successCallback, errorCallback){
+    setPublishableKey: function(successCallback, errorCallback, args) {
         try {
-            Stripe.setPublishableKey(key);
+            Stripe.setPublishableKey(args[0]);
             successCallback();
         } catch (error) {
             errorCallback(error);
         }
     },
 
-    createCardToken: function(cardObject, successCallback, errorCallback){
+    createCardToken: function(successCallback, errorCallback, args) {
         try {
-            Stripe.card.createToken(cardObject, function(status, response){
+            Stripe.card.createToken(args[0], function(status, response){
                 if(response.error){
                     errorCallback(response.error);
                 } else {
@@ -28,8 +28,8 @@ module.exports = {
         }
     },
 
-    createBankAccountToken: function(bankAccount, successCallback, errorCallback) {
-        Stripe.bankAccount.createToken(bankAccount, function(status, response){
+    createBankAccountToken: function(successCallback, errorCallback, args) {
+        Stripe.bankAccount.createToken(args[0], function(status, response){
             if(response.error){
                 errorCallback(response.error);
             } else {
@@ -38,36 +38,36 @@ module.exports = {
         });
     },
 
-    validateCardNumber: function(cardNumber, successCallback, errorCallback) {
-        if (Stripe.card.validateCardNumber(cardNumber)) {
+    validateCardNumber: function(successCallback, errorCallback, args) {
+        if (Stripe.card.validateCardNumber(args[0])) {
             successCallback();
         } else {
             errorCallback('Invalid card number');
         }
     },
 
-    validateExpiryDate: function(expMonth, expYear, successCallback, errorCallback) {
-        if (Stripe.card.validateExpiry(expMonth, expYear)) {
+    validateExpiryDate: function(successCallback, errorCallback, args) {
+        if (Stripe.card.validateExpiry(args[0], args[1])) {
             successCallback();
         } else {
             errorCallback('Invalid expiry date');
         }
     },
 
-    validateCVC: function(cvc, successCallback, errorCallback) {
-        if (Stripe.card.validateCVC(cvc)) {
+    validateCVC: function(successCallback, errorCallback, args) {
+        if (Stripe.card.validateCVC(args[0])) {
             successCallback();
         } else {
             errorCallback('Invalid CVC');
         }
     },
 
-    getCardType: function(cardNumber, successCallback) {
-        successCallback(Stripe.card.cardType(cardNumber));
+    getCardType: function(successCallback, errorCallback, args) {
+        successCallback(Stripe.card.cardType(args[0]));
     }
 
 
 
 };
 
-require('cordova/exec/proxy').add('CordovaStripe', module.exports);
+require('cordova/exec/proxy').add('CordovaStripe', stripe);
