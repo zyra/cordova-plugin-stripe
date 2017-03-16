@@ -73,7 +73,7 @@ var bankAccount = {
   account_holder_name: 'John Smith', // optional
   account_holder_type: 'individual', // optional
   currency: 'CAD',
-  country_code: 'CA'
+  country: 'CA'
 };
 
 cordova.plugins.stripe.createBankAccountToken(bankAccount, onSuccess, onError);

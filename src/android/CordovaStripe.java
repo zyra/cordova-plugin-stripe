@@ -105,7 +105,7 @@ public class CordovaStripe extends CordovaPlugin {
 
             BankAccount bankAccountObject = new BankAccount(
                     bankAccount.getString("account_number"),
-                    bankAccount.getString("country_code"),
+                    bankAccount.getString("country"),
                     bankAccount.getString("currency"),
                     bankAccount.getString("routing_number")
             );

@@ -92,7 +92,7 @@
         STPBankAccountParams* params = [[STPBankAccountParams alloc] init];
         
         params.accountNumber = bankAccountInfo[@"account_number"];
-        params.country = bankAccountInfo[@"country_code"];
+        params.country = bankAccountInfo[@"country"];
         params.currency = bankAccountInfo[@"currency"];
         params.routingNumber = bankAccountInfo[@"routing_number"];
         params.accountHolderName = bankAccountInfo[@"account_holder_name"];

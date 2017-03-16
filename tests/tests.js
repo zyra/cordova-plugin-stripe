@@ -61,7 +61,7 @@ exports.defineAutoTests = function() {
                     account_holder_name: 'Ibby Hadeed',
                     account_holder_type: 'individual',
                     currency: 'CAD',
-                    country_code: 'CA'
+                    country: 'CA'
                 };
 
                 cordova.plugins.stripe.createBankAccountToken(bankAccount, function(token) {
