@@ -128,7 +128,14 @@
 - (void)validateExpiryDate:(CDVInvokedUrlCommand *)command
 {
     CDVCommandStatus status;
-    STPCardValidationState state = [STPCardValidator validationStateForExpirationYear:[command.arguments objectAtIndex:0] inMonth:[command.arguments objectAtIndex:1]];
+    NSString *expMonth = [command.arguments objectAtIndex:0];
+    NSString *expYear = [command.arguments objectAtIndex:1];
+    
+    if (expYear.length == 4) {
+        expYear = [expYear substringFromIndex:2];
+    }
+    
+    STPCardValidationState state = [STPCardValidator validationStateForExpirationYear:expYear inMonth:expMonth];
     
     if (state == STPCardValidationStateValid) {
         status = CDVCommandStatus_OK;
@@ -162,7 +169,5 @@
     CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:brands[brand]];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
-
-- (void)
 
 @end
