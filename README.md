@@ -48,7 +48,7 @@ var card = {
   name: 'John Smith', // card holder name (optional)
   address_line1: '123 Some Street', // address line 1 (optional)
   address_line2: 'Suite #220', // address line 2 (optional)
-creat  address_city: 'Toronto', // city (optional)
+  address_city: 'Toronto', // city (optional)
   address_state: 'Ontario', // state/province (optional)
   address_country: 'Canada', // country (optional)
   postal_code: 'L5L5L5', // Postal Code / Zip Code (optional)
@@ -142,7 +142,7 @@ Get card type. Will return one of the following: `Visa`, `MasterCard`, `American
 
 ## Tests
 To test this plugin with `cordova-plugin-test-framework`, run the following command to install the tests:
-```
+```shell
 cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 ```
 
