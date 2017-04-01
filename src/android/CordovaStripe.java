@@ -19,152 +19,155 @@ import com.stripe.android.util.CardUtils;
 
 public class CordovaStripe extends CordovaPlugin {
 
-    private Stripe stripeObject;
+  private Stripe stripeObject;
 
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        super.initialize(cordova, webView);
-        stripeObject = new Stripe(webView.getContext());
+  public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+    super.initialize(cordova, webView);
+    stripeObject = new Stripe(webView.getContext());
+  }
+
+  @Override
+  public boolean execute(final String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
+
+    if (action.equals("setPublishableKey")) {
+      setPublishableKey(data.getString(0), callbackContext);
+    } else if (action.equals("createCardToken")) {
+      createCardToken(data.getJSONObject(0), callbackContext);
+    } else if (action.equals("createBankAccountToken")) {
+      createBankAccountToken(data.getJSONObject(0), callbackContext);
+    } else if (action.equals("validateCardNumber")) {
+      validateCardNumber(data.getString(0), callbackContext);
+    } else if (action.equals("validateExpiryDate")) {
+      validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
+    } else if (action.equals("validateCVC")) {
+      validateCVC(data.getString(0), callbackContext);
+    } else if (action.equals("getCardType")) {
+      getCardType(data.getString(0), callbackContext);
+    } else {
+      return false;
     }
 
-    @Override
-    public boolean execute(final String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
+    return true;
 
-        if (action.equals("setPublishableKey")) {
-            setPublishableKey(data.getString(0), callbackContext);
-        } else if (action.equals("createCardToken")) {
-            createCardToken(data.getJSONObject(0), callbackContext);
-        } else if (action.equals("createBankAccountToken")) {
-            createBankAccountToken(data.getJSONObject(0), callbackContext);
-        } else if (action.equals("validateCardNumber")) {
-            validateCardNumber(data.getString(0), callbackContext);
-        } else if (action.equals("validateExpiryDate")) {
-            validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
-        } else if (action.equals("validateCVC")) {
-            validateCVC(data.getString(0), callbackContext);
-        } else if (action.equals("getCardType")) {
-            getCardType(data.getString(0), callbackContext);
-        } else {
-            return false;
+  }
+
+  private void setPublishableKey(final String key, final CallbackContext callbackContext) {
+
+    try {
+      stripeObject.setDefaultPublishableKey(key);
+      callbackContext.success();
+    } catch (AuthenticationException e) {
+      callbackContext.error(e.getMessage());
+    }
+
+  }
+
+  private void createCardToken(final JSONObject creditCard, final CallbackContext callbackContext) {
+
+    try {
+
+      Card cardObject = new Card(
+        creditCard.getString("number"),
+        creditCard.getInt("expMonth"),
+        creditCard.getInt("expYear"),
+        creditCard.getString("cvc"),
+        creditCard.has("name") ? creditCard.getString("name") : null,
+        creditCard.has("address_line1") ? creditCard.getString("address_line1") : null,
+        creditCard.has("address_line2") ? creditCard.getString("address_line2") : null,
+        creditCard.has("address_city") ? creditCard.getString("address_city") : null,
+        creditCard.has("address_state") ? creditCard.getString("address_state") : null,
+        creditCard.has("postalCode") ? creditCard.getString("postalCode") : null,
+        creditCard.has("address_country") ? creditCard.getString("address_country") : null,
+        creditCard.has("currency") ? creditCard.getString("currency") : null
+      );
+
+      stripeObject.createToken(
+        cardObject,
+        new TokenCallback() {
+          public void onSuccess(Token token) {
+            callbackContext.success(token.getId());
+          }
+          public void onError(Exception error) {
+            callbackContext.error(error.getMessage());
+          }
         }
+      );
 
-        return true;
-
+    } catch (JSONException e) {
+      callbackContext.error(e.getMessage());
     }
 
-    private void setPublishableKey(final String key, final CallbackContext callbackContext) {
+  }
 
-        try {
-            stripeObject.setDefaultPublishableKey(key);
-            callbackContext.success();
-        } catch (AuthenticationException e) {
-            callbackContext.error(e.getMessage());
+  private void createBankAccountToken(final JSONObject bankAccount, final CallbackContext callbackContext) {
+
+    try {
+
+      BankAccount bankAccountObject = new BankAccount(
+        bankAccount.getString("account_number"),
+        bankAccount.getString("country"),
+        bankAccount.getString("currency"),
+        bankAccount.getString("routing_number")
+      );
+
+      if (bankAccount.getString("account_holder_name") != null) {
+        bankAccountObject.setAccountHolderName(bankAccount.getString("account_holder_name"));
+      }
+
+      String accountHolderType = bankAccount.getString("account_holder_type");
+      if (accountHolderType.equals("individual")) {
+        bankAccountObject.setAccountHolderType(BankAccount.TYPE_INDIVIDUAL);
+      } else if (accountHolderType.equals("company")) {
+        bankAccountObject.setAccountHolderType(BankAccount.TYPE_COMPANY);
+      }
+
+      stripeObject.createBankAccountToken(
+        bankAccountObject,
+        new TokenCallback() {
+          public void onSuccess(Token token) {
+            callbackContext.success(token.getId());
+          }
+          public void onError(Exception error) {
+            callbackContext.error(error.getMessage());
+          }
         }
+      );
 
+    } catch (JSONException e) {
+      callbackContext.error(e.getMessage());
     }
 
-    private void createCardToken(final JSONObject creditCard, final CallbackContext callbackContext) {
+  }
 
-        try {
-
-            Card cardObject = new Card(
-                    creditCard.getString("number"),
-                    creditCard.getInt("expMonth"),
-                    creditCard.getInt("expYear"),
-                    creditCard.getString("cvc"),
-                    creditCard.has("name") ? creditCard.getString("name") : null,
-                    creditCard.has("address_line1") ? creditCard.getString("address_line1") : null,
-                    creditCard.has("address_line2") ? creditCard.getString("address_line2") : null,
-                    creditCard.has("address_city") ? creditCard.getString("address_city") : null,
-                    creditCard.has("address_state") ? creditCard.getString("address_state") : null,
-                    creditCard.has("postalCode") ? creditCard.getString("postalCode") : null,
-                    creditCard.has("address_country") ? creditCard.getString("address_country") : null,
-                    creditCard.has("currency") ? creditCard.getString("currency") : null
-            );
-
-            stripeObject.createToken(
-                    cardObject,
-                    new TokenCallback() {
-                        public void onSuccess(Token token) {
-                            callbackContext.success(token.getId());
-                        }
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-                    }
-            );
-
-        } catch (JSONException e) {
-            callbackContext.error(e.getMessage());
-        }
-
+  private void validateCardNumber(final String cardNumber, final CallbackContext callbackContext) {
+    if (CardUtils.isValidCardNumber(cardNumber)) {
+      callbackContext.success();
+    } else {
+      callbackContext.error("Invalid card number");
     }
-    
-    private void createBankAccountToken(final JSONObject bankAccount, final CallbackContext callbackContext) {
-        
-        try {
+  }
 
-            BankAccount bankAccountObject = new BankAccount(
-                    bankAccount.getString("account_number"),
-                    bankAccount.getString("country"),
-                    bankAccount.getString("currency"),
-                    bankAccount.getString("routing_number")
-            );
-
-            if (bankAccount.getString("account_holder_name") != null) {
-                bankAccountObject.setAccountHolderName(bankAccount.getString("account_holder_name"));
-            }
-
-            if (bankAccount.getString("account_holder_type") != null) {
-                bankAccountObject.setAccountHolderType(bankAccount.getString("account_holder_type"));
-            }
-
-            stripeObject.createBankAccountToken(
-                    bankAccountObject,
-                    new TokenCallback() {
-                        public void onSuccess(Token token) {
-                            callbackContext.success(token.getId());
-                        }
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-                    }
-            );
-            
-        } catch (JSONException e) {
-            callbackContext.error(e.getMessage());
-        }
-        
+  private void validateExpiryDate(final Integer expMonth, final Integer expYear, final CallbackContext callbackContext) {
+    Card card = new Card(null, expMonth, expYear, null);
+    if (card.validateExpiryDate()) {
+      callbackContext.success();
+    } else {
+      callbackContext.error("Invalid expiry date");
     }
+  }
 
-    private void validateCardNumber(final String cardNumber, final CallbackContext callbackContext) {
-        if (CardUtils.isValidCardNumber(cardNumber)) {
-            callbackContext.success();
-        } else {
-            callbackContext.error("Invalid card number");
-        }
+  private void validateCVC(final String cvc, final CallbackContext callbackContext) {
+    Card card = new Card(null, null, null, cvc);
+    if (card.validateCVC()) {
+      callbackContext.success();
+    } else {
+      callbackContext.error("Invalid CVC");
     }
+  }
 
-    private void validateExpiryDate(final Integer expMonth, final Integer expYear, final CallbackContext callbackContext) {
-        Card card = new Card(null, expMonth, expYear, null);
-        if (card.validateExpiryDate()) {
-            callbackContext.success();
-        } else {
-            callbackContext.error("Invalid expiry date");
-        }
-    }
-
-    private void validateCVC(final String cvc, final CallbackContext callbackContext) {
-        Card card = new Card(null, null, null, cvc);
-        if (card.validateCVC()) {
-            callbackContext.success();
-        } else {
-            callbackContext.error("Invalid CVC");
-        }
-    }
-
-    private void getCardType(final String cardNumber, final CallbackContext callbackContext) {
-        Card card = new Card(cardNumber, null, null, null);
-        callbackContext.success(card.getBrand());
-    }
+  private void getCardType(final String cardNumber, final CallbackContext callbackContext) {
+    Card card = new Card(cardNumber, null, null, null);
+    callbackContext.success(card.getBrand());
+  }
 
 }
