@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/cordova-plugin-stripe/
+    docker:
+      image: node:7
+    steps:
+      - checkout
+      - restore_cache:
+         key: node_modules_{{ .Branch }}_{{ checksum "package.json" }}
+      - run:
+         name: Install node modules
+         command: npm i
+      - save_cache:
+         key: node_modules_{{ .Branch }}_{{ checksum "package.json" }}
+         paths:
+           - ~/cordova-plugin-stripe/node_modules/
+      - run:
+         name: jshint
+         command: npm run jshint
+      - add_ssh_keys
+      - run:
+         name: Update docs
+         command: |
+           if [ "${CIRCLE_BRANCH}" == "master" ]; then
+             npm run docs
+             git config --global user.name "ZM Bot"
+             git config --global user.email "ibby93+zmbot@gmail.com"
+             git commit -am "docs(): update readme" -m "[ci skip]"
+             git push origin master || true
+           fi
