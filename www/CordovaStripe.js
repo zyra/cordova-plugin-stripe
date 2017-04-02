@@ -6,6 +6,19 @@ var noop = function(){};
  */
 
 /**
+ * Parameters to create a credit card token
+ * @typedef module:stripe.CardTokenParams
+ * @type {Object}
+ * @property {string} number Card number
+ * @property {number} expMonth Expiry month
+ * @property {number} expYear Expiry year
+ * @property {string} [cvc] CVC/CVV
+ * @property {string} [name] Cardholder name
+ * @property {string} [address_line1] Address line 1
+ * @property {string} [address_line2] Address line 2
+ */
+
+/**
  * @exports stripe
  */
 module.exports = {
@@ -24,14 +37,7 @@ module.exports = {
 
     /**
      * Create a credit card token
-     * @param creditCard {Object} Credit card information
-     * @param creditCard.number {string} Card number
-     * @param creditCard.expMonth {number} Expiry month
-     * @param creditCard.expYear {number} Expiry year
-     * @param [creditCard.cvc] {string} CVC/CVV
-     * @param [creditCard.name] {string} Cardholder name
-     * @param [creditCard.address_line1] {string} Address line 1
-     * @param [creditCard.address_line2] {string} Address line 2
+     * @param creditCard {module:stripe.CardTokenParams} Credit card information
      * @param [success] {Function} Success callback
      * @param [error] {Function} Error callback
      */
