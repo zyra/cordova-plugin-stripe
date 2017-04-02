@@ -69,7 +69,6 @@ Once you have the token, you can now send it to your backend so you can charge t
 <br>
 <br>
 
----
 
 ## API Reference
 
@@ -77,14 +76,16 @@ Once you have the token, you can now send it to your backend so you can charge t
 {{>member-index}}
 {{/orphans}}
 
----
+<br>
+<br>
 
 {{#modules~}}
 {{>header~}}
 {{>body~}}
 {{>members~}}
 
----
+<br>
+<br>
 
 {{/modules}}
 
@@ -96,8 +97,6 @@ To test this plugin with `cordova-plugin-test-framework`, run the following comm
 ```shell
 cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 ```
-
----
 
 <br>
 <br>

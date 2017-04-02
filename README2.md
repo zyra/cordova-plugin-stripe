@@ -69,7 +69,6 @@ Once you have the token, you can now send it to your backend so you can charge t
 <br>
 <br>
 
----
 
 ## API Reference
 
@@ -86,7 +85,8 @@ Once you have the token, you can now send it to your backend so you can charge t
     * [.BankAccountTokenParams](#module_stripe.BankAccountTokenParams) : <code>object</code>
 
 
----
+<br>
+<br>
 
 <a name="module_stripe"></a>
 
@@ -231,7 +231,8 @@ Parameters to create a bank account token
 | account_holder_name | <code>string</code> | Account holder name |
 | account_holder_type | <code>string</code> | Account holder type. This can be `individual` or `company`. |
 
----
+<br>
+<br>
 
 
 <br>
@@ -242,8 +243,6 @@ To test this plugin with `cordova-plugin-test-framework`, run the following comm
 ```shell
 cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 ```
-
----
 
 <br>
 <br>
