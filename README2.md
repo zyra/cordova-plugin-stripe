@@ -172,7 +172,7 @@ Validates a CVC of a card
 
 **Example**  
 ```js
-cordova.plugin.stripe.validateCVC('424', function(){ console.log('isValid'); }, function() { console.log('invalid'); });
+function onSuccess() {  console.log('isValid');}function onError() {  console.log('invalid');}cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
 ```
 <a name="module_stripe.getCardType"></a>
 

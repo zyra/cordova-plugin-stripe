@@ -107,7 +107,15 @@ module.exports = {
      * @param {Function} success
      * @param {Function} error
      * @example
-     * cordova.plugin.stripe.validateCVC('424', function(){ console.log('isValid'); }, function() { console.log('invalid'); });
+     * function onSuccess() {
+     *   console.log('isValid');
+     * }
+     *
+     * function onError() {
+     *   console.log('invalid');
+     * }
+     *
+     * cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
      */
     validateCVC: function(cvc, success, error) {
         success = success || noop;
