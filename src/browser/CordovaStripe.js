@@ -22,7 +22,7 @@ var stripe = {
                 } else {
                     successCallback(response.id);
                 }
-            })
+            });
         } catch (error) {
             errorCallback(error);
         }

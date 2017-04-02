@@ -2,11 +2,21 @@
   "name": "cordova-plugin-stripe",
   "version": "1.4.1",
   "description": "Cordova plugin that lets you use Stripe's Native SDKs for Android and iOS",
+  "files": [
+    "src",
+    "www",
+    "plugin.xml"
+  ],
+  "scripts": {
+    "gen-docs": "jsdoc2md --template \"scripts/doc.template.md\" \"www/**/*.js\" --plugin \"dmd-plugin-cordova-plugin\" > README2.md",
+    "jshint": "jshint www && jshint src && jshint tests"
+  },
   "cordova": {
     "id": "cordova-plugin-stripe",
     "platforms": [
       "android",
-      "ios"
+      "ios",
+      "browser"
     ]
   },
   "repository": {
@@ -17,6 +27,7 @@
     "ecosystem:cordova",
     "cordova-android",
     "cordova-ios",
+    "cordova-browser",
     "stripe",
     "phonegap",
     "cordova-plugin"
@@ -26,5 +37,10 @@
   "bugs": {
     "url": "https://github.com/ihadeed/cordova-plugin-stripe/issues"
   },
-  "homepage": "https://github.com/ihadeed/cordova-plugin-stripe#readme"
+  "homepage": "https://github.com/ihadeed/cordova-plugin-stripe#readme",
+  "devDependencies": {
+    "dmd-plugin-cordova-plugin": "^0.1.4",
+    "jsdoc-to-markdown": "^3.0.0",
+    "jshint": "^2.9.4"
+  }
 }

@@ -2,8 +2,8 @@ var onSuccess = function(done) {
     return function() {
         expect(true).toBe(true);
         done();
-    }
-}
+    };
+};
 var onError = function(done) {
     return function(e) {
         if (e) {
@@ -12,7 +12,7 @@ var onError = function(done) {
             expect(false).toBe(true);
         }
         done();
-    }
+    };
 };
 exports.defineAutoTests = function() {
 

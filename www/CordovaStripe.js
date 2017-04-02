@@ -1,6 +1,13 @@
 var exec = require('cordova/exec');
 var noop = function(){};
 
+/**
+ * @namespace cordova.plugins
+ */
+
+/**
+ * @exports stripe
+ */
 module.exports = {
 
     /**
@@ -66,7 +73,7 @@ module.exports = {
     getCardType: function(cardNumber, success, error) {
         success = success || noop;
         error = error || noop;
-        exec(success, error, "CordovaStripe", "getCardType", [cardNumber])
+        exec(success, error, "CordovaStripe", "getCardType", [cardNumber]);
     }
 
 };
