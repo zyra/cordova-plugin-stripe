@@ -225,3 +225,24 @@ Parameters to create a bank account token
 
 ---
 
+
+---
+
+<br>
+<br>
+
+## Tests
+To test this plugin with `cordova-plugin-test-framework`, run the following command to install the tests:
+```shell
+cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
+```
+
+---
+
+<br>
+<br>
+
+## Browser support
+This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized.
+
+*Thanks to [klirix](https://github.com/klirix) for submitting a [PR](https://github.com/zyramedia/cordova-plugin-stripe/pull/5) for the browser platform.*
