@@ -118,6 +118,12 @@ module.exports = {
      * @param {string} cardNumber Credit card number
      * @param {Function} success
      * @param {Function} error
+     * @example
+     * ```js
+     * cordova.plugins.stripe.getCardType('4242424242424242', function(cardType){
+     *   console.log(cardType); // visa
+     * });
+     * ```
      */
     getCardType: function(cardNumber, success, error) {
         success = success || noop;

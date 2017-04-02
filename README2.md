@@ -183,6 +183,8 @@ Gets a card type from a card number
 | success | <code>function</code> |  |
 | error | <code>function</code> |  |
 
+**Example**  
+```jscordova.plugins.stripe.getCardType('4242424242424242', function(cardType){  console.log(cardType); // visa});```
 <a name="module_stripe.CreditCardTokenParams"></a>
 
 ### stripe.CreditCardTokenParams : <code>Object</code>
