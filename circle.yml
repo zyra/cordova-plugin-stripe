@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/cordova-plugin-stripe/
     docker:
-      image: node:7
+      - image: node:7
     steps:
       - checkout
       - restore_cache:
