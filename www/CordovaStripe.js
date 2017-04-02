@@ -13,8 +13,8 @@ module.exports = {
     /**
      * Set publishable key
      * @param key {string} Publishable key
-     * @param success {Function} Success callback
-     * @param error {Function} Error callback
+     * @param [success] {Function} Success callback
+     * @param [error] {Function} Error callback
      */
     setPublishableKey: function(key, success, error) {
         success = success || noop;
@@ -25,8 +25,15 @@ module.exports = {
     /**
      * Create a credit card token
      * @param creditCard {Object} Credit card information
-     * @param success {Function} Success callback
-     * @param error {Function} Error callback
+     * @param creditCard.number {string} Card number
+     * @param creditCard.expMonth {number} Expiry month
+     * @param creditCard.expYear {number} Expiry year
+     * @param [creditCard.cvc] {string} CVC/CVV
+     * @param [creditCard.name] {string} Cardholder name
+     * @param [creditCard.address_line1] {string} Address line 1
+     * @param [creditCard.address_line2] {string} Address line 2
+     * @param [success] {Function} Success callback
+     * @param [error] {Function} Error callback
      */
     createCardToken: function(creditCard, success, error) {
         success = success || noop;
