@@ -1,26 +1,11 @@
+# Cordova Stripe Plugin
+A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Browser.
+
 [![npm](https://img.shields.io/npm/l/express.svg)](https://www.npmjs.com/package/cordova-plugin-stripe)
 
 [![NPM](https://nodei.co/npm/cordova-plugin-stripe.png?stars&downloads)](https://nodei.co/npm/cordova-plugin-stripe/)
 [![NPM](https://nodei.co/npm-dl/cordova-plugin-stripe.png?months=6&height=2)](https://nodei.co/npm/cordova-plugin-stripe/)
 
-# Cordova Stripe Plugin
-A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Browser.
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [API](#api)
-  - [setPublishableKey](#setpublishablekey)
-  - [createCardToken](#createcardtoken)
-  - [createBankAccountToken](#createbankaccounttoken)
-  - [validateCardNumber](#validatecardnumber)
-  - [validateCVC](#validatecvc)
-  - [validateExpiryDate](#validateexpirydate)
-  - [getCardType](#getcardtype)
-- [Tests](#tests)
-- [Browser Support](#browser-support)
-
-<br>
-<br>
 
 ## Installation
 ```shell
@@ -44,7 +29,7 @@ var card = {
   number: '4242424242424242', // 16-digit credit card number
   expMonth: 12, // expiry month
   expYear: 2020, // expiry year
-  cvc: '220', // CVC / CCV 
+  cvc: '220', // CVC / CCV
   name: 'John Smith', // card holder name (optional)
   address_line1: '123 Some Street', // address line 1 (optional)
   address_line2: 'Suite #220', // address line 2 (optional)
@@ -85,57 +70,180 @@ Once you have the token, you can now send it to your backend so you can charge t
 <br>
 
 
-## API
+## API Reference
 
-### setPublishableKey
-```
-setPublishableKey(key, success, error)
-```
-* **key**: Publishable key (string)
-Set the publishable key.
 
-### createCardToken
-```
-createCardToken(creditCard, success, error)
-```
-* **creditCard**: Credit card information. See example above for available properties. (Object)
+* [stripe](#module_stripe)
+    * [.setPublishableKey(key, [success], [error])](#module_stripe.setPublishableKey)
+    * [.createCardToken(creditCard, success, error)](#module_stripe.createCardToken)
+    * [.createBankAccountToken(bankAccount, success, error)](#module_stripe.createBankAccountToken)
+    * [.validateCardNumber(cardNumber, success, error)](#module_stripe.validateCardNumber)
+    * [.validateExpiryDate(expMonth, expYear, success, error)](#module_stripe.validateExpiryDate)
+    * [.validateCVC(cvc, success, error)](#module_stripe.validateCVC)
+    * [.getCardType(cardNumber, success, error)](#module_stripe.getCardType)
+    * [.CreditCardTokenParams](#module_stripe.CreditCardTokenParams) : <code>Object</code>
+    * [.BankAccountTokenParams](#module_stripe.BankAccountTokenParams) : <code>object</code>
+
+
+<br>
+<br>
+
+<a name="module_stripe"></a>
+
+## stripe
+<a name="module_stripe.setPublishableKey"></a>
+
+### stripe.setPublishableKey(key, [success], [error])
+Set publishable key
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | Publishable key |
+| [success] | <code>function</code> | Success callback |
+| [error] | <code>function</code> | Error callback |
+
+<a name="module_stripe.createCardToken"></a>
+
+### stripe.createCardToken(creditCard, success, error)
 Create a credit card token
 
-### createBankAccountToken
-```
-createBankAccountToken(bankAccount, success, error)
-```
-* **bankAccount**: Bank account information. See example above for available properties. (Object)
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| creditCard | <code>[CreditCardTokenParams](#module_stripe.CreditCardTokenParams)</code> | Credit card information |
+| success | <code>function</code> | Success callback |
+| error | <code>function</code> | Error callback |
+
+<a name="module_stripe.createBankAccountToken"></a>
+
+### stripe.createBankAccountToken(bankAccount, success, error)
 Create a bank account token
 
-### validateCardNumber
-```
-validateCardNumber(cardNumber, success, error)
-```
-* **cardNumber**: Credit card number
-Validate card number. Success callback will be called if valid, and error callback will be called if invalid.
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
 
-### validateCVC
-```
-validateCVC(cvc, success, error)
-```
-* **cvc**: CVC
-Validate CVC number. Success callback will be called if valid, and error callback will be called if invalid.
+| Param | Type | Description |
+| --- | --- | --- |
+| bankAccount | <code>[BankAccountTokenParams](#module_stripe.BankAccountTokenParams)</code> | Bank account information |
+| success | <code>function</code> | Success callback |
+| error | <code>function</code> | Error callback |
 
-### validateExpiryDate
-```
-validateExpiryDate(expMonth, expYear, success, error)
-```
-* **expMonth**: Expiry month (string)
-* **expYear**: 4 digits expiry year (string)
-Validate epxiry date. Success callback will be called if valid, and error callback will be called if invalid.
+<a name="module_stripe.validateCardNumber"></a>
 
-### getCardType
+### stripe.validateCardNumber(cardNumber, success, error)
+Validates card number
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cardNumber | <code>String</code> | Credit card number |
+| success | <code>function</code> | Success callback that will be called if card number is valid |
+| error | <code>function</code> | Error callback that will be called if card number is invalid |
+
+<a name="module_stripe.validateExpiryDate"></a>
+
+### stripe.validateExpiryDate(expMonth, expYear, success, error)
+Validates the expiry date of a card
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| expMonth | <code>number</code> | Expiry month |
+| expYear | <code>number</code> | Expiry year |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+<a name="module_stripe.validateCVC"></a>
+
+### stripe.validateCVC(cvc, success, error)
+Validates a CVC of a card
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cvc | <code>string</code> | CVC/CVV |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+**Example**  
+```js
+function onSuccess() {
+  console.log('isValid');
+}
+
+function onError() {
+  console.log('invalid');
+}
+
+cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
 ```
-getCardType(cardNumber, success)
+<a name="module_stripe.getCardType"></a>
+
+### stripe.getCardType(cardNumber, success, error)
+Gets a card type from a card number
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cardNumber | <code>string</code> | Credit card number |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+**Example**  
+```js
+cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {
+  console.log(cardType); // visa
+});
 ```
-* **cardNumber**: Credit card number
-Get card type. Will return one of the following: `Visa`, `MasterCard`, `American Express`, `Discover`, `Diners Club`, `JBC` or `Unknown`.
+<a name="module_stripe.CreditCardTokenParams"></a>
+
+### stripe.CreditCardTokenParams : <code>Object</code>
+Parameters to create a credit card token
+
+**Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| number | <code>string</code> | Card number |
+| expMonth | <code>number</code> | Expiry month |
+| expYear | <code>number</code> | Expiry year |
+| cvc | <code>string</code> | CVC/CVV |
+| name | <code>string</code> | Cardholder name |
+| address_line1 | <code>string</code> | Address line 1 |
+| address_line2 | <code>string</code> | Address line 2 |
+| address_city | <code>string</code> | Address line 2 |
+| address_state | <code>string</code> | State/Province |
+| address_country | <code>string</code> | Country |
+| postal_code | <code>string</code> | Postal/Zip code |
+| currency | <code>string</code> | 3-letter code for currency |
+
+<a name="module_stripe.BankAccountTokenParams"></a>
+
+### stripe.BankAccountTokenParams : <code>object</code>
+Parameters to create a bank account token
+
+**Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| routing_number | <code>string</code> | Routing number |
+| account_number | <code>string</code> | Account number |
+| currency | <code>string</code> | Currency code. Example: `CAD`. |
+| country | <code>string</code> | Country code. Example: `CA`. |
+| account_holder_name | <code>string</code> | Account holder name |
+| account_holder_type | <code>string</code> | Account holder type. This can be `individual` or `company`. |
+
+<br>
+<br>
+
 
 <br>
 <br>
@@ -151,5 +259,5 @@ cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 
 ## Browser support
 This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized.
- 
+
 *Thanks to [klirix](https://github.com/klirix) for submitting a [PR](https://github.com/zyramedia/cordova-plugin-stripe/pull/5) for the browser platform.*
