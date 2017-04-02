@@ -71,7 +71,7 @@ Once you have the token, you can now send it to your backend so you can charge t
 
 ---
 
-# API Reference
+## API Reference
 
 
 * [stripe](#module_stripe)
