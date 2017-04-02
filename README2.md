@@ -14,10 +14,14 @@ A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Brows
 
 * [stripe](#module_stripe)
     * [.setPublishableKey(key, [success], [error])](#module_stripe.setPublishableKey)
-    * [.createCardToken(creditCard, [success], [error])](#module_stripe.createCardToken)
+    * [.createCardToken(creditCard, success, error)](#module_stripe.createCardToken)
     * [.createBankAccountToken(bankAccount, success, error)](#module_stripe.createBankAccountToken)
     * [.validateCardNumber(cardNumber, success, error)](#module_stripe.validateCardNumber)
-    * [.CardTokenParams](#module_stripe.CardTokenParams) : <code>Object</code>
+    * [.validateExpiryDate(expMonth, expYear, success, error)](#module_stripe.validateExpiryDate)
+    * [.validateCVC(cvc, success, error)](#module_stripe.validateCVC)
+    * [.getCardType(cardNumber, success, error)](#module_stripe.getCardType)
+    * [.CreditCardTokenParams](#module_stripe.CreditCardTokenParams) : <code>Object</code>
+    * [.BankAccountTokenParams](#module_stripe.BankAccountTokenParams) : <code>object</code>
 
 
 ---
@@ -40,16 +44,16 @@ Set publishable key
 
 <a name="module_stripe.createCardToken"></a>
 
-### stripe.createCardToken(creditCard, [success], [error])
+### stripe.createCardToken(creditCard, success, error)
 Create a credit card token
 
 **Kind**: static method of <code>[stripe](#module_stripe)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| creditCard | <code>[CardTokenParams](#module_stripe.CardTokenParams)</code> | Credit card information |
-| [success] | <code>function</code> | Success callback |
-| [error] | <code>function</code> | Error callback |
+| creditCard | <code>[CreditCardTokenParams](#module_stripe.CreditCardTokenParams)</code> | Credit card information |
+| success | <code>function</code> | Success callback |
+| error | <code>function</code> | Error callback |
 
 <a name="module_stripe.createBankAccountToken"></a>
 
@@ -60,8 +64,7 @@ Create a bank account token
 
 | Param | Type | Description |
 | --- | --- | --- |
-| bankAccount | <code>Object</code> | Bank account information |
-| bankAccount.something | <code>string</code> | something |
+| bankAccount | <code>[BankAccountTokenParams](#module_stripe.BankAccountTokenParams)</code> | Bank account information |
 | success | <code>function</code> | Success callback |
 | error | <code>function</code> | Error callback |
 
@@ -78,9 +81,49 @@ Validates card number
 | success | <code>function</code> | Success callback that will be called if card number is valid |
 | error | <code>function</code> | Error callback that will be called if card number is invalid |
 
-<a name="module_stripe.CardTokenParams"></a>
+<a name="module_stripe.validateExpiryDate"></a>
 
-### stripe.CardTokenParams : <code>Object</code>
+### stripe.validateExpiryDate(expMonth, expYear, success, error)
+Validates the expiry date of a card
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| expMonth | <code>number</code> | Expiry month |
+| expYear | <code>number</code> | Expiry year |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+<a name="module_stripe.validateCVC"></a>
+
+### stripe.validateCVC(cvc, success, error)
+Validates a CVC of a card
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cvc | <code>string</code> | CVC/CVV |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+<a name="module_stripe.getCardType"></a>
+
+### stripe.getCardType(cardNumber, success, error)
+Gets a card type from a card number
+
+**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cardNumber | <code>string</code> | Credit card number |
+| success | <code>function</code> |  |
+| error | <code>function</code> |  |
+
+<a name="module_stripe.CreditCardTokenParams"></a>
+
+### stripe.CreditCardTokenParams : <code>Object</code>
 Parameters to create a credit card token
 
 **Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
@@ -95,6 +138,28 @@ Parameters to create a credit card token
 | name | <code>string</code> | Cardholder name |
 | address_line1 | <code>string</code> | Address line 1 |
 | address_line2 | <code>string</code> | Address line 2 |
+| address_city | <code>string</code> | Address line 2 |
+| address_state | <code>string</code> | State/Province |
+| address_country | <code>string</code> | Country |
+| postal_code | <code>string</code> | Postal/Zip code |
+| currency | <code>string</code> | 3-letter code for currency |
+
+<a name="module_stripe.BankAccountTokenParams"></a>
+
+### stripe.BankAccountTokenParams : <code>object</code>
+Parameters to create a bank account token
+
+**Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| routing_number | <code>string</code> | Routing number |
+| account_number | <code>string</code> | Account number |
+| currency | <code>string</code> | Currency code. Example: `CAD`. |
+| country | <code>string</code> | Country code. Example: `CA`. |
+| account_holder_name | <code>string</code> | Account holder name |
+| account_holder_type | <code>string</code> | Account holder type. This can be `individual` or `company`. |
 
 ---
 

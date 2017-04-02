@@ -7,7 +7,7 @@ var noop = function(){};
 
 /**
  * Parameters to create a credit card token
- * @typedef module:stripe.CardTokenParams
+ * @typedef module:stripe.CreditCardTokenParams
  * @type {Object}
  * @property {string} number Card number
  * @property {number} expMonth Expiry month
@@ -16,6 +16,23 @@ var noop = function(){};
  * @property {string} [name] Cardholder name
  * @property {string} [address_line1] Address line 1
  * @property {string} [address_line2] Address line 2
+ * @property {string} [address_city] Address line 2
+ * @property {string} [address_state] State/Province
+ * @property {string} [address_country] Country
+ * @property {string} [postal_code] Postal/Zip code
+ * @property {string} [currency] 3-letter code for currency
+ */
+
+/**
+ * Parameters to create a bank account token
+ * @typedef module:stripe.BankAccountTokenParams
+ * @type {object}
+ * @property {string} routing_number Routing number
+ * @property {string} account_number Account number
+ * @property {string} currency Currency code. Example: `CAD`.
+ * @property {string} country Country code. Example: `CA`.
+ * @property {string} [account_holder_name] Account holder name
+ * @property {string} [account_holder_type] Account holder type. This can be `individual` or `company`.
  */
 
 /**
@@ -37,9 +54,9 @@ module.exports = {
 
     /**
      * Create a credit card token
-     * @param creditCard {module:stripe.CardTokenParams} Credit card information
-     * @param [success] {Function} Success callback
-     * @param [error] {Function} Error callback
+     * @param creditCard {module:stripe.CreditCardTokenParams} Credit card information
+     * @param success {Function} Success callback
+     * @param error {Function} Error callback
      */
     createCardToken: function(creditCard, success, error) {
         success = success || noop;
@@ -49,10 +66,9 @@ module.exports = {
 
     /**
      * Create a bank account token
-     * @param bankAccount {Object} Bank account information
-     * @param bankAccount.something {string} something
-     * @param success {Function} Success callback
-     * @param error {Function} Error callback
+     * @param bankAccount {module:stripe.BankAccountTokenParams} Bank account information
+     * @param {Function} success Success callback
+     * @param {Function} error Error callback
      */
     createBankAccountToken: function(bankAccount, success, error) {
         success = success || noop;
@@ -63,8 +79,8 @@ module.exports = {
     /**
      * Validates card number
      * @param cardNumber {String} Credit card number
-     * @param success {Function} Success callback that will be called if card number is valid
-     * @param error {Function} Error callback that will be called if card number is invalid
+     * @param {Function} success  Success callback that will be called if card number is valid
+     * @param {Function} error  Error callback that will be called if card number is invalid
      */
     validateCardNumber: function(cardNumber, success, error) {
         success = success || noop;
@@ -72,18 +88,37 @@ module.exports = {
         exec(success, error, "CordovaStripe", "validateCardNumber", [cardNumber]);
     },
 
+    /**
+     * Validates the expiry date of a card
+     * @param {number} expMonth Expiry month
+     * @param {number} expYear Expiry year
+     * @param {Function} success
+     * @param {Function} error
+     */
     validateExpiryDate: function(expMonth, expYear, success, error) {
         success = success || noop;
         error = error || noop;
         exec(success, error, "CordovaStripe", "validateExpiryDate", [expMonth, expYear]);
     },
 
+    /**
+     * Validates a CVC of a card
+     * @param {string} cvc CVC/CVV
+     * @param {Function} success
+     * @param {Function} error
+     */
     validateCVC: function(cvc, success, error) {
         success = success || noop;
         error = error || noop;
         exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
     },
 
+    /**
+     * Gets a card type from a card number
+     * @param {string} cardNumber Credit card number
+     * @param {Function} success
+     * @param {Function} error
+     */
     getCardType: function(cardNumber, success, error) {
         success = success || noop;
         error = error || noop;
