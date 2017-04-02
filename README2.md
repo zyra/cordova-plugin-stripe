@@ -61,6 +61,7 @@ Create a bank account token
 | Param | Type | Description |
 | --- | --- | --- |
 | bankAccount | <code>Object</code> | Bank account information |
+| bankAccount.something | <code>string</code> | something |
 | success | <code>function</code> | Success callback |
 | error | <code>function</code> | Error callback |
 

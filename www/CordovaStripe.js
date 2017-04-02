@@ -50,6 +50,7 @@ module.exports = {
     /**
      * Create a bank account token
      * @param bankAccount {Object} Bank account information
+     * @param bankAccount.something {string} something
      * @param success {Function} Success callback
      * @param error {Function} Error callback
      */
