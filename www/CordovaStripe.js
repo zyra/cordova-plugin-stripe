@@ -106,6 +106,8 @@ module.exports = {
      * @param {string} cvc CVC/CVV
      * @param {Function} success
      * @param {Function} error
+     * @example
+     * cordova.plugin.stripe.validateCVC('424', function(){ console.log('isValid'); }, function() { console.log('invalid'); });
      */
     validateCVC: function(cvc, success, error) {
         success = success || noop;
@@ -119,7 +121,7 @@ module.exports = {
      * @param {Function} success
      * @param {Function} error
      * @example
-     * cordova.plugins.stripe.getCardType('4242424242424242', function(cardType){
+     * cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {
      *   console.log(cardType); // visa
      * });
      */

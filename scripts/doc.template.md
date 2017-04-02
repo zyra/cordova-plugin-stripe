@@ -88,8 +88,6 @@ Once you have the token, you can now send it to your backend so you can charge t
 
 {{/modules}}
 
----
-
 <br>
 <br>
 

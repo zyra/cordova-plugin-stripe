@@ -170,6 +170,10 @@ Validates a CVC of a card
 | success | <code>function</code> |  |
 | error | <code>function</code> |  |
 
+**Example**  
+```js
+cordova.plugin.stripe.validateCVC('424', function(){ console.log('isValid'); }, function() { console.log('invalid'); });
+```
 <a name="module_stripe.getCardType"></a>
 
 ### stripe.getCardType(cardNumber, success, error)
@@ -185,7 +189,7 @@ Gets a card type from a card number
 
 **Example**  
 ```js
-cordova.plugins.stripe.getCardType('4242424242424242', function(cardType){  console.log(cardType); // visa});
+cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {  console.log(cardType); // visa});
 ```
 <a name="module_stripe.CreditCardTokenParams"></a>
 
@@ -229,8 +233,6 @@ Parameters to create a bank account token
 
 ---
 
-
----
 
 <br>
 <br>
