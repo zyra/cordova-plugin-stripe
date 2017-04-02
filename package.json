@@ -8,7 +8,7 @@
     "plugin.xml"
   ],
   "scripts": {
-    "gen-docs": "jsdoc2md --template \"scripts/doc.template.md\" \"www/**/*.js\" --plugin \"dmd-plugin-cordova-plugin\" > README2.md",
+    "gen-docs": "jsdoc2md --template \"scripts/doc.template.md\" \"www/**/*.js\" > README2.md",
     "jshint": "jshint www && jshint src && jshint tests"
   },
   "cordova": {
