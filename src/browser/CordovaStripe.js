@@ -20,7 +20,7 @@ var stripe = {
                 if(response.error){
                     errorCallback(response.error);
                 } else {
-                    successCallback(response.id);
+                    successCallback(response);
                 }
             });
         } catch (error) {
@@ -33,7 +33,7 @@ var stripe = {
             if(response.error){
                 errorCallback(response.error);
             } else {
-                successCallback(response.id);
+                successCallback(response);
             }
         });
     },
