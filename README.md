@@ -40,8 +40,8 @@ var card = {
   currency: 'CAD' // Three-letter ISO currency code (optional)
 };
 
-function onSuccess(tokenId) {
-    console.log('Got card token!', tokenId);
+function onSuccess(token) {
+    console.log('Got card token!', token);
 }
 
 function onError(errorMessage) {
