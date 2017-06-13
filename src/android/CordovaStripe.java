@@ -85,7 +85,7 @@ public class CordovaStripe extends CordovaPlugin {
         cardObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
-            callbackContext.success(token.getId());
+            callbackContext.success(token);
           }
           public void onError(Exception error) {
             callbackContext.error(error.getMessage());
@@ -125,7 +125,7 @@ public class CordovaStripe extends CordovaPlugin {
         bankAccountObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
-            callbackContext.success(token.getId());
+            callbackContext.success(token);
           }
           public void onError(Exception error) {
             callbackContext.error(error.getMessage());
