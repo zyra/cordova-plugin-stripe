@@ -262,6 +262,7 @@ This plugin provides browser platform support. Method names and signatures match
 
 *Thanks to [klirix](https://github.com/klirix) for submitting a [PR](https://github.com/zyramedia/cordova-plugin-stripe/pull/5) for the browser platform.*
 
+
 <br><br>
 ## Contribution
 - **Having an issue**? or looking for support? [Open an issue](https://github.com/zyra/cordova-plugin-stripe/issues/new) and we will get you the help you need.
