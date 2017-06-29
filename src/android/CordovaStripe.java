@@ -185,6 +185,7 @@ public class CordovaStripe extends CordovaPlugin {
     bankObject.put('name', account.name);
     bankObject.put('routing_number', account.getRoutingNumber());
 
+    tokenObject.put('bank_account', bankObject);
     tokenObject.put('id', token.id);
     tokenObject.put('created', token.getCreated());
     tokenObject.put('type', token.type);
@@ -214,7 +215,7 @@ public class CordovaStripe extends CordovaPlugin {
     cardObject.put('last4', card.getLast4());
     cardObject.put('name', card.getName());
 
-
+    tokenObject.put('card', cardObject);
     tokenObject.put('id', token.id);
     tokenObject.put('created', token.getCreated());
     tokenObject.put('type', token.type);
