@@ -210,7 +210,6 @@ public class CordovaStripe extends CordovaPlugin {
     cardObject.put("exp_month", card.getExpMonth());
     cardObject.put("exp_year", card.getExpYear());
     cardObject.put("funding", card.getFunding());
-    cardObject.put("id", card.getId());
     cardObject.put("last4", card.getLast4());
     cardObject.put("name", card.getName());
 
