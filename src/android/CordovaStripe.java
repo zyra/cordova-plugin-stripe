@@ -182,13 +182,12 @@ public class CordovaStripe extends CordovaPlugin {
     bankObject.put("country", account.getCountryCode());
     bankObject.put("currency", account.getCurrency());
     bankObject.put("last4", account.getLast4());
-    bankObject.put("name", account.name);
     bankObject.put("routing_number", account.getRoutingNumber());
 
     tokenObject.put("bank_account", bankObject);
-    tokenObject.put("id", token.id);
+    tokenObject.put("id", token.getId());
     tokenObject.put("created", token.getCreated());
-    tokenObject.put("type", token.type);
+    tokenObject.put("type", token.getType());
 
     return tokenObject;
   }
@@ -206,7 +205,7 @@ public class CordovaStripe extends CordovaPlugin {
     cardObject.put("address_line2", card.getAddressLine2());
     cardObject.put("address_zip", card.getAddressZip());
     cardObject.put("brand", card.getBrand());
-    cardObject.put("country", card.getRoutingNumber());
+    cardObject.put("country", card.getAddressCountry());
     cardObject.put("cvc", card.getCVC());
     cardObject.put("exp_month", card.getExpMonth());
     cardObject.put("exp_year", card.getExpYear());
@@ -216,9 +215,9 @@ public class CordovaStripe extends CordovaPlugin {
     cardObject.put("name", card.getName());
 
     tokenObject.put("card", cardObject);
-    tokenObject.put("id", token.id);
+    tokenObject.put("id", token.getId());
     tokenObject.put("created", token.getCreated());
-    tokenObject.put("type", token.type);
+    tokenObject.put("type", token.getType());
 
     return tokenObject;
   }
