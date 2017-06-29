@@ -34,7 +34,7 @@
         if (error != nil) {
             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: error.localizedDescription];
         } else {
-            result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK STPToken:token];
+            result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:token.allResponseFields];
         }
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     };
