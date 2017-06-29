@@ -171,54 +171,65 @@ public class CordovaStripe extends CordovaPlugin {
   }
 
   private JSONObject getBankObjectFromToken(final Token token) {
-    JSONObject tokenObject = new JSONObject();
-    JSONObject bankObject = new JSONObject();
+    try {
+      JSONObject tokenObject = new JSONObject();
+      JSONObject bankObject = new JSONObject();
 
-    BankAccount account = token.getBankAccount();
+      BankAccount account = token.getBankAccount();
 
-    bankObject.put("account_holder_name", account.getAccountHolderName());
-    bankObject.put("account_holder_type", account.getAccountHolderType());
-    bankObject.put("bank_name", account.getBankName());
-    bankObject.put("country", account.getCountryCode());
-    bankObject.put("currency", account.getCurrency());
-    bankObject.put("last4", account.getLast4());
-    bankObject.put("routing_number", account.getRoutingNumber());
+      bankObject.put("account_holder_name", account.getAccountHolderName());
+      bankObject.put("account_holder_type", account.getAccountHolderType());
+      bankObject.put("bank_name", account.getBankName());
+      bankObject.put("country", account.getCountryCode());
+      bankObject.put("currency", account.getCurrency());
+      bankObject.put("last4", account.getLast4());
+      bankObject.put("routing_number", account.getRoutingNumber());
 
-    tokenObject.put("bank_account", bankObject);
-    tokenObject.put("id", token.getId());
-    tokenObject.put("created", token.getCreated());
-    tokenObject.put("type", token.getType());
+      tokenObject.put("bank_account", bankObject);
+      tokenObject.put("id", token.getId());
+      tokenObject.put("created", token.getCreated());
+      tokenObject.put("type", token.getType());
 
-    return tokenObject;
+      return tokenObject;
+    } 
+    catch (JSONException e) {
+      return null;
+    }
   }
 
   private JSONObject getCardObjectFromToken(final Token token) {
-    JSONObject tokenObject = new JSONObject();
-    JSONObject cardObject = new JSONObject();
+    try {
+      JSONObject tokenObject = new JSONObject();
+      JSONObject cardObject = new JSONObject();
 
-    Card card = token.getCard();
+      Card card = token.getCard();
 
-    cardObject.put("address_city", card.getAddressCity());
-    cardObject.put("address_country", card.getAddressCountry());
-    cardObject.put("address_state", card.getAddressState());
-    cardObject.put("address_line1", card.getAddressLine1());
-    cardObject.put("address_line2", card.getAddressLine2());
-    cardObject.put("address_zip", card.getAddressZip());
-    cardObject.put("brand", card.getBrand());
-    cardObject.put("country", card.getAddressCountry());
-    cardObject.put("cvc", card.getCVC());
-    cardObject.put("exp_month", card.getExpMonth());
-    cardObject.put("exp_year", card.getExpYear());
-    cardObject.put("funding", card.getFunding());
-    cardObject.put("last4", card.getLast4());
-    cardObject.put("name", card.getName());
+      cardObject.put("address_city", card.getAddressCity());
+      cardObject.put("address_country", card.getAddressCountry());
+      cardObject.put("address_state", card.getAddressState());
+      cardObject.put("address_line1", card.getAddressLine1());
+      cardObject.put("address_line2", card.getAddressLine2());
+      cardObject.put("address_zip", card.getAddressZip());
+      cardObject.put("brand", card.getBrand());
+      cardObject.put("country", card.getAddressCountry());
+      cardObject.put("cvc", card.getCVC());
+      cardObject.put("exp_month", card.getExpMonth());
+      cardObject.put("exp_year", card.getExpYear());
+      cardObject.put("funding", card.getFunding());
+      cardObject.put("last4", card.getLast4());
+      cardObject.put("name", card.getName());
 
-    tokenObject.put("card", cardObject);
-    tokenObject.put("id", token.getId());
-    tokenObject.put("created", token.getCreated());
-    tokenObject.put("type", token.getType());
+      tokenObject.put("card", cardObject);
+      tokenObject.put("id", token.getId());
+      tokenObject.put("created", token.getCreated());
+      tokenObject.put("type", token.getType());
 
-    return tokenObject;
+      return tokenObject;
+
+    } 
+    catch (JSONException e) {
+      return null;
+    }
   }
 
 }
