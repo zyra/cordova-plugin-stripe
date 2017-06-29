@@ -85,7 +85,7 @@ public class CordovaStripe extends CordovaPlugin {
         cardObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
-            callbackContext.success(token.getId());
+            callbackContext.success(getCardObjectFromToken(token));
           }
           public void onError(Exception error) {
             callbackContext.error(error.getMessage());
@@ -125,7 +125,7 @@ public class CordovaStripe extends CordovaPlugin {
         bankAccountObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
-            callbackContext.success(token.getId());
+            callbackContext.success(getBankObjectFromToken(token));
           }
           public void onError(Exception error) {
             callbackContext.error(error.getMessage());
@@ -168,6 +168,59 @@ public class CordovaStripe extends CordovaPlugin {
   private void getCardType(final String cardNumber, final CallbackContext callbackContext) {
     Card card = new Card(cardNumber, null, null, null);
     callbackContext.success(card.getBrand());
+  }
+
+  private JSONObject getBankObjectFromToken(final Token token) {
+    JSONObject tokenObject = new JSONObject();
+    JSONObject bankObject = new JSONObject();
+
+    BankAccount account = token.getBankAccount();
+
+    bankObject.put('account_holder_name', account.getAccountHolderName());
+    bankObject.put('account_holder_type', account.getAccountHolderType());
+    bankObject.put('bank_name', account.getBankName());
+    bankObject.put('country', account.getCountryCode());
+    bankObject.put('currency', account.getCurrency());
+    bankObject.put('last4', account.getLast4());
+    bankObject.put('name', account.name);
+    bankObject.put('routing_number', account.getRoutingNumber());
+
+    tokenObject.put('bank_account', bankObject);
+    tokenObject.put('id', token.id);
+    tokenObject.put('created', token.getCreated());
+    tokenObject.put('type', token.type);
+
+    return tokenObject;
+  }
+
+  private JSONObject getCardObjectFromToken(final Token token) {
+    JSONObject tokenObject = new JSONObject();
+    JSONObject cardObject = new JSONObject();
+
+    Card card = token.getCard();
+
+    cardObject.put('address_city', card.getAddressCity());
+    cardObject.put('address_country', card.getAddressCountry());
+    cardObject.put('address_state', card.getAddressState());
+    cardObject.put('address_line1', card.getAddressLine1());
+    cardObject.put('address_line2', card.getAddressLine2());
+    cardObject.put('address_zip', card.getAddressZip());
+    cardObject.put('brand', card.getBrand());
+    cardObject.put('country', card.getRoutingNumber());
+    cardObject.put('cvc', card.getCVC());
+    cardObject.put('exp_month', card.getExpMonth());
+    cardObject.put('exp_year', card.getExpYear());
+    cardObject.put('funding', card.getFunding());
+    cardObject.put('id', card.getId());
+    cardObject.put('last4', card.getLast4());
+    cardObject.put('name', card.getName());
+
+    tokenObject.put('card', cardObject);
+    tokenObject.put('id', token.id);
+    tokenObject.put('created', token.getCreated());
+    tokenObject.put('type', token.type);
+
+    return tokenObject;
   }
 
 }
