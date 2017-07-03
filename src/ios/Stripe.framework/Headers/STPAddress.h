@@ -5,16 +5,21 @@
 //  Created by Ben Guo on 4/13/16.
 //  Copyright © 2016 Stripe, Inc. All rights reserved.
 //
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-#import <AddressBook/AddressBook.h>
-#pragma clang diagnostic pop
 
 #define FAUXPAS_IGNORED_IN_METHOD(...)
 #define FAUXPAS_IGNORED_ON_LINE(...)
 
 #import <Foundation/Foundation.h>
 #import <PassKit/PassKit.h>
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+#import <AddressBook/AddressBook.h>
+#pragma clang diagnostic pop
+
+#import "STPAPIResponseDecodable.h"
+
+@class CNContact;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -42,7 +47,7 @@ typedef NS_ENUM(NSUInteger, STPBillingAddressFields) {
 /**
  *  STPAddress Contains an address as represented by the Stripe API.
  */
-@interface STPAddress : NSObject
+@interface STPAddress : NSObject<STPAPIResponseDecodable>
 
 /**
  *  The user's full name (e.g. "Jane Doe")
@@ -89,18 +94,35 @@ typedef NS_ENUM(NSUInteger, STPBillingAddressFields) {
  */
 @property (nonatomic, copy, nullable) NSString *email;
 
+/**
+ *  When creating a charge on your backend, you can attach shipping information
+ *  to prevent fraud on a physical good. You can use this method to turn your user's
+ *  shipping address and selected shipping method into a hash suitable for attaching 
+ *  to a charge. You should pass this to your backend, and use it as the `shipping`
+ *  parameter when creating a charge.
+ *  @see https://stripe.com/docs/api#create_charge-shipping
+ *
+ *  @param address  The user's shipping address. If nil, this method will return nil.
+ *  @param method   The user's selected shipping method. May be nil.
+ */
++ (nullable NSDictionary *)shippingInfoForChargeWithAddress:(nullable STPAddress *)address
+                                             shippingMethod:(nullable PKShippingMethod *)method;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated"
 - (instancetype)initWithABRecord:(ABRecordRef)record;
 - (ABRecordRef)ABRecordValue;
 #pragma clang diagnostic pop
-- (PKContact *)PKContactValue NS_AVAILABLE_IOS(9.0);
+
+- (instancetype)initWithPKContact:(PKContact *)contact NS_AVAILABLE_IOS(9_0); FAUXPAS_IGNORED_ON_LINE(APIAvailability);
+- (PKContact *)PKContactValue NS_AVAILABLE_IOS(9_0); FAUXPAS_IGNORED_ON_LINE(APIAvailability);
+
+- (instancetype)initWithCNContact:(CNContact *)contact NS_AVAILABLE_IOS(9_0); FAUXPAS_IGNORED_ON_LINE(APIAvailability);
 
 - (BOOL)containsRequiredFields:(STPBillingAddressFields)requiredFields;
 - (BOOL)containsRequiredShippingAddressFields:(PKAddressField)requiredFields;
 
-+ (PKAddressField)applePayAddressFieldsFromBillingAddressFields:(STPBillingAddressFields)billingAddressFields; FAUXPAS_IGNORED_ON_LINE(APIAvailability);
++ (PKAddressField)applePayAddressFieldsFromBillingAddressFields:(STPBillingAddressFields)billingAddressFields;
 
 @end
 

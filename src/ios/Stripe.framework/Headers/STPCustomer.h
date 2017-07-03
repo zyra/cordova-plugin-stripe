@@ -7,14 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STPSource.h"
+#import "STPAPIResponseDecodable.h"
+#import "STPSourceProtocol.h"
+
+@class STPAddress;
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- *  An `STPCustomer` represents a deserialized Customer object from the Stripe API. You can use `STPCustomerDeserializer` to convert a JSON response from the Stripe API into an `STPCustomer`.
+ *  An `STPCustomer` represents a deserialized Customer object from the Stripe API.
+ *  You shouldn't need to instantiate an `STPCustomer` – you should instead use
+ *  `STPCustomerContext` to manage retrieving and updating a customer.
  */
-@interface STPCustomer : NSObject
+@interface STPCustomer : NSObject <STPAPIResponseDecodable>
 
 /**
  *  Initialize a customer object with the provided values.
@@ -24,10 +29,13 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param sources       All of the customer's payment sources. This might be an empty array.
  *
  *  @return an instance of STPCustomer
+ *
+ *  @deprecated Use `STPCustomerContext` to manage retrieving and updating a 
+ *  Customer. You will no longer need to initialize an `STPCustomer`.
  */
 + (instancetype)customerWithStripeID:(NSString *)stripeID
-                       defaultSource:(nullable id<STPSource>)defaultSource
-                             sources:(NSArray<id<STPSource>> *)sources;
+                       defaultSource:(nullable id<STPSourceProtocol>)defaultSource
+                             sources:(NSArray<id<STPSourceProtocol>> *)sources __attribute__((deprecated));
 
 /**
  *  The Stripe ID of the customer, e.g. `cus_1234`
@@ -37,12 +45,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The default source used to charge the customer.
  */
-@property(nonatomic, readonly, nullable) id<STPSource> defaultSource;
+@property(nonatomic, readonly, nullable) id<STPSourceProtocol> defaultSource;
 
 /**
  *  The available payment sources the customer has (this may be an empty array).
  */
-@property(nonatomic, readonly) NSArray<id<STPSource>> *sources;
+@property(nonatomic, readonly) NSArray<id<STPSourceProtocol>> *sources;
+
+/**
+ *  The customer's shipping address.
+ */
+@property(nonatomic, readonly) STPAddress *shippingAddress;
 
 @end
 
@@ -58,18 +71,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param urlResponse The URL response obtained from the `NSURLSessionTask`
  *  @param error       Any error that occurred from the URL session task (if this is non-nil, the `error` property will be set to this value after initialization).
  *
+ *  @deprecated Use `STPCustomerContext` to manage retrieving and updating a
+ *  Customer. You will no longer need to deserialize an `STPCustomer`.
  */
 - (instancetype)initWithData:(nullable NSData *)data
                  urlResponse:(nullable NSURLResponse *)urlResponse
-                       error:(nullable NSError *)error;
+                       error:(nullable NSError *)error __attribute__((deprecated));
 
 /**
  *  Initializes a customer deserializer with a JSON dictionary. This JSON should be in the exact same format as what the Stripe API returns. If it's successfully parsed, the `customer` parameter will be present after initialization; otherwise `error` will be present.
  *
  *  @param json a JSON dictionary.
  *
+ *  @deprecated Use `STPCustomerContext` to manage retrieving and updating a
+ *  Customer. You will no longer need to deserialize an `STPCustomer`.
  */
-- (instancetype)initWithJSONResponse:(id)json;
+- (instancetype)initWithJSONResponse:(id)json __attribute__((deprecated));
 
 /**
  *  If a customer was successfully parsed from the response, it will be set here. Otherwise, this value wil be nil (and the `error` property will explain what went wrong).
