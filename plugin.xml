@@ -14,8 +14,7 @@
         </config-file>
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
-
-        <framework src="src/android/CordovaStripe.gradle" custom="true" type="gradleReference" />
+	<framework src="com.stripe:stripe-android:4.1.2" />
 
     </platform>
 
