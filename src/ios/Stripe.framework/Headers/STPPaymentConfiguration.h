@@ -46,9 +46,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic)STPBillingAddressFields requiredBillingAddressFields;
 
 /**
- *  The billing address fields the user must fill out when prompted for their shipping info.
+ *  The shipping address fields the user must fill out when prompted for their shipping info.
  */
 @property(nonatomic)PKAddressField requiredShippingAddressFields;
+
+/**
+ *  Whether the user should be prompted to verify prefilled shipping information.
+ *  The default value is YES.
+ */
+@property(nonatomic)BOOL verifyPrefilledShippingAddress;
 
 /**
  *  The type of shipping for this purchase. This property sets the labels displayed when the user is prompted for shipping info, and whether they should also be asked to select a shipping method. The default value is STPShippingTypeShipping.
@@ -64,12 +70,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  The Apple Merchant Identifier to use during Apple Pay transactions. To create one of these, see our guide at https://stripe.com/docs/mobile/apple-pay . You must set this to a valid identifier in order to automatically enable Apple Pay.
  */
 @property(nonatomic, nullable, copy)NSString *appleMerchantIdentifier;
-
-/**
- *  When entering their payment information, users who have a saved card with Stripe will be prompted to autofill it by entering an SMS code. Set this property to `YES` to disable this feature. The user won't receive an SMS code even if they have their payment information stored with Stripe, and won't be prompted to save it if they don't.
- */
-@property(nonatomic)BOOL smsAutofillDisabled;
-
 @end
 
 NS_ASSUME_NONNULL_END

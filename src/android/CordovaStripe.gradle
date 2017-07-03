@@ -1,3 +1,0 @@
-dependencies {
-    compile 'com.stripe:stripe-android:3.0.1'
-}

@@ -65,6 +65,7 @@
 /**
  *  STPPaymentCardTextField is a text field with similar properties to UITextField, but specialized for collecting credit/debit card information. It manages multiple UITextFields under the hood to collect this information. It's designed to fit on a single line, and from a design perspective can be used anywhere a UITextField would be appropriate.
  */
+IB_DESIGNABLE
 @interface STPPaymentCardTextField : UIControl <UIKeyInput>
 
 /**
@@ -95,17 +96,17 @@
 /**
  *  The placeholder for the card number field. Default is @"1234567812345678". If this is set to something that resembles a card number, it will automatically format it as such (in other words, you don't need to add spaces to this string).
  */
-@property(nonatomic, copy, nullable) NSString *numberPlaceholder;
+@property(nonatomic, copy, nullable) IBInspectable NSString *numberPlaceholder;
 
 /**
  *  The placeholder for the expiration field. Defaults to @"MM/YY".
  */
-@property(nonatomic, copy, nullable) NSString *expirationPlaceholder;
+@property(nonatomic, copy, nullable) IBInspectable NSString *expirationPlaceholder;
 
 /**
  *  The placeholder for the cvc field. Defaults to @"CVC".
  */
-@property(nonatomic, copy, nullable) NSString *cvcPlaceholder;
+@property(nonatomic, copy, nullable) IBInspectable NSString *cvcPlaceholder;
 
 /**
  *  The cursor color for the field. This is a proxy for the view's tintColor property, exposed for clarity only (in other words, calling setCursorColor is identical to calling setTintColor).
@@ -178,6 +179,14 @@
  *  @return The brand image used for a card brand.
  */
 + (nullable UIImage *)brandImageForCardBrand:(STPCardBrand)cardBrand;
+
+/**
+ *  Returns the error image used for a card brand.
+ *  Override this method in a subclass if you would like to provide custom images.
+ *  @param cardBrand The brand of card entered.
+ *  @return The error image used for a card brand.
+ */
++ (nullable UIImage *)errorImageForCardBrand:(STPCardBrand)cardBrand;
 
 /**
  *  Returns the rectangle in which the receiver draws its brand image.
@@ -264,35 +273,4 @@
  */
 @property(nonatomic, strong, readwrite, nonnull) STPCardParams *cardParams;
 
-@property(nonatomic, strong, readwrite, nullable) STPCardParams *card __attribute__((deprecated("This has been renamed to cardParams; use that instead.")));
-
-- (void)commonInit;
-
 @end
-
-#pragma mark - PaymentKit compatibility
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-
-__attribute__((deprecated("This class is provided only for backwards-compatibility with PaymentKit. You shouldn't use it - use STPCard instead.")))
-@interface PTKCard : STPCard
-@end
-
-@class PTKView;
-
-__attribute__((deprecated("This protocol is provided only for backwards-compatibility with PaymentKit. You shouldn't use it - use STPPaymentCardTextFieldDelegate instead.")))
-@protocol PTKViewDelegate <STPPaymentCardTextFieldDelegate>
-
-@optional
-- (void)paymentView:(nonnull PTKView *)paymentView withCard:(nonnull PTKCard *)card isValid:(BOOL)valid;
-
-@end
-
-__attribute__((deprecated("This class is provided only for backwards-compatibility with PaymentKit. You shouldn't use it - use STPPaymentCardTextField instead.")))
-@interface PTKView : STPPaymentCardTextField
-@property(nonatomic, weak, nullable)id<PTKViewDelegate>delegate;
-@property(nonatomic, strong, readwrite, nonnull) PTKCard *card;
-@end
-
-#pragma clang diagnostic pop

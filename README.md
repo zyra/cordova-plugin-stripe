@@ -96,7 +96,7 @@ Once you have the token, you can now send it to your backend so you can charge t
 ### stripe.setPublishableKey(key, [success], [error])
 Set publishable key
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -109,11 +109,11 @@ Set publishable key
 ### stripe.createCardToken(creditCard, success, error)
 Create a credit card token
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| creditCard | <code>[CreditCardTokenParams](#module_stripe.CreditCardTokenParams)</code> | Credit card information |
+| creditCard | [<code>CreditCardTokenParams</code>](#module_stripe.CreditCardTokenParams) | Credit card information |
 | success | <code>function</code> | Success callback |
 | error | <code>function</code> | Error callback |
 
@@ -122,11 +122,11 @@ Create a credit card token
 ### stripe.createBankAccountToken(bankAccount, success, error)
 Create a bank account token
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| bankAccount | <code>[BankAccountTokenParams](#module_stripe.BankAccountTokenParams)</code> | Bank account information |
+| bankAccount | [<code>BankAccountTokenParams</code>](#module_stripe.BankAccountTokenParams) | Bank account information |
 | success | <code>function</code> | Success callback |
 | error | <code>function</code> | Error callback |
 
@@ -135,7 +135,7 @@ Create a bank account token
 ### stripe.validateCardNumber(cardNumber, success, error)
 Validates card number
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -148,7 +148,7 @@ Validates card number
 ### stripe.validateExpiryDate(expMonth, expYear, success, error)
 Validates the expiry date of a card
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -162,7 +162,7 @@ Validates the expiry date of a card
 ### stripe.validateCVC(cvc, success, error)
 Validates a CVC of a card
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -187,7 +187,7 @@ cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
 ### stripe.getCardType(cardNumber, success, error)
 Gets a card type from a card number
 
-**Kind**: static method of <code>[stripe](#module_stripe)</code>  
+**Kind**: static method of [<code>stripe</code>](#module_stripe)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -206,7 +206,7 @@ cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {
 ### stripe.CreditCardTokenParams : <code>Object</code>
 Parameters to create a credit card token
 
-**Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
+**Kind**: static typedef of [<code>stripe</code>](#module_stripe)  
 **Properties**
 
 | Name | Type | Description |
@@ -229,7 +229,7 @@ Parameters to create a credit card token
 ### stripe.BankAccountTokenParams : <code>object</code>
 Parameters to create a bank account token
 
-**Kind**: static typedef of <code>[stripe](#module_stripe)</code>  
+**Kind**: static typedef of [<code>stripe</code>](#module_stripe)  
 **Properties**
 
 | Name | Type | Description |
@@ -261,6 +261,7 @@ cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
 This plugin provides browser platform support. Method names and signatures match the [API above](#api). The plugin will automatically inject Stripe.js script into the web page when initialized.
 
 *Thanks to [klirix](https://github.com/klirix) for submitting a [PR](https://github.com/zyramedia/cordova-plugin-stripe/pull/5) for the browser platform.*
+
 
 <br><br>
 ## Contribution
