@@ -34,7 +34,7 @@
         if (error != nil) {
             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: error.localizedDescription];
         } else {
-            result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK STPToken:token];
+            result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:token.allResponseFields];
         }
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     };
@@ -55,22 +55,22 @@
         
         STPCardParams* cardParams = [[STPCardParams alloc] init];
         
+        STPAddress* address = [[STPAddress alloc] init];
+        address.line1 = cardInfo[@"address_line1"];
+        address.line2 = cardInfo[@"address_line2"];
+        address.city = cardInfo[@"address_city"];
+        address.state = cardInfo[@"address_state"];
+        address.country = cardInfo[@"address_country"];
+        address.postalCode = cardInfo[@"postalCode"];
+        
+        cardParams.address = address;
+        
         cardParams.number = cardInfo[@"number"];
         cardParams.expMonth = [cardInfo[@"expMonth"] intValue];
         cardParams.expYear = [cardInfo[@"expYear"] intValue];
         cardParams.cvc = cardInfo[@"cvc"];
         cardParams.name = cardInfo[@"name"];
         cardParams.currency = cardInfo[@"currency"];
-        
-        STPAddress* address = [[STPAddress alloc] init];
-        address.line1 = cardInfo[@"address_line1"];
-        address.line2 = cardInfo[@"address_line2"];
-        address.city = cardInfo[@"address_city"];
-        address.state = cardInfo[@"address_state"];
-        address.postalCode = cardInfo[@"postalCode"];
-        address.country = cardInfo[@"address_country"];
-        
-        cardParams.address = address;
         
         [self.client createTokenWithCard:cardParams completion:[self handleTokenCallback:command]];
         
