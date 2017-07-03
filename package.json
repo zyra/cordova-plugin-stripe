@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-stripe",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Cordova plugin that lets you use Stripe's Native SDKs for Android and iOS",
   "files": [
     "src",
