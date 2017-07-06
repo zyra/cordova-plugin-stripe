@@ -19,11 +19,11 @@ import com.stripe.android.util.CardUtils;
 
 public class CordovaStripe extends CordovaPlugin {
 
-  private Stripe stripeObject;
+  private Stripe stripeInstance;
 
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
-    stripeObject = new Stripe(webView.getContext());
+    stripeInstance = new Stripe(webView.getContext());
   }
 
   @Override
@@ -54,9 +54,9 @@ public class CordovaStripe extends CordovaPlugin {
   private void setPublishableKey(final String key, final CallbackContext callbackContext) {
 
     try {
-      stripeObject.setDefaultPublishableKey(key);
+      stripeInstance.setDefaultPublishableKey(key);
       callbackContext.success();
-    } catch (AuthenticationException e) {
+    } catch (Exception e) {
       callbackContext.error(e.getMessage());
     }
 
@@ -81,7 +81,7 @@ public class CordovaStripe extends CordovaPlugin {
         creditCard.has("currency") ? creditCard.getString("currency") : null
       );
 
-      stripeObject.createToken(
+      stripeInstance.createToken(
         cardObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
@@ -121,7 +121,7 @@ public class CordovaStripe extends CordovaPlugin {
         bankAccountObject.setAccountHolderType(BankAccount.TYPE_COMPANY);
       }
 
-      stripeObject.createBankAccountToken(
+      stripeInstance.createBankAccountToken(
         bankAccountObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
