@@ -14,7 +14,6 @@ import com.stripe.android.Stripe;
 import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.android.exception.AuthenticationException;
 import com.stripe.android.util.CardUtils;
 
 public class CordovaStripe extends CordovaPlugin {
