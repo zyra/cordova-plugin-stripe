@@ -10,14 +10,17 @@
     
     NSString* publishableKey = [[command arguments] objectAtIndex:0];
     [[STPPaymentConfiguration sharedConfiguration] setPublishableKey:publishableKey];
-    CDVPluginResult* result = [CDVPluginResult
-                               resultWithStatus: CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     
     if (self.client == nil) {
         // init client if doesn't exist
         client = [[STPAPIClient alloc] init];
+    } else {
+        [self.client setPublishableKey:publishableKey];
     }
+    
+    CDVPluginResult* result = [CDVPluginResult
+                               resultWithStatus: CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     
 }
 
