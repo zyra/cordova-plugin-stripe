@@ -56,7 +56,7 @@ public class CordovaStripe extends CordovaPlugin {
       stripeInstance.setDefaultPublishableKey(key);
       callbackContext.success();
     } catch (Exception e) {
-      callbackContext.error(e.getMessage());
+      callbackContext.error(e.getLocalizedMessage());
     }
 
   }
@@ -87,13 +87,13 @@ public class CordovaStripe extends CordovaPlugin {
             callbackContext.success(getCardObjectFromToken(token));
           }
           public void onError(Exception error) {
-            callbackContext.error(error.getMessage());
+            callbackContext.error(error.getLocalizedMessage());
           }
         }
       );
 
     } catch (JSONException e) {
-      callbackContext.error(e.getMessage());
+      callbackContext.error(e.getLocalizedMessage());
     }
 
   }
@@ -127,13 +127,13 @@ public class CordovaStripe extends CordovaPlugin {
             callbackContext.success(getBankObjectFromToken(token));
           }
           public void onError(Exception error) {
-            callbackContext.error(error.getMessage());
+            callbackContext.error(error.getLocalizedMessage());
           }
         }
       );
 
     } catch (JSONException e) {
-      callbackContext.error(e.getMessage());
+      callbackContext.error(e.getLocalizedMessage());
     }
 
   }
