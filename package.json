@@ -38,6 +38,10 @@
     "url": "https://github.com/ihadeed/cordova-plugin-stripe/issues"
   },
   "homepage": "https://github.com/ihadeed/cordova-plugin-stripe#readme",
+  "types": "./typings/CordovaStripe.d.ts",
+  "dependencies": {
+    "@types/cordova": "~0.0.34"
+  },
   "devDependencies": {
     "dmd-plugin-cordova-plugin": "^0.1.4",
     "jsdoc-to-markdown": "^3.0.0",
