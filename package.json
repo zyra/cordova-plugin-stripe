@@ -5,7 +5,8 @@
   "files": [
     "src",
     "www",
-    "plugin.xml"
+    "plugin.xml",
+    "typings/CordovaStripe.d.ts"
   ],
   "scripts": {
     "docs": "jsdoc2md --template \"scripts/doc.template.md\" \"www/**/*.js\" > README.md",
