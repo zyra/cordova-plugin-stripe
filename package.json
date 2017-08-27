@@ -39,7 +39,7 @@
     "url": "https://github.com/ihadeed/cordova-plugin-stripe/issues"
   },
   "homepage": "https://github.com/ihadeed/cordova-plugin-stripe#readme",
-  "types": "./typings/CordovaStripe.d.ts",
+  "typings": "./typings/CordovaStripe.d.ts",
   "dependencies": {
     "@types/cordova": "~0.0.34"
   },
