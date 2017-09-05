@@ -262,6 +262,8 @@ This plugin provides browser platform support. Method names and signatures match
 
 *Thanks to [klirix](https://github.com/klirix) for submitting a [PR](https://github.com/zyramedia/cordova-plugin-stripe/pull/5) for the browser platform.*
 
+*Note: This will only work when testing in browser using `cordova run browser`. Otherwise, the cordova object will not be available. In other words, just running `ionic serve` will not enable browser support.*
+
 
 <br><br>
 ## Contribution
