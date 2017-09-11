@@ -15,6 +15,7 @@ var stripe = {
     },
 
     createCardToken: function(successCallback, errorCallback, args) {
+        mapNativeToJS(args[0])
         try {
             Stripe.card.createToken(args[0], function(status, response){
                 if(response.error){
@@ -69,5 +70,22 @@ var stripe = {
 
 
 };
+
+function mapNativeToJS (arg) {
+    /**
+     * Add any other API discrepancies between Native SDK and StripJS
+     * here
+     */
+
+    /**
+     * In the Native SDK 'postal_code' is the key used to represent zip code.
+     * In StripeJS however, 'address_zip' is the key used. Map 'postal_code'
+     * to 'address_zip' here to avoid 400 (Bad Request) from Stripe's API
+     */
+    if (arg.postal_code) {
+        arg.address_zip = arg.postal_code
+        delete arg.postal_code
+    }
+}
 
 require('cordova/exec/proxy').add('CordovaStripe', stripe);
