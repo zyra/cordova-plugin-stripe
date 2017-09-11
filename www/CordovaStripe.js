@@ -40,103 +40,103 @@ var noop = function(){};
  */
 module.exports = {
 
-    /**
-     * Set publishable key
-     * @param key {string} Publishable key
-     * @param [success] {Function} Success callback
-     * @param [error] {Function} Error callback
-     */
-    setPublishableKey: function(key, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "setPublishableKey", [key]);
-    },
+  /**
+   * Set publishable key
+   * @param key {string} Publishable key
+   * @param [success] {Function} Success callback
+   * @param [error] {Function} Error callback
+   */
+  setPublishableKey: function(key, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "setPublishableKey", [key]);
+  },
 
-    /**
-     * Create a credit card token
-     * @param creditCard {module:stripe.CreditCardTokenParams} Credit card information
-     * @param success {Function} Success callback
-     * @param error {Function} Error callback
-     */
-    createCardToken: function(creditCard, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "createCardToken", [creditCard]);
-    },
+  /**
+   * Create a credit card token
+   * @param creditCard {module:stripe.CreditCardTokenParams} Credit card information
+   * @param success {Function} Success callback
+   * @param error {Function} Error callback
+   */
+  createCardToken: function(creditCard, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "createCardToken", [creditCard]);
+  },
 
-    /**
-     * Create a bank account token
-     * @param bankAccount {module:stripe.BankAccountTokenParams} Bank account information
-     * @param {Function} success Success callback
-     * @param {Function} error Error callback
-     */
-    createBankAccountToken: function(bankAccount, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "createBankAccountToken", [bankAccount]);
-    },
+  /**
+   * Create a bank account token
+   * @param bankAccount {module:stripe.BankAccountTokenParams} Bank account information
+   * @param {Function} success Success callback
+   * @param {Function} error Error callback
+   */
+  createBankAccountToken: function(bankAccount, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "createBankAccountToken", [bankAccount]);
+  },
 
-    /**
-     * Validates card number
-     * @param cardNumber {String} Credit card number
-     * @param {Function} success  Success callback that will be called if card number is valid
-     * @param {Function} error  Error callback that will be called if card number is invalid
-     */
-    validateCardNumber: function(cardNumber, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "validateCardNumber", [cardNumber]);
-    },
+  /**
+   * Validates card number
+   * @param cardNumber {String} Credit card number
+   * @param {Function} success  Success callback that will be called if card number is valid
+   * @param {Function} error  Error callback that will be called if card number is invalid
+   */
+  validateCardNumber: function(cardNumber, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "validateCardNumber", [cardNumber]);
+  },
 
-    /**
-     * Validates the expiry date of a card
-     * @param {number} expMonth Expiry month
-     * @param {number} expYear Expiry year
-     * @param {Function} success
-     * @param {Function} error
-     */
-    validateExpiryDate: function(expMonth, expYear, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "validateExpiryDate", [expMonth, expYear]);
-    },
+  /**
+   * Validates the expiry date of a card
+   * @param {number} expMonth Expiry month
+   * @param {number} expYear Expiry year
+   * @param {Function} success
+   * @param {Function} error
+   */
+  validateExpiryDate: function(expMonth, expYear, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "validateExpiryDate", [expMonth, expYear]);
+  },
 
-    /**
-     * Validates a CVC of a card
-     * @param {string} cvc CVC/CVV
-     * @param {Function} success
-     * @param {Function} error
-     * @example
-     * function onSuccess() {
+  /**
+   * Validates a CVC of a card
+   * @param {string} cvc CVC/CVV
+   * @param {Function} success
+   * @param {Function} error
+   * @example
+   * function onSuccess() {
      *   console.log('isValid');
      * }
-     *
-     * function onError() {
+   *
+   * function onError() {
      *   console.log('invalid');
      * }
-     *
-     * cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
-     */
-    validateCVC: function(cvc, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
-    },
+   *
+   * cordova.plugin.stripe.validateCVC('424', onSuccess, onError);
+   */
+  validateCVC: function(cvc, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
+  },
 
-    /**
-     * Gets a card type from a card number
-     * @param {string} cardNumber Credit card number
-     * @param {Function} success
-     * @param {Function} error
-     * @example
-     * cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {
+  /**
+   * Gets a card type from a card number
+   * @param {string} cardNumber Credit card number
+   * @param {Function} success
+   * @param {Function} error
+   * @example
+   * cordova.plugins.stripe.getCardType('4242424242424242', function(cardType) {
      *   console.log(cardType); // visa
      * });
-     */
-    getCardType: function(cardNumber, success, error) {
-        success = success || noop;
-        error = error || noop;
-        exec(success, error, "CordovaStripe", "getCardType", [cardNumber]);
-    }
+   */
+  getCardType: function(cardNumber, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, "CordovaStripe", "getCardType", [cardNumber]);
+  }
 
 };
