@@ -1,37 +1,42 @@
-
 interface Window {
-    plugin: any;
+  cordova: Cordova;
+}
+
+interface Cordova {
+  plugins: CordovaPlugins;
 }
 
 interface CordovaPlugins {
-    stripe: ICordovaStripe;
+  stripe: CordovaStripe.Plugin;
 }
 
-interface ICordovaStripe {
 
+namespace CordovaStripe {
+
+  interface Plugin {
     /**
-    * Create a credit card token
-    * @param creditCard {module:stripe.CreditCardTokenParams} Credit card information
-    * @param success {Function} Success callback
-    * @param error {Function} Error callback
-    */
-    createCardToken: (card: ICreateStripeCardTokenRequest, success: (token: IStripeToken) => void, err: (err) => void) => void;
+     * Create a credit card token
+     * @param creditCard {CardTokenRequest} Credit card information
+     * @param [onSuccess] {Function} Success callback
+     * @param [onError] {Function} Error callback
+     */
+    createCardToken: (card: CardTokenRequest, onSuccess: (token: CardTokenResponse) => void, onError: (err: any) => void) => void;
 
     /**
      * Set publishable key
      * @param key {string} Publishable key
-     * @param [success] {Function} Success callback
-     * @param [error] {Function} Error callback
+     * @param [onSuccess] {Function} Success callback
+     * @param [onError] {Function} Error callback
      */
-    setPublishableKey: (key: string, success?: () => void, error?: (err) => void) => void;
+    setPublishableKey: (key: string, onSuccess?: () => void, onError?: (err: any) => void) => void;
 
     /**
      * Create a bank account token
-     * @param bankAccount {module:stripe.BankAccountTokenParams} Bank account information
-     * @param {Function} success Success callback
-     * @param {Function} error Error callback
+     * @param [bankAccount] {BankAccountTokenRequest} Bank account information
+     * @param {Function} [onSuccess] Success callback
+     * @param {Function} [onError] Error callback
      */
-    createBankAccountToken: (bankAccount: ICreateStripeBankAccountTokenRequest, success: (bankAccount: ICreateStripeBankAccountTokenResponse) => void, error: (err) => void) => void;
+    createBankAccountToken: (bankAccount: BankAccountTokenRequest, onSuccess: (bankAccount: BankAccountTokenResponse) => void, onError: (err: any) => void) => void;
 
     /**
      * Validates card number
@@ -79,69 +84,9 @@ interface ICordovaStripe {
      * });
      */
     getCardType: (cardNumber: string, success: () => void, error: (err) => void) => void;
-}
+  }
 
-interface ICreateStripeBankAccountTokenRequest {
-    country: string,
-    currency: string,
-    account_holder_name: string,
-    account_holder_type: string,
-    routing_number: string,
-    account_number: stirng
-}
-
-interface ICreateStripeCardTokenRequest {
-    number: string,
-    expMonth: number,
-    expYear: number,
-    cvc: string,
-    name?: string,
-    address_line1?: string,
-    address_line2?: string,
-    address_city?: string,
-    address_state?: string,
-    address_country?: string,
-    postal_code?: string,
-    currency?: string
-}
-
-interface IStripeToken {
-    id: string;
-    object: string;
-    card: IStripeCardResponse;
-    client_ip?: string;
-    created: number;
-    livemode: boolean;
-    type: string;
-    used: boolean;
-}
-
-interface IStripeCardResponse {
-    id: string;
-    object: string;
-    address_city?: any;
-    address_country?: any;
-    address_line1?: any;
-    address_line1_check?: any;
-    address_line2?: any;
-    address_state?: any;
-    address_zip?: any;
-    address_zip_check?: any;
-    brand: string;
-    country: string;
-    cvc_check?: any;
-    dynamic_last4?: any;
-    exp_month: number;
-    exp_year: number;
-    fingerprint: string;
-    funding: string;
-    last4: string;
-    metadata: Metadata;
-    name?: any;
-    tokenization_method?: any;
-}
-
-export interface StripeBankAccount {
+  interface BankAccount {
     id: string;
     object: string;
     account_holder_name: string;
@@ -153,15 +98,69 @@ export interface StripeBankAccount {
     last4: string;
     routing_number: string;
     status: string;
-}
+  }
 
-export interface ICreateStripeBankAccountTokenResponse {
+  interface Card {
     id: string;
     object: string;
-    bank_account: StripeBankAccount;
-    client_ip?: any;
-    created: number;
-    livemode: boolean;
+    address_city: any;
+    address_country: any;
+    address_line1: any;
+    address_line1_check: any;
+    address_line2: any;
+    address_state: any;
+    address_zip: any;
+    address_zip_check: any;
+    brand: string;
+    country: string;
+    cvc_check: any;
+    dynamic_last4: any;
+    exp_month: number;
+    exp_year: number;
+    fingerprint: string;
+    funding: string;
+    last4: string;
+    metadata: any;
+    name: any;
+    tokenization_method: any;
+  }
+
+  interface BankAccountTokenRequest {
+    country: string;
+    currency: string;
+    account_holder_name: string;
+    account_holder_type: string;
+    routing_number: string;
+    account_number: string;
+  }
+
+  interface BankAccountTokenResponse extends TokenResponse {
+    bank_account: BankAccount;
+  }
+
+  interface CardTokenRequest {
+    number: string;
+    expMonth: number;
+    expYear: number;
+    cvc: string;
+    name?: string;
+    address_line1?: string;
+    address_line2?: string;
+    address_city?: string;
+    address_state?: string;
+    address_country?: string;
+    postal_code?: string;
+    currency?: string
+  }
+
+  interface CardTokenResponse extends TokenResponse {
+    card: Card;
+  }
+
+  interface TokenResponse {
+    id: string;
     type: string;
-    used: boolean;
+    created: Date;
+  }
+
 }
