@@ -219,7 +219,7 @@ Parameters to create a credit card token
 | address_city | <code>string</code> | Address line 2 |
 | address_state | <code>string</code> | State/Province |
 | address_country | <code>string</code> | Country |
-| postal_code | <code>string</code> | Postal/Zip code |
+| postalCode | <code>string</code> | Postal/Zip code |
 | currency | <code>string</code> | 3-letter code for currency |
 
 <a name="module_stripe.BankAccountTokenParams"></a>
