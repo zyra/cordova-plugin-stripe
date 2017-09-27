@@ -19,7 +19,7 @@ var noop = function(){};
  * @property {string} [address_city] Address line 2
  * @property {string} [address_state] State/Province
  * @property {string} [address_country] Country
- * @property {string} [postal_code] Postal/Zip code
+ * @property {string} [postalCode] Postal/Zip code
  * @property {string} [currency] 3-letter code for currency
  */
 
