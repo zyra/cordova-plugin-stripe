@@ -82,9 +82,9 @@ function mapNativeToJS (arg) {
    * In StripeJS however, 'address_zip' is the key used. Map 'postal_code'
    * to 'address_zip' here to avoid 400 (Bad Request) from Stripe's API
    */
-  if (arg.postal_code) {
-    arg.address_zip = arg.postal_code;
-    delete arg.postal_code;
+  if (arg.postalCode) {
+    arg.address_zip = arg.postalCode;
+    delete arg.postalCode;
   }
 }
 
