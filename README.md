@@ -34,7 +34,7 @@ var card = {
   address_city: 'Toronto', // city (optional)
   address_state: 'Ontario', // state/province (optional)
   address_country: 'Canada', // country (optional)
-  postal_code: 'L5L5L5', // Postal Code / Zip Code (optional)
+  postalCode: 'L5L5L5', // Postal Code / Zip Code (optional)
   currency: 'CAD' // Three-letter ISO currency code (optional)
 };
 
