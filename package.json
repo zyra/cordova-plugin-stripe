@@ -45,9 +45,6 @@
     "@types/cordova": "^0.0.34"
   },
   "devDependencies": {
-    "dmd-plugin-cordova-plugin": "^0.1.4",
-    "jsdoc-to-markdown": "^3.0.0",
-    "jshint": "^2.9.4",
     "typescript": "^2.7.1"
   }
 }
