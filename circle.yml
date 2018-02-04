@@ -15,6 +15,9 @@ jobs:
          key: node_modules_{{ .Branch }}_{{ checksum "package.json" }}
          paths:
            - ~/cordova-plugin-stripe/node_modules/
+      - run:
+          name: Build TS files
+          command: npm run build
       - add_ssh_keys
       - run:
          name: Update docs

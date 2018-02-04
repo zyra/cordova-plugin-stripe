@@ -9,7 +9,8 @@
     "typings/CordovaStripe.d.ts"
   ],
   "scripts": {
-    "docs": "echo \"Will implement new way to auto-doc\""
+    "docs": "echo \"Will implement new way to auto-doc\"",
+    "build": "tsc"
   },
   "cordova": {
     "id": "cordova-plugin-stripe",
