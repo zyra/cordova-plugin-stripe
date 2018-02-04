@@ -8,7 +8,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			NK07MEvt0+HP7U8WXYTSkG2mhzM=
+			agY1WG3+DKHhBm8Mv8A1wdLLmbI=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -17,7 +17,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			3eggt5bctikioMWOhrJGqvywOCc=
+			ndehyabjTQEwe8RVrbeE4XSYLQY=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -26,7 +26,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			sj5Wm1VIaZoeBrT6MLURX1swCss=
+			j/uYIqswdI8FYOXlc7xkSaoIl/o=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -35,7 +35,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			n1o7PtGL1TOo7wRZ8SiYbyjtq2Y=
+			G1X76mFOY3YWeQAaoKcGWfd6gXU=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -44,7 +44,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PbtT0lxjvJsc/ub401rII6Oysf0=
+			HhN/EdaQKd8k6YbsdjOeXfm7frM=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -53,7 +53,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Nxp5BUcUIBJj/2vO62m4y9jxdlo=
+			YYwmYm6Dpt8mqINQRNbcBYst5a8=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -62,7 +62,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			mLnyV8tV3ZmRXFKBdkTysgfXaUs=
+			oIxNCN9lkzvzCND6snHpB4znsJ4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -331,18 +331,6 @@
 		<data>
 		3+MbJQzrSylhATDPNGHm2GdpgDw=
 		</data>
-		<key>stp_icon_chevron_left.png</key>
-		<data>
-		IWVe/clQNuM92ukNcgKDJckhKjs=
-		</data>
-		<key>stp_icon_chevron_left@2x.png</key>
-		<data>
-		ha62lDWfDNOKxJWKdwLw9lb/2SQ=
-		</data>
-		<key>stp_icon_chevron_left@3x.png</key>
-		<data>
-		TRoSf2ndHfxTngE/PjIIliFtvdY=
-		</data>
 		<key>stp_shipping_form.png</key>
 		<data>
 		sHk6zeVOeieab+Rl2UlmQ3bmEFw=
@@ -359,7 +347,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			J4X660kl+OXIx7q7BRgdau+XkjU=
+			uXz3EfP2UFMWB9tDKEpVV9Hjmrc=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -371,11 +359,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			NK07MEvt0+HP7U8WXYTSkG2mhzM=
+			agY1WG3+DKHhBm8Mv8A1wdLLmbI=
 			</data>
 			<key>hash2</key>
 			<data>
-			7Wfot+OSlz9AWTrUW8AasULomdjMYMlgU3O+dUHL8hI=
+			XMusNc0at4Zd7AGyALoWz4i1CNseUGJ9dnM0bv+jpHk=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -384,11 +372,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			3eggt5bctikioMWOhrJGqvywOCc=
+			ndehyabjTQEwe8RVrbeE4XSYLQY=
 			</data>
 			<key>hash2</key>
 			<data>
-			61xO1RXnZm7Zwhe7vNesyPkR2L4O4HHlB3CO4y4zcK4=
+			bTH96VpX34S6ZHpe/QZ02nTfxuVCU0wK1Jn5V8XAbwc=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -397,11 +385,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			sj5Wm1VIaZoeBrT6MLURX1swCss=
+			j/uYIqswdI8FYOXlc7xkSaoIl/o=
 			</data>
 			<key>hash2</key>
 			<data>
-			G7VVNsBO8/+NBi5UkmHJ3vAqStqGl0k6DXeWaG/hCy8=
+			3IzBUlQkJeyrmWK7obfi2E8RKiFIVVbLlP3ZVAxfjOs=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -410,11 +398,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			n1o7PtGL1TOo7wRZ8SiYbyjtq2Y=
+			G1X76mFOY3YWeQAaoKcGWfd6gXU=
 			</data>
 			<key>hash2</key>
 			<data>
-			ZbzB4nAXnMMUA8N2QGSrakcIhC8ivn7mVZ0poeL6csI=
+			G6RlV2dXZIzaXUdstf81Y8XL74DOVhz8ASxthcRgyMk=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -423,11 +411,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PbtT0lxjvJsc/ub401rII6Oysf0=
+			HhN/EdaQKd8k6YbsdjOeXfm7frM=
 			</data>
 			<key>hash2</key>
 			<data>
-			EU5vg4xEGruxD+YVTQmm9F2wNCp3qCrRTWjAaM+B/q8=
+			pyyyvEjdy4sdGB2QSh3rCrxaTPY3jABg+hWw4XHB9vA=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -436,11 +424,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Nxp5BUcUIBJj/2vO62m4y9jxdlo=
+			YYwmYm6Dpt8mqINQRNbcBYst5a8=
 			</data>
 			<key>hash2</key>
 			<data>
-			mmRGXyXI7kQw8+JL/0G++xUddtT0la/8keqIbEwHGBU=
+			qE+5eTuShlr7Zg7BRIXTjfnNS08UgX29SZtAdOKuDpE=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -449,11 +437,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			mLnyV8tV3ZmRXFKBdkTysgfXaUs=
+			oIxNCN9lkzvzCND6snHpB4znsJ4=
 			</data>
 			<key>hash2</key>
 			<data>
-			BC6kyvhOBW3REO14PeHBxkvwhm4q0YGjaFVxpbiBfx4=
+			TTHJ5nDZCxAbORNhQYc8dzt4df1C7ToIe/wvO81LP/8=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -1184,39 +1172,6 @@
 			lI4yHTWBdu8egr5JSrKa+cTysfuej0rn2XASbDfeakE=
 			</data>
 		</dict>
-		<key>stp_icon_chevron_left.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			IWVe/clQNuM92ukNcgKDJckhKjs=
-			</data>
-			<key>hash2</key>
-			<data>
-			tuQW96fNeJ2bw5o5s02TenZxfjCqLUMz5XZxgBU+cGs=
-			</data>
-		</dict>
-		<key>stp_icon_chevron_left@2x.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			ha62lDWfDNOKxJWKdwLw9lb/2SQ=
-			</data>
-			<key>hash2</key>
-			<data>
-			pHEMFmc2lqFtzqZ3rziTJrJmZqHdJUc+FOP4IuIipvc=
-			</data>
-		</dict>
-		<key>stp_icon_chevron_left@3x.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			TRoSf2ndHfxTngE/PjIIliFtvdY=
-			</data>
-			<key>hash2</key>
-			<data>
-			uHUKHOeK54snLaR7pm2swlhKGpQ9dRRmj+3NskphI44=
-			</data>
-		</dict>
 		<key>stp_shipping_form.png</key>
 		<dict>
 			<key>hash</key>
@@ -1254,11 +1209,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			J4X660kl+OXIx7q7BRgdau+XkjU=
+			uXz3EfP2UFMWB9tDKEpVV9Hjmrc=
 			</data>
 			<key>hash2</key>
 			<data>
-			G7XPE++OueMIeoFiWSR8FfmwLVM0uP78G4BC9bomYg0=
+			eCgzvj4qda+0vTkrTPLnhFJk4q4qrYLm1iOkyWQirMA=
 			</data>
 			<key>optional</key>
 			<true/>
