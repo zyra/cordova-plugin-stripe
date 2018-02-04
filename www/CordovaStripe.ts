@@ -127,8 +127,8 @@ export namespace CordovaStripe {
     /**
      * Create a credit card token
      * @param {CordovaStripe.CardTokenRequest} creditCard
-     * @param {(tokenObject: CordovaStripe.CardTokenResponse) => void} success
-     * @param {Function} error
+     * @param {CordovaStripe.CardTokenCallback} success
+     * @param {CordovaStripe.ErrorCallback} error
      */
     static createCardToken(creditCard: CardTokenRequest, success: CardTokenCallback = NOOP, error: ErrorCallback = NOOP) {
       exec(success, error, 'CordovaStripe', 'createCardToken', [creditCard]);
