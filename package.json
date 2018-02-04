@@ -9,8 +9,7 @@
     "typings/CordovaStripe.d.ts"
   ],
   "scripts": {
-    "docs": "jsdoc2md --template \"scripts/doc.template.md\" \"www/**/*.js\" > README.md",
-    "jshint": "jshint www && jshint src && jshint tests"
+    "docs": "echo \"Will implement new way to auto-doc\""
   },
   "cordova": {
     "id": "cordova-plugin-stripe",
