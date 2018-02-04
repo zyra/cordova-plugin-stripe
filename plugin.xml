@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="cordova-plugin-stripe" version="1.5.3" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>cordova-plugin-stripe</name>
-    <js-module name="stripe" src="www/CordovaStripe.js">
+
+    <js-module name="stripe" src="www/CordovaStripePlugin.js">
         <clobbers target="cordova.plugins.stripe" />
     </js-module>
 
@@ -28,6 +29,9 @@
 
         <header-file src="src/ios/CordovaStripe.h" />
         <source-file src="src/ios/CordovaStripe.m" />
+
+        <header-file src="src/ios/AppDelegate+CordovaStripe.h" />
+        <source-file src="src/ios/AppDelegate+CordovaStripe.m" />
 
         <framework src="src/ios/Stripe.framework" custom="true" />
 

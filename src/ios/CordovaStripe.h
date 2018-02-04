@@ -1,8 +1,13 @@
 #import <Cordova/CDV.h>
 @import Stripe;
 
+typedef void(^ApplePayCallback)(PKPaymentAuthorizationStatus);
+
 @interface CordovaStripe : CDVPlugin
 @property (nonatomic, retain) STPAPIClient *client;
+@property (nonatomic, copy) ApplePayCallback applePayCompleteCallback;
+@property (nonatomic, retain) NSString *applePayCDVCallbackId;
+extern NSArray *CardBrands;
 
 - (void) setPublishableKey:(CDVInvokedUrlCommand *) command;
 - (void) createCardToken:(CDVInvokedUrlCommand *) command;
@@ -11,5 +16,6 @@
 - (void) validateCVC: (CDVInvokedUrlCommand *) command;
 - (void) getCardType: (CDVInvokedUrlCommand *) command;
 - (void) createBankAccountToken: (CDVInvokedUrlCommand *) command;
+- (void) processPayment:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus))completion;
 
 @end

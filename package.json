@@ -33,19 +33,21 @@
     "phonegap",
     "cordova-plugin"
   ],
-  "author": "Ibby Hadeed <i.hadeed@zyra.ca>",
+  "author": "Ibby Hadeed <ibby@zyra.ca>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ihadeed/cordova-plugin-stripe/issues"
+    "url": "https://github.com/zyra/cordova-plugin-stripe/issues"
   },
-  "homepage": "https://github.com/ihadeed/cordova-plugin-stripe#readme",
-  "typings": "./typings/CordovaStripe.d.ts",
+  "homepage": "https://github.com/zyra/cordova-plugin-stripe#readme",
+  "main": "www/CordovaStripe.js",
+  "typings": "www/CordovaStripe.d.ts",
   "dependencies": {
-    "@types/cordova": "~0.0.34"
+    "@types/cordova": "^0.0.34"
   },
   "devDependencies": {
     "dmd-plugin-cordova-plugin": "^0.1.4",
     "jsdoc-to-markdown": "^3.0.0",
-    "jshint": "^2.9.4"
+    "jshint": "^2.9.4",
+    "typescript": "^2.7.1"
   }
 }
