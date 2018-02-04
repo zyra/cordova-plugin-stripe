@@ -11,7 +11,7 @@ export interface Cordova {
 }
 
 export interface CordovaPlugins {
-  stripe: CordovaStripe.Plugin;
+  stripe: typeof CordovaStripe.Plugin;
 }
 
 export namespace CordovaStripe {
