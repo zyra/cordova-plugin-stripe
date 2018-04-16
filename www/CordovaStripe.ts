@@ -107,7 +107,8 @@ export namespace CordovaStripe {
   }
 
   export interface GooglePayOptions {
-
+    amount: string;
+    currencyCode: string;
   }
 
   export interface ThreeDeeSecureParams {
