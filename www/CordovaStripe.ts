@@ -181,6 +181,8 @@ export namespace CordovaStripe {
 
   export type SourceType = '3ds' | 'giropay' | 'ideal' | 'sepadebit' | 'sofort' | 'alipay' | 'alipayreusable' | 'p24' | 'visacheckout';
 
+  const SourceTypeArray: SourceType[] = ['3ds', 'giropay', 'ideal', 'sepadebit', 'sofort', 'alipay', 'alipayreusable', 'p24', 'visacheckout'];
+
   export interface Error {
     message: string;
   }
@@ -293,8 +295,8 @@ export namespace CordovaStripe {
       ])
     }
 
-    static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createSource', [type.toLocaleLowerCase(), params]);
+    static createSource(tgype: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
     }
   }
 }

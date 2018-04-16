@@ -239,4 +239,58 @@ NSArray *CardBrands = nil;
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
+- (void) createSource:(CDVInvokedUrlCommand *)command
+{
+    NSInteger type = [[command.arguments objectAtIndex:0] integerValue];
+    NSDictionary *params = [command.arguments objectAtIndex:1];
+    STPSourceParams *sourceParams;
+    
+    switch (type) {
+        case 0:
+            // 3DS
+            sourceParams = [STPSourceParams threeDSecureParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"] card:params[@"card"]];
+            break;
+            
+        case 1:
+            // GiroPay
+            sourceParams = [STPSourceParams giropayParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"]];
+            break;
+            
+        case 2:
+            // iDEAL
+            sourceParams = [STPSourceParams idealParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"] bank:params[@"bank"]];
+            break;
+            
+        case 3:
+            // SEPA Debit
+            sourceParams = [STPSourceParams sepaDebitParamsWithName:[params[@"amount"] integerValue] iban:params[@"iban"] addressLine1:params[@"addressLine1"] city:params[@"city"] postalCode:params[@"postalCode"] country:params[@"country"];
+            break;
+            
+        case 4:
+            // Sofort
+            sourceParams = [STPSourceParams sofortParamsWithAmount:[params[@"amount"] integerValue] returnURL:params[@"returnURL"] country:params[@"country"] statementDescriptor:params[@"statementDescriptor"]];
+            break;
+            
+        case 5:
+            // Alipay
+            sourceParams = [STPSourceParams alipayParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"]];
+            break;
+            
+        case 6:
+            // Alipay Reusable
+            sourceParams = [STPSourceParams alipayReusableParamsWithCurrency:params[@"currency"] returnURL:params[@"returnURL"]];
+            break;
+            
+        case 7:
+            // P24
+            sourceParams = [STPSourceParams p24ParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] email:params[@"email"] name:params[@"name"] returnURL:params[@"returnURL"]]
+            break;
+            
+        case 8:
+            // Visa Checkout
+        
+            break;
+    }
+}
+
 @end
