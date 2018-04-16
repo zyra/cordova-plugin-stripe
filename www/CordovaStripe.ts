@@ -94,7 +94,7 @@ export namespace CordovaStripe {
 
   export interface ApplePayItem {
     label: string;
-    amount: string;
+    amount: number | string;
   }
 
   export interface ApplePayOptions {
@@ -103,6 +103,83 @@ export namespace CordovaStripe {
     currency: string;
     items: ApplePayItem[];
   }
+
+  export interface ThreeDeeSecureParams {
+    /**
+     * Amount
+     */
+    amount: number;
+    /**
+     * Currency code
+     */
+    currency: string;
+    /**
+     * URL to redirect to after successfully verifying the card
+     */
+    returnURL: string;
+    /**
+     * Card source ID
+     */
+    card: string;
+  }
+
+  export interface GiroPayParams {
+    amount: number;
+    name: string;
+    returnURL: string;
+    statementDescriptor: string;
+  }
+
+  export interface iDEALParams {
+    amount: number;
+    name: string;
+    returnURL: string;
+    statementDescriptor: string;
+    bank: string;
+  }
+
+  export interface SEPADebitParams {
+    name: string;
+    iban: string;
+    addressLine1: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  }
+
+  export interface SofortParams {
+    amount: number;
+    returnURL: string;
+    country: string;
+    statementDescriptor: string;
+  }
+
+  export interface AlipayParams {
+    amount: number;
+    currency: string;
+    returnURL: string;
+  }
+
+  export interface AlipayReusableParams {
+    currency: string;
+    returnURL: string;
+  }
+
+  export interface P24Params {
+    amount: number;
+    currency: string;
+    email: string;
+    name: string;
+    returnURL: string;
+  }
+
+  export interface VisaCheckoutParams {
+    callId: string;
+  }
+
+  export type SourceParams = ThreeDeeSecureParams | GiroPayParams | iDEALParams | SEPADebitParams | SofortParams | AlipayParams | AlipayReusableParams | P24Params | VisaCheckoutParams;
+
+  export type SourceType = '3ds' | 'giropay' | 'ideal' | 'sepadebit' | 'sofort' | 'alipay' | 'alipayreusable' | 'p24' | 'visacheckout';
 
   export interface Error {
     message: string;
@@ -191,7 +268,7 @@ export namespace CordovaStripe {
      * @param {(token: string, callback: (paymentProcessed: boolean) => void) => void} success
      * @param {Function} error
      */
-    static payWithApplePay(options: ApplePayOptions, success: (token: string, callback: (paymentProcessed: boolean) => void) => void, error: ErrorCallback = NOOP) {
+    static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error: ErrorCallback = NOOP) {
       if (!options || !options.merchantId || !options.country || !options.currency || !options.items || !options.items.length) {
         error({
           message: 'Missing one or more payment options.'
@@ -204,7 +281,7 @@ export namespace CordovaStripe {
         return item;
       });
 
-      exec((token: any) => {
+      exec((token: TokenResponse) => {
         success(token, (paymentProcessed: boolean) => {
           exec(NOOP, NOOP, 'CordovaStripe', 'finalizeApplePayTransaction', [Boolean(paymentProcessed)]);
         });
@@ -214,6 +291,10 @@ export namespace CordovaStripe {
         options.currency,
         options.items
       ])
+    }
+
+    static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'createSource', [type.toLocaleLowerCase(), params]);
     }
   }
 }
