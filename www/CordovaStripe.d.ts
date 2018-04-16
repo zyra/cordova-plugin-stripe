@@ -80,7 +80,7 @@ export declare namespace CordovaStripe {
     }
     interface ApplePayItem {
         label: string;
-        amount: string;
+        amount: number | string;
     }
     interface ApplePayOptions {
         merchantId: string;
@@ -88,6 +88,72 @@ export declare namespace CordovaStripe {
         currency: string;
         items: ApplePayItem[];
     }
+    interface ThreeDeeSecureParams {
+        /**
+         * Amount
+         */
+        amount: number;
+        /**
+         * Currency code
+         */
+        currency: string;
+        /**
+         * URL to redirect to after successfully verifying the card
+         */
+        returnURL: string;
+        /**
+         * Card source ID
+         */
+        card: string;
+    }
+    interface GiroPayParams {
+        amount: number;
+        name: string;
+        returnURL: string;
+        statementDescriptor: string;
+    }
+    interface iDEALParams {
+        amount: number;
+        name: string;
+        returnURL: string;
+        statementDescriptor: string;
+        bank: string;
+    }
+    interface SEPADebitParams {
+        name: string;
+        iban: string;
+        addressLine1: string;
+        city: string;
+        postalCode: string;
+        country: string;
+    }
+    interface SofortParams {
+        amount: number;
+        returnURL: string;
+        country: string;
+        statementDescriptor: string;
+    }
+    interface AlipayParams {
+        amount: number;
+        currency: string;
+        returnURL: string;
+    }
+    interface AlipayReusableParams {
+        currency: string;
+        returnURL: string;
+    }
+    interface P24Params {
+        amount: number;
+        currency: string;
+        email: string;
+        name: string;
+        returnURL: string;
+    }
+    interface VisaCheckoutParams {
+        callId: string;
+    }
+    type SourceParams = ThreeDeeSecureParams | GiroPayParams | iDEALParams | SEPADebitParams | SofortParams | AlipayParams | AlipayReusableParams | P24Params | VisaCheckoutParams;
+    type SourceType = '3ds' | 'giropay' | 'ideal' | 'sepadebit' | 'sofort' | 'alipay' | 'alipayreusable' | 'p24' | 'visacheckout';
     interface Error {
         message: string;
     }
@@ -152,6 +218,7 @@ export declare namespace CordovaStripe {
          * @param {(token: string, callback: (paymentProcessed: boolean) => void) => void} success
          * @param {Function} error
          */
-        static payWithApplePay(options: ApplePayOptions, success: (token: string, callback: (paymentProcessed: boolean) => void) => void, error?: ErrorCallback): void;
+        static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error?: ErrorCallback): void;
+        static createSource(type: SourceType, params: SourceParams, success?: (token: TokenResponse) => void, error?: ErrorCallback): void;
     }
 }

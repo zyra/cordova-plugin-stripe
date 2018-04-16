@@ -4,6 +4,7 @@ var cordova_1 = require("cordova");
 var NOOP = function () { };
 var CordovaStripe;
 (function (CordovaStripe) {
+    var SourceTypeArray = ['3ds', 'giropay', 'ideal', 'sepadebit', 'sofort', 'alipay', 'alipayreusable', 'p24', 'visacheckout'];
     var Plugin = /** @class */ (function () {
         function Plugin() {
         }
@@ -113,6 +114,11 @@ var CordovaStripe;
                 options.currency,
                 options.items
             ]);
+        };
+        Plugin.createSource = function (type, params, success, error) {
+            if (success === void 0) { success = NOOP; }
+            if (error === void 0) { error = NOOP; }
+            cordova_1.exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase()), params]);
         };
         return Plugin;
     }());
