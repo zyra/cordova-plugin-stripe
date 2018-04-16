@@ -15,8 +15,17 @@
             </feature>
         </config-file>
 
+        <config-file parent="./application" target="AndroidManifest.xml">
+            <meta-data
+                    android:name="com.google.android.gms.wallet.api.enabled"
+                    android:value="true" />
+        </config-file>
+        <framework src="com.google.android.gms:play-services-wallet:11.4.2" />
+
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
 	<framework src="com.stripe:stripe-android:6.1.2" />
+	<framework src="com.android.support:support-v4:24.1.1+" />
+	<framework src="com.android.support:appcompat-v7:24.1.1+" />
 
     </platform>
 

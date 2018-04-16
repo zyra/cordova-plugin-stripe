@@ -1,5 +1,8 @@
 package com.zyramedia.cordova.stripe;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -9,16 +12,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.identity.intents.model.UserAddress;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wallet.AutoResolveHelper;
+import com.google.android.gms.wallet.CardInfo;
+import com.google.android.gms.wallet.CardRequirements;
+import com.google.android.gms.wallet.IsReadyToPayRequest;
+import com.google.android.gms.wallet.PaymentData;
+import com.google.android.gms.wallet.PaymentDataRequest;
+import com.google.android.gms.wallet.PaymentMethodTokenizationParameters;
+import com.google.android.gms.wallet.PaymentsClient;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.Wallet;
+import com.google.android.gms.wallet.WalletConstants;
 import com.stripe.android.TokenCallback;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.android.util.CardUtils;
+import com.stripe.android.CardUtils;
+
+import java.util.Arrays;
+
 
 public class CordovaStripe extends CordovaPlugin {
 
   private Stripe stripeInstance;
+  private String publishableKey;
+  private PaymentsClient paymentsClient;
+  private boolean googlePayReady;
+  private PaymentMethodTokenizationParameters googlePayParams;
+  private final int LOAD_PAYMENT_DATA_REQUEST_CODE = 9972;
+  private CallbackContext googlePayCallbackContext;
 
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
@@ -28,32 +56,81 @@ public class CordovaStripe extends CordovaPlugin {
   @Override
   public boolean execute(final String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
 
-    if (action.equals("setPublishableKey")) {
-      setPublishableKey(data.getString(0), callbackContext);
-    } else if (action.equals("createCardToken")) {
-      createCardToken(data.getJSONObject(0), callbackContext);
-    } else if (action.equals("createBankAccountToken")) {
-      createBankAccountToken(data.getJSONObject(0), callbackContext);
-    } else if (action.equals("validateCardNumber")) {
-      validateCardNumber(data.getString(0), callbackContext);
-    } else if (action.equals("validateExpiryDate")) {
-      validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
-    } else if (action.equals("validateCVC")) {
-      validateCVC(data.getString(0), callbackContext);
-    } else if (action.equals("getCardType")) {
-      getCardType(data.getString(0), callbackContext);
-    } else {
-      return false;
+    switch (action) {
+      case "setPublishableKey":
+        setPublishableKey(data.getString(0), callbackContext);
+        break;
+
+      case "createCardToken":
+        createCardToken(data.getJSONObject(0), callbackContext);
+        break;
+
+      case "createBankAccountToken":
+        createBankAccountToken(data.getJSONObject(0), callbackContext);
+        break;
+
+      case "validateCardNumber":
+        validateCardNumber(data.getString(0), callbackContext);
+        break;
+
+      case "validateExpiryDate":
+        validateExpiryDate(data.getInt(0), data.getInt(1), callbackContext);
+        break;
+
+      case "validateCVC":
+        validateCVC(data.getString(0), callbackContext);
+        break;
+
+      case "getCardType":
+        getCardType(data.getString(0), callbackContext);
+        break;
+
+      case "createSource":
+        break;
+
+      case "initGooglePay":
+        initGooglePay(callbackContext);
+        break;
+
+      case "createGooglePayToken":
+        createGooglePayToken(data.getString(0), data.getString(2), callbackContext);
+        break;
+
+      default:
+        return false;
     }
 
     return true;
+  }
 
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
+      switch (resultCode) {
+        case Activity.RESULT_OK:
+          PaymentData paymentData = PaymentData.getFromIntent(intent);
+          String rawToken = paymentData.getPaymentMethodToken().getToken();
+          Token stripeToken = Token.fromString(rawToken);
+          if (stripeToken != null) {
+            JSONObject tokenObject = getCardObjectFromToken(stripeToken);
+            googlePayCallbackContext.success(tokenObject);
+          }
+          break;
+        case Activity.RESULT_CANCELED:
+          break;
+        case AutoResolveHelper.RESULT_ERROR:
+          Status status = AutoResolveHelper.getStatusFromIntent(intent);
+          googlePayCallbackContext.error("Error occurred while attempting to pay with GooglePay. Error #" + status.toString());
+          break;
+      }
+    }
   }
 
   private void setPublishableKey(final String key, final CallbackContext callbackContext) {
 
     try {
       stripeInstance.setDefaultPublishableKey(key);
+      publishableKey = key;
       callbackContext.success();
     } catch (Exception e) {
       callbackContext.error(e.getLocalizedMessage());
@@ -86,6 +163,7 @@ public class CordovaStripe extends CordovaPlugin {
           public void onSuccess(Token token) {
             callbackContext.success(getCardObjectFromToken(token));
           }
+
           public void onError(Exception error) {
             callbackContext.error(error.getLocalizedMessage());
           }
@@ -126,6 +204,7 @@ public class CordovaStripe extends CordovaPlugin {
           public void onSuccess(Token token) {
             callbackContext.success(getBankObjectFromToken(token));
           }
+
           public void onError(Exception error) {
             callbackContext.error(error.getLocalizedMessage());
           }
@@ -190,8 +269,7 @@ public class CordovaStripe extends CordovaPlugin {
       tokenObject.put("type", token.getType());
 
       return tokenObject;
-    } 
-    catch (JSONException e) {
+    } catch (JSONException e) {
       return null;
     }
   }
@@ -225,9 +303,87 @@ public class CordovaStripe extends CordovaPlugin {
 
       return tokenObject;
 
-    } 
-    catch (JSONException e) {
+    } catch (JSONException e) {
       return null;
+    }
+  }
+
+  private void initGooglePay(final CallbackContext callbackContext) {
+    paymentsClient = Wallet.getPaymentsClient(
+      cordova.getContext(),
+      new Wallet.WalletOptions.Builder().setEnvironment(publishableKey == null || publishableKey.contains("test") ? WalletConstants.ENVIRONMENT_TEST : WalletConstants.ENVIRONMENT_PRODUCTION)
+        .build()
+    );
+
+    IsReadyToPayRequest request = IsReadyToPayRequest.newBuilder()
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
+      .build();
+    Task<Boolean> task = paymentsClient.isReadyToPay(request);
+    task.addOnCompleteListener(
+      (Task<Boolean> task1) -> {
+          try {
+            googlePayReady =
+              task1.getResult(ApiException.class);
+            if (googlePayReady) {
+              //show Google as payment option
+
+              googlePayParams = PaymentMethodTokenizationParameters.newBuilder()
+                .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
+                .addParameter("gateway", "stripe")
+                .addParameter("stripe:publishableKey", publishableKey)
+                .addParameter("stripe:version", "5.1.0")
+                .build();
+
+              callbackContext.success();
+            } else {
+              //hide Google as payment option
+              callbackContext.error("GooglePay not supported.");
+            }
+          } catch (ApiException exception) {
+            callbackContext.error(exception.getLocalizedMessage());
+          }
+      });
+  }
+
+  private void createGooglePayToken(String totalPrice, String currencyCode, final CallbackContext callbackContext) {
+    PaymentDataRequest.Builder request = PaymentDataRequest.newBuilder()
+      .setTransactionInfo(
+        TransactionInfo.newBuilder()
+          .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+          .setTotalPrice(totalPrice)
+          .setCurrencyCode(currencyCode)
+          .build()
+      )
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
+      .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
+      .setCardRequirements(
+        CardRequirements.newBuilder()
+          .addAllowedCardNetworks(
+            Arrays.asList(
+              WalletConstants.CARD_NETWORK_AMEX,
+              WalletConstants.CARD_NETWORK_DISCOVER,
+              WalletConstants.CARD_NETWORK_VISA,
+              WalletConstants.CARD_NETWORK_MASTERCARD
+            )
+          )
+          .build()
+      );
+
+    request.setPaymentMethodTokenizationParameters(googlePayParams);
+    final PaymentDataRequest finalRequest = request.build();
+
+    if (finalRequest != null) {
+      cordova.getActivity().runOnUiThread(() -> {
+          AutoResolveHelper.resolveTask(
+            paymentsClient.loadPaymentData(finalRequest),
+            cordova.getActivity(),
+            LOAD_PAYMENT_DATA_REQUEST_CODE
+          );
+          googlePayCallbackContext = callbackContext;
+      });
+    } else {
+      callbackContext.error("Unable to pay with GooglePay");
     }
   }
 
