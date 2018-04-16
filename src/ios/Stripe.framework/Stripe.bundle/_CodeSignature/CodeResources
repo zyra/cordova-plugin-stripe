@@ -31,6 +31,15 @@
 			<key>optional</key>
 			<true/>
 		</dict>
+		<key>fi.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			BBqWBwAiEx1khsRhUtKxSrQi81g=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
 		<key>fr.lproj/Localizable.strings</key>
 		<dict>
 			<key>hash</key>
@@ -271,6 +280,54 @@
 		<data>
 		uF0rsVBHgkVIxcGMiVLJdfqnsUA=
 		</data>
+		<key>stp_card_unionpay_en.png</key>
+		<data>
+		3uufKjiL1Pzq94fJBAh9JmnuRek=
+		</data>
+		<key>stp_card_unionpay_en@2x.png</key>
+		<data>
+		yk+DF/UcRHnpjxTfgL26o+slVJE=
+		</data>
+		<key>stp_card_unionpay_en@3x.png</key>
+		<data>
+		N/sDh8yqACx6p912KUh+gmk02gI=
+		</data>
+		<key>stp_card_unionpay_template_en.png</key>
+		<data>
+		DBT0C+eAyvtS9+kMVPFusDkIkto=
+		</data>
+		<key>stp_card_unionpay_template_en@2x.png</key>
+		<data>
+		2XYWwghx/XNgfKFKGkkb3U3AGTs=
+		</data>
+		<key>stp_card_unionpay_template_en@3x.png</key>
+		<data>
+		N3fDPctpEY0oVbeO/NK+9acGKLs=
+		</data>
+		<key>stp_card_unionpay_template_zh.png</key>
+		<data>
+		9Zi865VjPwtQCjjFGumCxDFVvy4=
+		</data>
+		<key>stp_card_unionpay_template_zh@2x.png</key>
+		<data>
+		NrT+MNKDDBNwji7M1E/vb4yPnmc=
+		</data>
+		<key>stp_card_unionpay_template_zh@3x.png</key>
+		<data>
+		xLDnj5hCOXKSNUAwjRNuxAv2cH4=
+		</data>
+		<key>stp_card_unionpay_zh.png</key>
+		<data>
+		NpnrpH46Kqm3a89H2H8c9llv2UI=
+		</data>
+		<key>stp_card_unionpay_zh@2x.png</key>
+		<data>
+		nje4YeyNrjwCZcL/ep6BwQng9l4=
+		</data>
+		<key>stp_card_unionpay_zh@3x.png</key>
+		<data>
+		oHQH0iV2XaPX3DN9bR9XehocsdA=
+		</data>
 		<key>stp_card_unknown.png</key>
 		<data>
 		ozQ16kISiRJaR/qkdpMjE7nax+4=
@@ -390,6 +447,19 @@
 			<key>hash2</key>
 			<data>
 			3IzBUlQkJeyrmWK7obfi2E8RKiFIVVbLlP3ZVAxfjOs=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
+		<key>fi.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			BBqWBwAiEx1khsRhUtKxSrQi81g=
+			</data>
+			<key>hash2</key>
+			<data>
+			vxUmHoUMJhlz3XQSEQoaZMO0z948+udJfJeuAi2ayz4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -1005,6 +1075,138 @@
 			<key>hash2</key>
 			<data>
 			fpk6Bssrfl5k/cM4EuxPVfLvP8mqNLXXL3RbDorvmZ0=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_en.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			3uufKjiL1Pzq94fJBAh9JmnuRek=
+			</data>
+			<key>hash2</key>
+			<data>
+			gnTD/kjMxG0t6Godua1iDNRmfrTffFLPdfPDvEa4+PE=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_en@2x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			yk+DF/UcRHnpjxTfgL26o+slVJE=
+			</data>
+			<key>hash2</key>
+			<data>
+			UDNT6gRgQLwaAFC+czZnPs/GUTT6gPArF49gqzzIGkg=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_en@3x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			N/sDh8yqACx6p912KUh+gmk02gI=
+			</data>
+			<key>hash2</key>
+			<data>
+			YvwAUewEtTJBiMBg6AYaB8cSbpmO6YynToILQMbDxRM=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_en.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			DBT0C+eAyvtS9+kMVPFusDkIkto=
+			</data>
+			<key>hash2</key>
+			<data>
+			iv+9UGuXzfXtPXCUdjqF7gA+V0k40+u05HDFdivYr7w=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_en@2x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			2XYWwghx/XNgfKFKGkkb3U3AGTs=
+			</data>
+			<key>hash2</key>
+			<data>
+			rhdv8Mj6ROA7A8k/ME/YPCFbdidWheArmdtE87WNP6c=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_en@3x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			N3fDPctpEY0oVbeO/NK+9acGKLs=
+			</data>
+			<key>hash2</key>
+			<data>
+			7HpiNEU8gtcAtRdM/WW38JEftfOMRl6yCz4ne3C3Xj0=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_zh.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			9Zi865VjPwtQCjjFGumCxDFVvy4=
+			</data>
+			<key>hash2</key>
+			<data>
+			gaGSi7VIIbpivRpZFu4U70xfFMS1cixxUw3/4yFdZRo=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_zh@2x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			NrT+MNKDDBNwji7M1E/vb4yPnmc=
+			</data>
+			<key>hash2</key>
+			<data>
+			RF2WSaIqQJak41QjiVsoTltvRTiyJ1W50g3RTOaNDUU=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_template_zh@3x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			xLDnj5hCOXKSNUAwjRNuxAv2cH4=
+			</data>
+			<key>hash2</key>
+			<data>
+			q7QroO3coqb5CHm8XUL4EwzRbtw/dlUM1ZWCOXcUHXg=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_zh.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			NpnrpH46Kqm3a89H2H8c9llv2UI=
+			</data>
+			<key>hash2</key>
+			<data>
+			NiBj/4tW2+ECyBQhjHkjix3RZO08K+t73l4cS8AGQ7o=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_zh@2x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			nje4YeyNrjwCZcL/ep6BwQng9l4=
+			</data>
+			<key>hash2</key>
+			<data>
+			Lt7n/Zps9amBfAoJKvzsWUeLFyfrF5adrcMlUFLLaLQ=
+			</data>
+		</dict>
+		<key>stp_card_unionpay_zh@3x.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			oHQH0iV2XaPX3DN9bR9XehocsdA=
+			</data>
+			<key>hash2</key>
+			<data>
+			lVyp4JIdZW5tEsKff3t4xawaAXArspwtfuveJSTOkDs=
 			</data>
 		</dict>
 		<key>stp_card_unknown.png</key>
