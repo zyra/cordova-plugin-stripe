@@ -33,35 +33,35 @@ NSArray *CardBrands = nil;
 
 - (void)initializeApplePayTransaction:(CDVInvokedUrlCommand *) command
 {
-        NSString *merchantIdentifier = [command.arguments objectAtIndex:0];
-        NSString *country = [command.arguments objectAtIndex:1];
-        NSString *currency = [command.arguments objectAtIndex:2];
-        NSArray *items = [command.arguments objectAtIndex:3];
+    NSString *merchantIdentifier = [command.arguments objectAtIndex:0];
+    NSString *country = [command.arguments objectAtIndex:1];
+    NSString *currency = [command.arguments objectAtIndex:2];
+    NSArray *items = [command.arguments objectAtIndex:3];
+    
+    PKPaymentRequest *paymentRequest = [Stripe paymentRequestWithMerchantIdentifier:merchantIdentifier country:country currency:currency];
+    
+    NSMutableArray *paymentSummaryItems = [[NSMutableArray alloc] initWithCapacity:sizeof items];
+    for (NSDictionary *item in items) {
+        [paymentSummaryItems addObject:[PKPaymentSummaryItem summaryItemWithLabel:item[@"label"] amount:[NSDecimalNumber decimalNumberWithString:item[@"amount"]]]];
+    }
+    
+    paymentRequest.paymentSummaryItems = paymentSummaryItems;
+    
+    if ([Stripe canSubmitPaymentRequest:paymentRequest]) {
+        PKPaymentAuthorizationViewController *paymentAuthorizationViewController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
         
-        PKPaymentRequest *paymentRequest = [Stripe paymentRequestWithMerchantIdentifier:merchantIdentifier country:country currency:currency];
+        paymentAuthorizationViewController.delegate = self.appDelegate;
+        self.applePayCDVCallbackId = command.callbackId;
         
-        NSMutableArray *paymentSummaryItems = [[NSMutableArray alloc] initWithCapacity:sizeof items];
-        for (NSDictionary *item in items) {
-            [paymentSummaryItems addObject:[PKPaymentSummaryItem summaryItemWithLabel:item[@"label"] amount:[NSDecimalNumber decimalNumberWithString:item[@"amount"]]]];
-        }
+        NSLog(@"Callback ID is %@", command.callbackId);
         
-        paymentRequest.paymentSummaryItems = paymentSummaryItems;
         
-        if ([Stripe canSubmitPaymentRequest:paymentRequest]) {
-            PKPaymentAuthorizationViewController *paymentAuthorizationViewController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
-            
-            paymentAuthorizationViewController.delegate = self.appDelegate;
-            self.applePayCDVCallbackId = command.callbackId;
-            
-            NSLog(@"Callback ID is %@", command.callbackId);
-            
-            
-            [self.viewController presentViewController:paymentAuthorizationViewController animated:YES completion:nil];
-            
-            
-        } else {
-            NSLog(@"Problem with integration");
-        }
+        [self.viewController presentViewController:paymentAuthorizationViewController animated:YES completion:nil];
+        
+        
+    } else {
+        NSLog(@"Problem with integration");
+    }
 }
 
 - (void)processPayment: (PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus))completion
@@ -179,7 +179,7 @@ NSArray *CardBrands = nil;
         [self throwNotInitializedError:command];
         return;
     }
-
+    
     
     [self.commandDelegate runInBackground:^{
         
@@ -241,56 +241,74 @@ NSArray *CardBrands = nil;
 
 - (void) createSource:(CDVInvokedUrlCommand *)command
 {
-    NSInteger type = [[command.arguments objectAtIndex:0] integerValue];
-    NSDictionary *params = [command.arguments objectAtIndex:1];
-    STPSourceParams *sourceParams;
-    
-    switch (type) {
-        case 0:
-            // 3DS
-            sourceParams = [STPSourceParams threeDSecureParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"] card:params[@"card"]];
-            break;
-            
-        case 1:
-            // GiroPay
-            sourceParams = [STPSourceParams giropayParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"]];
-            break;
-            
-        case 2:
-            // iDEAL
-            sourceParams = [STPSourceParams idealParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"] bank:params[@"bank"]];
-            break;
-            
-        case 3:
-            // SEPA Debit
-            sourceParams = [STPSourceParams sepaDebitParamsWithName:[params[@"amount"] integerValue] iban:params[@"iban"] addressLine1:params[@"addressLine1"] city:params[@"city"] postalCode:params[@"postalCode"] country:params[@"country"];
-            break;
-            
-        case 4:
-            // Sofort
-            sourceParams = [STPSourceParams sofortParamsWithAmount:[params[@"amount"] integerValue] returnURL:params[@"returnURL"] country:params[@"country"] statementDescriptor:params[@"statementDescriptor"]];
-            break;
-            
-        case 5:
-            // Alipay
-            sourceParams = [STPSourceParams alipayParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"]];
-            break;
-            
-        case 6:
-            // Alipay Reusable
-            sourceParams = [STPSourceParams alipayReusableParamsWithCurrency:params[@"currency"] returnURL:params[@"returnURL"]];
-            break;
-            
-        case 7:
-            // P24
-            sourceParams = [STPSourceParams p24ParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] email:params[@"email"] name:params[@"name"] returnURL:params[@"returnURL"]]
-            break;
-            
-        case 8:
-            // Visa Checkout
+    [self.commandDelegate runInBackground:^{
+        NSInteger type = [[command.arguments objectAtIndex:0] integerValue];
+        NSDictionary *params = [command.arguments objectAtIndex:1];
+        STPSourceParams *sourceParams;
         
-            break;
-    }
+        switch (type) {
+            case 0:
+                // 3DS
+                sourceParams = [STPSourceParams threeDSecureParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"] card:params[@"card"]];
+                break;
+                
+            case 1:
+                // GiroPay
+                sourceParams = [STPSourceParams giropayParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"]];
+                break;
+                
+            case 2:
+                // iDEAL
+                sourceParams = [STPSourceParams idealParamsWithAmount:[params[@"amount"] integerValue] name:params[@"name"] returnURL:params[@"returnURL"] statementDescriptor:params[@"statementDescriptor"] bank:params[@"bank"]];
+                break;
+                
+            case 3:
+                // SEPA Debit
+                sourceParams = [STPSourceParams sepaDebitParamsWithName:[params[@"amount"] integerValue] iban:params[@"iban"] addressLine1:params[@"addressLine1"] city:params[@"city"] postalCode:params[@"postalCode"] country:params[@"country"]];
+                break;
+                
+            case 4:
+                // Sofort
+                sourceParams = [STPSourceParams sofortParamsWithAmount:[params[@"amount"] integerValue] returnURL:params[@"returnURL"] country:params[@"country"] statementDescriptor:params[@"statementDescriptor"]];
+                break;
+                
+            case 5:
+                // Alipay
+                sourceParams = [STPSourceParams alipayParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] returnURL:params[@"returnURL"]];
+                break;
+                
+            case 6:
+                // Alipay Reusable
+                sourceParams = [STPSourceParams alipayReusableParamsWithCurrency:params[@"currency"] returnURL:params[@"returnURL"]];
+                break;
+                
+            case 7:
+                // P24
+                sourceParams = [STPSourceParams p24ParamsWithAmount:[params[@"amount"] integerValue] currency:params[@"currency"] email:params[@"email"] name:params[@"name"] returnURL:params[@"returnURL"]];
+                break;
+                
+            case 8:
+                // Visa Checkout
+                sourceParams = [STPSourceParams visaCheckoutParamsWithCallId:params[@"callId"]];
+                break;
+                
+            default:
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid source type"] callbackId:command.callbackId];
+                return;
+        }
+        
+        [self.client createSourceWithParams:sourceParams completion:^(STPSource * _Nullable source, NSError * _Nullable error) {
+            CDVPluginResult *pluginResult;
+            if (source != nil) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:source.allResponseFields];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+            }
+            
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }];
 }
 
 @end
+

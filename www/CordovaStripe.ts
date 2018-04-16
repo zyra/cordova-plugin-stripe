@@ -295,7 +295,7 @@ export namespace CordovaStripe {
       ])
     }
 
-    static createSource(tgype: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
+    static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
       exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
     }
   }
