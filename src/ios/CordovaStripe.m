@@ -124,18 +124,6 @@ NSArray *CardBrands = nil;
     };
 }
 
-- (void) createTokenWithPayment: (CDVInvokedUrlCommand *) command
-{
-    NSDictionary* const paymentInfo = [[command arguments] objectAtIndex:0];
-    PKPayment* payment = [[PKPayment alloc] init];
-}
-
-- (void) createSourceWithPayment: (CDVInvokedUrlCommand *) command
-{
-    NSDictionary* const paymentInfo = [[command arguments] objectAtIndex:0];
-    PKPayment* payment = [[PKPayment alloc] init];
-}
-
 - (void)createCardToken:(CDVInvokedUrlCommand *)command
 {
     if (self.client == nil) {
