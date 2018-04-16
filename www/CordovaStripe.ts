@@ -302,8 +302,12 @@ export namespace CordovaStripe {
       ])
     }
 
-    static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error: ErrorCallback = NOOP) {
+    static initGooglePay(success = NOOP, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'initGooglePay');
+    }
 
+    static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'payWithGooglePay', [options.amount, options.currencyCode]);
     }
 
     static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {

@@ -90,6 +90,10 @@ export declare namespace CordovaStripe {
         currency: string;
         items: ApplePayItem[];
     }
+    interface GooglePayOptions {
+        amount: string;
+        currencyCode: string;
+    }
     interface ThreeDeeSecureParams {
         /**
          * Amount
@@ -221,6 +225,8 @@ export declare namespace CordovaStripe {
          * @param {Function} error
          */
         static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error?: ErrorCallback): void;
+        static initGooglePay(success?: any, error?: ErrorCallback): void;
+        static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error?: ErrorCallback): void;
         static createSource(type: SourceType, params: SourceParams, success?: (token: TokenResponse) => void, error?: ErrorCallback): void;
     }
 }
