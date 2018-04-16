@@ -16,7 +16,7 @@
         </config-file>
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
-	<framework src="com.stripe:stripe-android:4.1.2" />
+	<framework src="com.stripe:stripe-android:6.1.2" />
 
     </platform>
 
