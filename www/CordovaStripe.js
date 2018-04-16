@@ -4,7 +4,7 @@ var cordova_1 = require("cordova");
 var NOOP = function () { };
 var CordovaStripe;
 (function (CordovaStripe) {
-    var Plugin = (function () {
+    var Plugin = /** @class */ (function () {
         function Plugin() {
         }
         /**
@@ -21,8 +21,8 @@ var CordovaStripe;
         /**
          * Create a credit card token
          * @param {CordovaStripe.CardTokenRequest} creditCard
-         * @param {(tokenObject: CordovaStripe.CardTokenResponse) => void} success
-         * @param {Function} error
+         * @param {CordovaStripe.CardTokenCallback} success
+         * @param {CordovaStripe.ErrorCallback} error
          */
         Plugin.createCardToken = function (creditCard, success, error) {
             if (success === void 0) { success = NOOP; }
@@ -99,6 +99,10 @@ var CordovaStripe;
                 });
                 return;
             }
+            options.items = options.items.map(function (item) {
+                item.amount = String(item.amount);
+                return item;
+            });
             cordova_1.exec(function (token) {
                 success(token, function (paymentProcessed) {
                     cordova_1.exec(NOOP, NOOP, 'CordovaStripe', 'finalizeApplePayTransaction', [Boolean(paymentProcessed)]);
@@ -114,4 +118,3 @@ var CordovaStripe;
     }());
     CordovaStripe.Plugin = Plugin;
 })(CordovaStripe = exports.CordovaStripe || (exports.CordovaStripe = {}));
-//# sourceMappingURL=CordovaStripe.js.map

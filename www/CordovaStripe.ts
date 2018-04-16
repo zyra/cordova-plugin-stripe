@@ -94,7 +94,7 @@ export namespace CordovaStripe {
 
   export interface ApplePayItem {
     label: string;
-    amount: number;
+    amount: string;
   }
 
   export interface ApplePayOptions {
@@ -199,7 +199,12 @@ export namespace CordovaStripe {
         return;
       }
 
-      exec((token: string) => {
+      options.items = options.items.map(item => {
+        item.amount = String(item.amount);
+        return item;
+      });
+
+      exec((token: any) => {
         success(token, (paymentProcessed: boolean) => {
           exec(NOOP, NOOP, 'CordovaStripe', 'finalizeApplePayTransaction', [Boolean(paymentProcessed)]);
         });

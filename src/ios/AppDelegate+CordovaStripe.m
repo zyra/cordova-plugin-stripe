@@ -8,38 +8,12 @@ static NSString* const PLUGIN_NAME = @"CordovaStripe";
     CordovaStripe* pluginInstance = [self.viewController getCommandInstance:PLUGIN_NAME];
     if (pluginInstance != nil) {
         // Send token back to plugin
-        pluginInstance.processPayment(controller, payment, completion);
+        [pluginInstance processPayment:controller didAuthorizePayment:payment completion:completion];
     } else {
         // Discard payment
+        NSLog(@"Unable to get plugin instsnce, discarding payment.");
+        completion(PKPaymentAuthorizationStatusFailure);
     }
-    
-    [[STPAPIClient sharedClient] createTokenWithPayment:payment completion:^(STPToken *token, NSError *error) {
-        if (token == nil || error != nil) {
-            // Present error to user...
-            return;
-        }
-        
-        CordovaStripe* pluginInstance = [self.viewController getCommandInstance:PLUGIN_NAME];
-        if (pluginInstance != nil) {
-            // Send token back to plugin
-        }
-        
-//        [self submitTokenToBackend:token completion:^(NSError *error) {
-//            if (error) {
-//                // Present error to user...
-//
-//                // Notify payment authorization view controller
-//                completion(PKPaymentAuthorizationStatusFailure);
-//            }
-//            else {
-//                // Save payment success
-//                self.paymentSuceeded = YES;
-//
-//                // Notify payment authorization view controller
-//                completion(PKPaymentAuthorizationStatusSuccess);
-//            }
-//        }];
-    }];
 }
 
 - (void)paymentAuthorizationViewControllerDidFinish:(PKPaymentAuthorizationViewController *)controller {

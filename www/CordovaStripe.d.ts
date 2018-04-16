@@ -5,7 +5,7 @@ export interface Cordova {
     plugins: CordovaPlugins;
 }
 export interface CordovaPlugins {
-    stripe: CordovaStripe.Plugin;
+    stripe: typeof CordovaStripe.Plugin;
 }
 export declare namespace CordovaStripe {
     interface BankAccount {
@@ -80,7 +80,7 @@ export declare namespace CordovaStripe {
     }
     interface ApplePayItem {
         label: string;
-        amount: number;
+        amount: string;
     }
     interface ApplePayOptions {
         merchantId: string;
@@ -106,8 +106,8 @@ export declare namespace CordovaStripe {
         /**
          * Create a credit card token
          * @param {CordovaStripe.CardTokenRequest} creditCard
-         * @param {(tokenObject: CordovaStripe.CardTokenResponse) => void} success
-         * @param {Function} error
+         * @param {CordovaStripe.CardTokenCallback} success
+         * @param {CordovaStripe.ErrorCallback} error
          */
         static createCardToken(creditCard: CardTokenRequest, success?: CardTokenCallback, error?: ErrorCallback): void;
         /**

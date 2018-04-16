@@ -33,7 +33,6 @@ NSArray *CardBrands = nil;
 
 - (void)initializeApplePayTransaction:(CDVInvokedUrlCommand *) command
 {
-    [self.commandDelegate runInBackground:^{
         NSString *merchantIdentifier = [command.arguments objectAtIndex:0];
         NSString *country = [command.arguments objectAtIndex:1];
         NSString *currency = [command.arguments objectAtIndex:2];
@@ -52,19 +51,22 @@ NSArray *CardBrands = nil;
             PKPaymentAuthorizationViewController *paymentAuthorizationViewController = [[PKPaymentAuthorizationViewController alloc] initWithPaymentRequest:paymentRequest];
             
             paymentAuthorizationViewController.delegate = self.appDelegate;
+            self.applePayCDVCallbackId = command.callbackId;
+            
+            NSLog(@"Callback ID is %@", command.callbackId);
+            
             
             [self.viewController presentViewController:paymentAuthorizationViewController animated:YES completion:nil];
             
-            self.applePayCDVCallbackId = command.callbackId;
+            
         } else {
             NSLog(@"Problem with integration");
         }
-    }];
 }
 
 - (void)processPayment: (PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus))completion
 {
-    [[STPAPIClient sharedClient] createTokenWithPayment:payment completion:^(STPToken *token, NSError *error) {
+    [self.client createTokenWithPayment:payment completion:^(STPToken *token, NSError *error) {
         CDVPluginResult *result;
         
         if (error != nil) {
@@ -73,7 +75,7 @@ NSArray *CardBrands = nil;
             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Unable to retrieve token"];
         } else {
             self.applePayCompleteCallback = completion;
-            
+            result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:token.allResponseFields];
         }
         
         [self.commandDelegate sendPluginResult:result callbackId:self.applePayCDVCallbackId];
