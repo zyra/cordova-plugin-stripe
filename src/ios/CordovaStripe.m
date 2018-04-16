@@ -252,7 +252,7 @@ NSArray *CardBrands = nil;
                 
             case 3:
                 // SEPA Debit
-                sourceParams = [STPSourceParams sepaDebitParamsWithName:[params[@"amount"] integerValue] iban:params[@"iban"] addressLine1:params[@"addressLine1"] city:params[@"city"] postalCode:params[@"postalCode"] country:params[@"country"]];
+                sourceParams = [STPSourceParams sepaDebitParamsWithName:params[@"name"] iban:params[@"iban"] addressLine1:params[@"addressLine1"] city:params[@"city"] postalCode:params[@"postalCode"] country:params[@"country"]];
                 break;
                 
             case 4:
