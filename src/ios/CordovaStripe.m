@@ -111,7 +111,7 @@ NSArray *CardBrands = nil;
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
-- (void (^)(STPToken * _Nullable token, NSError * _Nullable error))handleTokenCallback: (CDVInvokedUrlCommand *) command
+- (void (^)(STPToken * _Nullable token, NSError * _Nullable error)) handleTokenCallback: (CDVInvokedUrlCommand *) command
 {
     return ^(STPToken * _Nullable token, NSError * _Nullable error) {
         CDVPluginResult* result;

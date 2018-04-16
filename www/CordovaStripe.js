@@ -118,7 +118,7 @@ var CordovaStripe;
         Plugin.createSource = function (type, params, success, error) {
             if (success === void 0) { success = NOOP; }
             if (error === void 0) { error = NOOP; }
-            cordova_1.exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase()), params]);
+            cordova_1.exec(success, error, 'createSource', 'createToken', [SourceTypeArray.indexOf(type.toLowerCase()), params]);
         };
         return Plugin;
     }());

@@ -44,6 +44,8 @@ export declare namespace CordovaStripe {
         metadata: any;
         name: any;
         tokenization_method: any;
+        phone: string;
+        email: string;
     }
     interface BankAccountTokenRequest {
         country: string;
