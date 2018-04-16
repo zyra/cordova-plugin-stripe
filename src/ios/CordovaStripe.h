@@ -9,13 +9,16 @@ typedef void(^ApplePayCallback)(PKPaymentAuthorizationStatus);
 @property (nonatomic, retain) NSString *applePayCDVCallbackId;
 extern NSArray *CardBrands;
 
-- (void) setPublishableKey:(CDVInvokedUrlCommand *) command;
-- (void) createCardToken:(CDVInvokedUrlCommand *) command;
+- (void) setPublishableKey: (CDVInvokedUrlCommand *) command;
+- (void) createCardToken: (CDVInvokedUrlCommand *) command;
 - (void) validateCardNumber: (CDVInvokedUrlCommand *) command;
 - (void) validateExpiryDate: (CDVInvokedUrlCommand *) command;
 - (void) validateCVC: (CDVInvokedUrlCommand *) command;
 - (void) getCardType: (CDVInvokedUrlCommand *) command;
 - (void) createBankAccountToken: (CDVInvokedUrlCommand *) command;
-- (void) processPayment:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus))completion;
+- (void) processPayment: (PKPaymentAuthorizationViewController *) controller didAuthorizePayment:(PKPayment *) payment completion:(void (^)(PKPaymentAuthorizationStatus)) completion;
+- (void) createSource: (CDVInvokedUrlCommand *) command;
+- (void) initializeApplePayTransaction:(CDVInvokedUrlCommand *) command;
+- (void) finalizeApplePayTransaction:(CDVInvokedUrlCommand *) command;
 
 @end
