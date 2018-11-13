@@ -1,5 +1,5 @@
 # Cordova Stripe Plugin
-A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Browser.
+A Cordova plugin that lets you use Bongloy Native SDKs for Android, iOS.
 
 [![npm](https://img.shields.io/npm/l/cordova-plugin-stripe.svg)](https://www.npmjs.com/package/cordova-plugin-stripe/)
 [![npm](https://img.shields.io/npm/dt/cordova-plugin-stripe.svg)](https://www.npmjs.com/package/cordova-plugin-stripe)
@@ -7,7 +7,7 @@ A Cordova plugin that lets you use Stripe Native SDKs for Android, iOS and Brows
 
 ## Installation
 ```shell
-cordova plugin add cordova-plugin-stripe
+cordova plugin add https://github.com/khomsovon/cordova-plugin-stripe.git 
 ```
 
 <br>
