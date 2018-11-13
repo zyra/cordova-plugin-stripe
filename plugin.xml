@@ -14,11 +14,12 @@
         </config-file>
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
-	<framework src="com.stripe:stripe-android:4.1.2" />
+        <framework src="com.github.khomsovon:bongloy-android:-SNAPSHOT" />
 
     </platform>
 
     <platform name="ios">
+        <dependency id="cordova-plugin-cocoapod-support"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
@@ -26,10 +27,13 @@
             </feature>
         </config-file>
 
+        <header-file src="src/ios/BongloyAPIClient.h" />
+        <source-file src="src/ios/BongloyAPIClient.m" />
+
         <header-file src="src/ios/CordovaStripe.h" />
         <source-file src="src/ios/CordovaStripe.m" />
 
-        <framework src="src/ios/Stripe.framework" custom="true" />
+        <pod id="Stripe" />
 
     </platform>
 
