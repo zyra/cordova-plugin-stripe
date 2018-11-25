@@ -298,5 +298,37 @@ NSArray *CardBrands = nil;
     }];
 }
 
+- (void) createPiiToken:(CDVInvokedUrlCommand *) command
+{
+    [self.commandDelegate runInBackground:^{
+        NSString *pid = [command.arguments objectAtIndex:0];
+        [self.client createTokenWithPersonalIDNumber:pid completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+            CDVPluginResult *pluginResult;
+            if (error != nil) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:token.tokenId];
+            }
+            
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }];
+}
+
+- (void) createAccountToken:(CDVInvokedUrlCommand *) command
+{
+    STPConnectAccountParams *params;
+    [self.client createTokenWithConnectAccount: params completion:^(STPToken * _Nullable token, NSError * _Nullable error) {
+        CDVPluginResult *pluginResult;
+        if (error != nil) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:token.tokenId];
+        }
+        
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }]
+}
+
 @end
 

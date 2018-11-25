@@ -9,6 +9,7 @@
     <js-module name="CordovaStripe" src="www/CordovaStripe.js"/>
 
     <platform name="android">
+
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CordovaStripe">
                 <param name="android-package" value="com.zyramedia.cordova.stripe.CordovaStripe"/>
@@ -26,9 +27,12 @@
         <framework src="com.stripe:stripe-android:8.1.0"/>
         <framework src="com.android.support:support-v4:24.1.1+"/>
         <framework src="com.android.support:appcompat-v7:24.1.1+"/>
+        <framework src="com.google.code.gson:gson:2.8.5"/>
+
     </platform>
 
     <platform name="ios">
+
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
                 <param name="ios-package" value="CordovaStripe"/>
@@ -42,6 +46,21 @@
         <source-file src="src/ios/AppDelegate+CordovaStripe.m"/>
 
         <framework src="src/ios/Stripe.framework" custom="true"/>
+
+    </platform>
+
+    <platform name="browser">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="CordovaStripe">
+                <param name="browser-package" value="CordovaStripe"/>
+            </feature>
+        </config-file>
+
+        <js-module src="src/browser/CordovaStripe.js" name="CordovaStripe">
+            <runs/>
+        </js-module>
+
     </platform>
 
 </plugin>
