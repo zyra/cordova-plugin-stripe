@@ -4,7 +4,19 @@ var cordova_1 = require("cordova");
 var NOOP = function () { };
 var CordovaStripe;
 (function (CordovaStripe) {
-    var SourceTypeArray = ['3ds', 'giropay', 'ideal', 'sepadebit', 'sofort', 'alipay', 'alipayreusable', 'p24', 'visacheckout'];
+    var SourceType;
+    (function (SourceType) {
+        SourceType["ThreeDeeSecure"] = "3ds";
+        SourceType["GiroPay"] = "giropay";
+        SourceType["iDEAL"] = "ideal";
+        SourceType["SEPADebit"] = "sepadebit";
+        SourceType["Sofort"] = "sofort";
+        SourceType["AliPay"] = "alipay";
+        SourceType["AliPayReusable"] = "alipayreusable";
+        SourceType["P24"] = "p24";
+        SourceType["VisaCheckout"] = "visacheckout";
+    })(SourceType = CordovaStripe.SourceType || (CordovaStripe.SourceType = {}));
+    var SourceTypeArray = Object.keys(SourceType).map(function (key) { return SourceType[key]; });
     var Plugin = /** @class */ (function () {
         function Plugin() {
         }
@@ -127,7 +139,17 @@ var CordovaStripe;
         Plugin.createSource = function (type, params, success, error) {
             if (success === void 0) { success = NOOP; }
             if (error === void 0) { error = NOOP; }
-            cordova_1.exec(success, error, 'createSource', 'createToken', [SourceTypeArray.indexOf(type.toLowerCase()), params]);
+            cordova_1.exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase()), params]);
+        };
+        Plugin.createPiiToken = function (personalId, success, error) {
+            if (success === void 0) { success = NOOP; }
+            if (error === void 0) { error = NOOP; }
+            cordova_1.exec(success, error, 'CordovaStripe', 'createPiiToken', [personalId]);
+        };
+        Plugin.createAccountToken = function (accountParams, success, error) {
+            if (success === void 0) { success = NOOP; }
+            if (error === void 0) { error = NOOP; }
+            cordova_1.exec(success, error, 'CordovaStripe', 'createAccountToken', [accountParams]);
         };
         return Plugin;
     }());

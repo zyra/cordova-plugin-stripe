@@ -71,6 +71,14 @@ export declare namespace CordovaStripe {
         address_country?: string;
         postal_code?: string;
         currency?: string;
+        /**
+         * iOS only
+         */
+        phone?: string;
+        /**
+         * iOS only
+         */
+        email?: string;
     }
     interface CardTokenResponse extends TokenResponse {
         card: Card;
@@ -159,7 +167,56 @@ export declare namespace CordovaStripe {
         callId: string;
     }
     type SourceParams = ThreeDeeSecureParams | GiroPayParams | iDEALParams | SEPADebitParams | SofortParams | AlipayParams | AlipayReusableParams | P24Params | VisaCheckoutParams;
-    type SourceType = '3ds' | 'giropay' | 'ideal' | 'sepadebit' | 'sofort' | 'alipay' | 'alipayreusable' | 'p24' | 'visacheckout';
+    enum SourceType {
+        ThreeDeeSecure = "3ds",
+        GiroPay = "giropay",
+        iDEAL = "ideal",
+        SEPADebit = "sepadebit",
+        Sofort = "sofort",
+        AliPay = "alipay",
+        AliPayReusable = "alipayreusable",
+        P24 = "p24",
+        VisaCheckout = "visacheckout",
+    }
+    interface Address {
+        line1: string;
+        line2: string;
+        city: string;
+        postal_code: string;
+        state: string;
+        country: string;
+    }
+    interface LegalEntity {
+        address?: Address;
+        dob?: {
+            day: number;
+            month: number;
+            year: number;
+        };
+        first_name?: string;
+        last_name?: string;
+        gender?: 'male' | 'female';
+        personal_address?: Address;
+        business_name?: string;
+        business_url?: string;
+        business_tax_id_provided?: boolean;
+        business_vat_id_provided?: string;
+        country?: string;
+        tos_acceptance?: {
+            date: number;
+            ip: string;
+        };
+        personal_id_number_provided?: boolean;
+        phone_number?: string;
+        ssn_last_4_provided?: boolean;
+        tax_id_registrar?: string;
+        type?: 'individual' | 'company';
+        verification?: any;
+    }
+    interface AccountParams {
+        tosShownAndAccepted: boolean;
+        legalEntity: LegalEntity;
+    }
     interface Error {
         message: string;
     }
@@ -228,5 +285,7 @@ export declare namespace CordovaStripe {
         static initGooglePay(success?: any, error?: ErrorCallback): void;
         static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error?: ErrorCallback): void;
         static createSource(type: SourceType, params: SourceParams, success?: (token: TokenResponse) => void, error?: ErrorCallback): void;
+        static createPiiToken(personalId: string, success?: any, error?: ErrorCallback): void;
+        static createAccountToken(accountParams: AccountParams, success?: any, error?: ErrorCallback): void;
     }
 }
