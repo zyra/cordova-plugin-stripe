@@ -186,9 +186,19 @@ export namespace CordovaStripe {
 
   export type SourceParams = ThreeDeeSecureParams | GiroPayParams | iDEALParams | SEPADebitParams | SofortParams | AlipayParams | AlipayReusableParams | P24Params | VisaCheckoutParams;
 
-  export type SourceType = '3ds' | 'giropay' | 'ideal' | 'sepadebit' | 'sofort' | 'alipay' | 'alipayreusable' | 'p24' | 'visacheckout';
+  export enum SourceType {
+    ThreeDeeSecure = '3ds',
+    GiroPay = 'giropay',
+    iDEAL = 'ideal',
+    SEPADebit = 'sepadebit',
+    Sofort = 'sofort',
+    AliPay = 'alipay',
+    AliPayReusable = 'alipayreusable',
+    P24 = 'p24',
+    VisaCheckout = 'visacheckout',
+  }
 
-  const SourceTypeArray: SourceType[] = ['3ds', 'giropay', 'ideal', 'sepadebit', 'sofort', 'alipay', 'alipayreusable', 'p24', 'visacheckout'];
+  const SourceTypeArray: SourceType[] = Object.keys(SourceType).map(key => SourceType[key]);
 
   export interface Error {
     message: string;
