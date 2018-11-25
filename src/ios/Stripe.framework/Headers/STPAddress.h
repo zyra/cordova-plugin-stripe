@@ -35,6 +35,11 @@ typedef NS_ENUM(NSUInteger, STPBillingAddressFields) {
      Request the user's full billing address
      */
     STPBillingAddressFieldsFull,
+
+    /**
+     Just request the user's billing name
+     */
+    STPBillingAddressFieldsName,
 };
 
 
@@ -66,7 +71,7 @@ extern STPContactField const STPContactFieldName;
 /**
  STPAddress Contains an address as represented by the Stripe API.
  */
-@interface STPAddress : NSObject<STPAPIResponseDecodable, STPFormEncodable>
+@interface STPAddress : NSObject<STPAPIResponseDecodable, STPFormEncodable, NSCopying>
 
 /**
  The user's full name (e.g. "Jane Doe")
@@ -212,6 +217,8 @@ extern STPContactField const STPContactFieldName;
  */
 - (BOOL)containsContentForShippingAddressFields:(nullable NSSet<STPContactField> *)desiredFields;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
 /**
  Converts an STPBillingAddressFields enum value into the closest equivalent
  representation of PKAddressField options
@@ -221,7 +228,10 @@ extern STPContactField const STPContactFieldName;
  a PKAddressField value.
  */
 + (PKAddressField)applePayAddressFieldsFromBillingAddressFields:(STPBillingAddressFields)billingAddressFields;
+#pragma clang diagnostic pop
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
 /**
  Converts a set of STPContactField values into the closest equivalent
  representation of PKAddressField options
@@ -231,6 +241,7 @@ extern STPContactField const STPContactFieldName;
  a PKAddressField value.
  */
 + (PKAddressField)pkAddressFieldsFromStripeContactFields:(nullable NSSet<STPContactField> *)contactFields;
+#pragma clang diagnostic pop
 
 /**
  Converts a set of STPContactField values into the closest equivalent
