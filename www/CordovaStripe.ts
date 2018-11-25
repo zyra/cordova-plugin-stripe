@@ -81,7 +81,9 @@ export namespace CordovaStripe {
     address_state?: string;
     address_country?: string;
     postal_code?: string;
-    currency?: string
+    currency?: string;
+    phone?: string;
+    email?: string;
   }
 
   export interface CardTokenResponse extends TokenResponse {
