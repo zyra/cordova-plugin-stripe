@@ -81,7 +81,15 @@ export namespace CordovaStripe {
     address_state?: string;
     address_country?: string;
     postal_code?: string;
-    currency?: string
+    currency?: string;
+    /**
+     * iOS only
+     */
+    phone?: string;
+    /**
+     * iOS only
+     */
+    email?: string;
   }
 
   export interface CardTokenResponse extends TokenResponse {
@@ -199,6 +207,48 @@ export namespace CordovaStripe {
   }
 
   const SourceTypeArray: SourceType[] = Object.keys(SourceType).map(key => SourceType[key]);
+
+  export interface Address {
+    line1: string;
+    line2: string;
+    city: string;
+    postal_code: string;
+    state: string;
+    country: string;
+  }
+
+  export interface LegalEntity {
+    address?: Address;
+    dob?: {
+      day: number;
+      month: number;
+      year: number;
+    },
+    first_name?: string;
+    last_name?: string;
+    gender?: 'male' | 'female';
+    personal_address?: Address;
+    business_name?: string;
+    business_url?: string;
+    business_tax_id_provided?: boolean;
+    business_vat_id_provided?: string;
+    country?: string;
+    tos_acceptance?: {
+      date: number;
+      ip: string;
+    },
+    personal_id_number_provided?: boolean;
+    phone_number?: string;
+    ssn_last_4_provided?: boolean;
+    tax_id_registrar?: string;
+    type?: 'individual' | 'company';
+    verification?: any;
+  }
+
+  export interface AccountParams {
+    tosShownAndAccepted: boolean;
+    legalEntity: LegalEntity;
+  }
 
   export interface Error {
     message: string;
@@ -321,7 +371,15 @@ export namespace CordovaStripe {
     }
 
     static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'createSource', 'createToken', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
+      exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
+    }
+
+    static createPiiToken(personalId: string, success = NOOP, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'createPiiToken', [personalId]);
+    }
+
+    static createAccountToken(accountParams: AccountParams, success = NOOP, error: ErrorCallback = NOOP) {
+      exec(success, error, 'CordovaStripe', 'createAccountToken', [accountParams]);
     }
   }
 }
