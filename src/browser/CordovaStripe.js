@@ -1,9 +1,7 @@
-if (typeof Stripe === 'undefined') {
-  // injects Stripe.js into the browser
-  var secureStripeScript = document.createElement('script');
-  secureStripeScript.setAttribute('src','https://js.stripe.com/v3/');
-  document.getElementsByTagName('head')[0].appendChild(secureStripeScript);
-}
+// injects Stripe.js into the browser
+var secureStripeScript = document.createElement('script');
+secureStripeScript.setAttribute('src','https://js.stripe.com/v3/');
+document.getElementsByTagName('head')[0].appendChild(secureStripeScript);
 
 var stripe = {
 
