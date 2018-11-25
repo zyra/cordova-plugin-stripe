@@ -87,15 +87,6 @@ Once you have the token, you can now send it to your backend so you can charge t
 
 {{/modules}}
 
-<br>
-<br>
-
-## Tests
-To test this plugin with `cordova-plugin-test-framework`, run the following command to install the tests:
-```shell
-cordova plugin add https://github.com/zyramedia/cordova-plugin-stripe#:/tests
-```
-
 <br><br>
 ## Contribution
 - **Having an issue**? or looking for support? [Open an issue](https://github.com/zyra/cordova-plugin-stripe/issues/new) and we will get you the help you need.
