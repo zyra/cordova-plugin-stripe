@@ -25,6 +25,7 @@
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe"/>
         <framework src="com.stripe:stripe-android:8.1.0"/>
+        <framework src="com.google.android.gms:play-services-wallet:11.4.2"/>
         <framework src="com.android.support:support-v4:24.1.1+"/>
         <framework src="com.android.support:appcompat-v7:24.1.1+"/>
         <framework src="com.google.code.gson:gson:2.8.5"/>
