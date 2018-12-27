@@ -10,19 +10,19 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import com.stripe.android.TokenCallback;
-import com.stripe.android.Stripe;
+import com.stripe.android.Bongloy;
 import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.android.util.CardUtils;
+import com.stripe.android.CardUtils;
 
 public class CordovaStripe extends CordovaPlugin {
 
-  private Stripe stripeInstance;
+  private Bongloy bongloyInstance;
 
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
-    stripeInstance = new Stripe(webView.getContext());
+    bongloyInstance = new Bongloy(webView.getContext());
   }
 
   @Override
@@ -53,7 +53,7 @@ public class CordovaStripe extends CordovaPlugin {
   private void setPublishableKey(final String key, final CallbackContext callbackContext) {
 
     try {
-      stripeInstance.setDefaultPublishableKey(key);
+      bongloyInstance.setDefaultPublishableKey(key);
       callbackContext.success();
     } catch (Exception e) {
       callbackContext.error(e.getLocalizedMessage());
@@ -80,7 +80,7 @@ public class CordovaStripe extends CordovaPlugin {
         creditCard.has("currency") ? creditCard.getString("currency") : null
       );
 
-      stripeInstance.createToken(
+      bongloyInstance.createToken(
         cardObject,
         new TokenCallback() {
           public void onSuccess(Token token) {
@@ -120,7 +120,7 @@ public class CordovaStripe extends CordovaPlugin {
         bankAccountObject.setAccountHolderType(BankAccount.TYPE_COMPANY);
       }
 
-      stripeInstance.createBankAccountToken(
+      bongloyInstance.createBankAccountToken(
         bankAccountObject,
         new TokenCallback() {
           public void onSuccess(Token token) {

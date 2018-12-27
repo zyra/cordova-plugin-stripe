@@ -9,12 +9,15 @@
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CordovaStripe">
-                <param name="android-package" value="com.zyramedia.cordova.stripe.CordovaStripe" />
+              <!--<param name="android-package" value="com.zyramedia.cordova.stripe.CordovaStripe" />-->
+              <param name="android-package" value="com.zyramedia.cordova.stripe.CordovaStripe" />
             </feature>
         </config-file>
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
-        <framework src="com.github.khomsovon:bongloy-android:-SNAPSHOT" />
+        <source-file src="src/android/BongloyApiHandler.java" target-dir="src/com/stripe/android" />
+        <source-file src="src/android/Bongloy.java" target-dir="src/com/stripe/android" />
+        <framework src="com.stripe:stripe-android:8.1.0" />
 
     </platform>
 
