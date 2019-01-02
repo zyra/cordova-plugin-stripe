@@ -1,8 +1,8 @@
 #import <Cordova/CDV.h>
-@import Stripe;
+#import "BongloyAPIClient.h"
 
 @interface CordovaStripe : CDVPlugin
-@property (nonatomic, retain) STPAPIClient *client;
+@property (nonatomic, retain) BongloyAPIClient *client;
 
 - (void) setPublishableKey:(CDVInvokedUrlCommand *) command;
 - (void) createCardToken:(CDVInvokedUrlCommand *) command;
