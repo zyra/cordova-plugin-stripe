@@ -7,5 +7,5 @@ A Cordova plugin that lets you use Bongloy Native SDKs for Android, iOS.
 
 ## Installation
 ```shell
-cordova plugin add https://github.com/khomsovon/cordova-plugin-stripe.git
+ionic cordova plugin add https://github.com/khomsovon/cordova-plugin-stripe.git
 ```
