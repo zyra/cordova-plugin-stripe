@@ -23,7 +23,6 @@
 
     <platform name="ios">
         <dependency id="cordova-plugin-cocoapod-support"/>
-        <preference name="pods_ios_min_version" value="9.0"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
