@@ -34,9 +34,6 @@
 
         <header-file src="src/ios/CordovaStripe.h" />
         <source-file src="src/ios/CordovaStripe.m" />
-
-        <pod id="Stripe" version="13.2.0"/>
-
     </platform>
 
     <platform name="browser">
