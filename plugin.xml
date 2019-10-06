@@ -34,8 +34,8 @@
 
         <header-file src="src/ios/CordovaStripe.h" />
         <source-file src="src/ios/CordovaStripe.m" />
-        <framework src="Intercom" type="podspec" spec="13.2.0" />
-        
+        <framework src="Stripe" type="podspec" spec="13.2.0" />
+
     </platform>
 
     <platform name="browser">
