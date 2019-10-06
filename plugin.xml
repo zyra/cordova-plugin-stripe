@@ -22,7 +22,6 @@
     </platform>
 
     <platform name="ios">
-        <dependency id="cordova-plugin-cocoapod-support"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
