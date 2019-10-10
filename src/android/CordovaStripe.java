@@ -9,12 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import com.stripe.android.CardUtils;
 import com.stripe.android.TokenCallback;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.android.util.CardUtils;
+
 
 public class CordovaStripe extends CordovaPlugin {
 
