@@ -18,6 +18,7 @@ static NSString* const PLUGIN_NAME = @"CordovaStripe";
 
 - (void)paymentAuthorizationViewControllerDidFinish:(PKPaymentAuthorizationViewController *)controller {
     
+    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
