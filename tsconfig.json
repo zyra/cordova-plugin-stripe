@@ -2,8 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "sourceMap": false,
-    "declaration": true
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "declaration": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ]
   },
   "exclude": [
     "node_modules"
