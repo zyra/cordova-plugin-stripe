@@ -1,6 +1,14 @@
 import { exec } from 'cordova';
 
-const NOOP: any = () => {};
+
+const execP = <Opts, Response>(methodName: string, opts?: Opts): Promise<Response> => {
+  return new Promise<Response>((resolve, reject) => {
+    exec(resolve, reject, 'CordovaStripe', methodName, [opts]);
+  });
+};
+
+const NOOP: any = () => {
+};
 
 export interface Window {
   cordova: Cordova;
@@ -15,6 +23,109 @@ export interface CordovaPlugins {
 }
 
 export namespace CordovaStripe {
+
+  export interface CommonIntentOptions {
+    clientSecret: string;
+    /**
+     * If provided, the payment intent will be confirmed using this card as a payment method.
+     */
+    card?: Card;
+    /**
+     * If provided, the payment intent will be confirmed using this payment method
+     */
+    paymentMethodId?: string;
+    redirectUrl: string;
+  }
+
+  export type ConfirmSetupIntentOptions = CommonIntentOptions;
+
+  export interface ConfirmPaymentIntentOptions extends CommonIntentOptions {
+    /**
+     * Whether you intend to save the payment method to the customer's account after this payment
+     */
+    saveMethod?: boolean;
+    /**
+     * If provided, the payment intent will be confirmed using a card provided by Apple Pay
+     */
+    applePayOptions?: ApplePayOptions;
+
+    /**
+     * If provided, the payment intent will be confirmed using a card provided by Google Pay
+     */
+    googlePayOptions?: GooglePayOptions;
+  }
+
+  export type SetPublishableKeyOptions = {
+    key: string
+  };
+
+  export type ValidateCardNumberOptions = {
+    number: string
+  };
+
+  export type ValidateExpiryDateOptions = {
+    exp_month: number,
+    exp_year: number
+  };
+
+  export type ValidateCVCOptions = {
+    cvc: string
+  };
+
+  export type IdentifyCardBrandOptions = {
+    number: string
+  };
+
+  export type CreatePiiTokenOptions = {
+    pii: string
+  };
+
+  export type CreateSourceTokenOptions = {
+    type: SourceType,
+    params: SourceParams
+  };
+
+  export type FinalizeApplePayTransactionOptions = {
+    success: boolean
+  };
+
+  export type ValidityResponse = { valid: boolean }
+  export type AvailabilityResponse = { available: boolean }
+
+  export type CardBrandResponse = { brand: CardBrand };
+
+  export interface PaymentMethod {
+    created?: number;
+    customerId?: string;
+    id?: string;
+    livemode: boolean;
+    type?: string;
+    card?: Card;
+  }
+
+  export enum UIButtonType {
+    SUBMIT = 'submit',
+    CONTINUE = 'continue',
+    NEXT = 'next',
+    CANCEL = 'cancel',
+    RESEND = 'resend',
+    SELECT = 'select'
+  }
+
+  export interface UIButtonCustomizationOptions {
+    type: UIButtonType;
+    backgroundColor?: string;
+    textColor?: string;
+    fontName?: string;
+    cornerRadius?: number;
+    fontSize?: number;
+  }
+
+  export interface UICustomizationOptions {
+    accentColor?: string;
+    buttonCustomizations?: UIButtonCustomizationOptions[];
+  }
+
   export interface BankAccount {
     id: string;
     object: string;
@@ -40,7 +151,7 @@ export namespace CordovaStripe {
     address_state: any;
     address_zip: any;
     address_zip_check: any;
-    brand: string;
+    brand: CardBrand;
     country: string;
     cvc_check: any;
     dynamic_last4: any;
@@ -71,8 +182,8 @@ export namespace CordovaStripe {
 
   export interface CardTokenRequest {
     number: string;
-    expMonth: number;
-    expYear: number;
+    exp_month: number;
+    exp_year: number;
     cvc: string;
     name?: string;
     address_line1?: string;
@@ -80,7 +191,7 @@ export namespace CordovaStripe {
     address_city?: string;
     address_state?: string;
     address_country?: string;
-    postal_code?: string;
+    address_zip?: string;
     currency?: string;
     /**
      * iOS only
@@ -115,8 +226,23 @@ export namespace CordovaStripe {
   }
 
   export interface GooglePayOptions {
-    amount: string;
+    allowedCardNetworks: CardBrand[];
+    allowedAuthMethods: Array<'PAN_ONLY' | 'CRYPTOGRAM_3DS'>;
+    totalPrice: string;
+    totalPriceStatus: 'final';
     currencyCode: string;
+    merchantName: string;
+    emailRequired?: boolean;
+    allowPrepaidCards?: boolean;
+    billingAddressRequired?: boolean;
+    billingAddressParams?: {
+      format?: 'MIN'; // TODO copy from google
+      phoneNumberRequired?: boolean;
+    }
+    shippingAddressRequired?: boolean;
+    shippingAddressParameters?: {
+      // TODO copy form google
+    };
   }
 
   export interface ThreeDeeSecureParams {
@@ -192,7 +318,16 @@ export namespace CordovaStripe {
     callId: string;
   }
 
-  export type SourceParams = ThreeDeeSecureParams | GiroPayParams | iDEALParams | SEPADebitParams | SofortParams | AlipayParams | AlipayReusableParams | P24Params | VisaCheckoutParams;
+  export type SourceParams =
+    ThreeDeeSecureParams
+    | GiroPayParams
+    | iDEALParams
+    | SEPADebitParams
+    | SofortParams
+    | AlipayParams
+    | AlipayReusableParams
+    | P24Params
+    | VisaCheckoutParams;
 
   export enum SourceType {
     ThreeDeeSecure = '3ds',
@@ -206,7 +341,18 @@ export namespace CordovaStripe {
     VisaCheckout = 'visacheckout',
   }
 
-  const SourceTypeArray: SourceType[] = Object.keys(SourceType).map(key => SourceType[key]);
+  export enum CardBrand {
+    AMERICAN_EXPRESS = 'AMERICAN_EXPRESS',
+    DISCOVER = 'DISCOVER',
+    JCB = 'JCB',
+    DINERS_CLUB = 'DINERS_CLUB',
+    VISA = 'VISA',
+    MASTERCARD = 'MASTERCARD',
+    UNIONPAY = 'UNIONPAY',
+    UNKNOWN = 'UNKNOWN'
+  }
+
+  const SourceTypeArray: SourceType[] = Object.keys(SourceType).map((key: any) => SourceType[key] as any as SourceType);
 
   export interface Address {
     line1: string;
@@ -254,133 +400,228 @@ export namespace CordovaStripe {
     message: string;
   }
 
-  export type BlankCallback = () => void;
-  export type ErrorCallback = (error: Error) => void;
-  export type CardTokenCallback = (token: CardTokenResponse) => void;
-  export type BankAccountTokenCallback = (token: BankAccountTokenRequest) => void;
-
   export class Plugin {
-    /**
-     * Set publishable key
-     * @param {string} key
-     * @param {Function} success
-     * @param {Function} error
-     */
-    static setPublishableKey(key: string, success: BlankCallback = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'setPublishableKey', [key]);
+    static addCustomerSource(opts: { sourceId: string; type?: string }): Promise<void> {
+      return execP('addCustomerSource', opts);
     }
 
-    /**
-     * Create a credit card token
-     * @param {CordovaStripe.CardTokenRequest} creditCard
-     * @param {CordovaStripe.CardTokenCallback} success
-     * @param {CordovaStripe.ErrorCallback} error
-     */
-    static createCardToken(creditCard: CardTokenRequest, success: CardTokenCallback = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createCardToken', [creditCard]);
+    static cancelApplePay(): Promise<void> {
+      return execP('cancelApplePay');
     }
 
-    /**
-     * Create a bank account token
-     * @param {CordovaStripe.BankAccountTokenRequest} bankAccount
-     * @param {Function} success
-     * @param {Function} error
-     */
-    static createBankAccountToken(bankAccount: BankAccountTokenRequest, success: BankAccountTokenCallback = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createBankAccountToken', [bankAccount]);
+    static confirmPaymentIntent(opts: CordovaStripe.ConfirmPaymentIntentOptions): Promise<void> {
+      return execP('confirmPaymentIntent', opts);
     }
 
-    /**
-     * Validates card number
-     * @param cardNumber Card number
-     * @param {(isValid: boolean) => void} [success]
-     * @param {Function} [error]
-     */
-    static validateCardNumber(cardNumber, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'validateCardNumber', [cardNumber]);
+    static confirmSetupIntent(opts: CordovaStripe.CommonIntentOptions): Promise<void> {
+      return execP('confirmSetupIntent', opts);
     }
 
-    /**
-     * Validates the expiry date of a card
-     * @param {number} expMonth
-     * @param {number} expYear
-     * @param {(isValid: boolean) => void} [success]
-     * @param {Function} [error]
-     */
-    static validateExpiryDate(expMonth: number, expYear: number, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'validateExpiryDate', [expMonth, expYear]);
+    static createAccountToken(account: CordovaStripe.AccountParams): Promise<CordovaStripe.TokenResponse> {
+      return execP('createAccountToken', account);
     }
 
-    /**
-     * Validates a CVC of a card
-     * @param {string} cvc
-     * @param {(isValid: boolean) => void} [success]
-     * @param {Function} [error]
-     */
-    static validateCVC(cvc: string, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'validateCVC', [cvc]);
+    static createBankAccountToken(bankAccount: CordovaStripe.BankAccountTokenRequest): Promise<CordovaStripe.BankAccountTokenResponse> {
+      return execP('createBankAccountToken', bankAccount);
     }
 
-    /**
-     * Gets a card type from a card number
-     * @param {string | number} cardNumber
-     * @param {(type: string) => void} [success]
-     * @param {Function} [error]
-     */
-    static getCardType(cardNumber: string | number, success: (type: string) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'getCardType', [String(cardNumber)]);
+    static createCardToken(card: CordovaStripe.CardTokenRequest): Promise<CordovaStripe.CardTokenResponse> {
+      return execP('createCardToken', card);
     }
 
-    /**
-     * Pay with ApplePay
-     * @param {CordovaStripe.ApplePayOptions} options
-     * @param {(token: string, callback: (paymentProcessed: boolean) => void) => void} success
-     * @param {Function} error
-     */
-    static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error: ErrorCallback = NOOP) {
-      if (!options || !options.merchantId || !options.country || !options.currency || !options.items || !options.items.length) {
-        error({
-          message: 'Missing one or more payment options.'
-        });
-        return;
-      }
-
-      options.items = options.items.map(item => {
-        item.amount = String(item.amount);
-        return item;
-      });
-
-      exec((token: TokenResponse) => {
-        success(token, (paymentProcessed: boolean) => {
-          exec(NOOP, NOOP, 'CordovaStripe', 'finalizeApplePayTransaction', [Boolean(paymentProcessed)]);
-        });
-      }, error, 'CordovaStripe', 'initializeApplePayTransaction', [
-        options.merchantId,
-        options.country,
-        options.currency,
-        options.items
-      ])
+    static createPiiToken(opts: CordovaStripe.CreatePiiTokenOptions): Promise<CordovaStripe.TokenResponse> {
+      return execP('createPiiToken', opts);
     }
 
-    static initGooglePay(success = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'initGooglePay');
+    static createSourceToken(opts: CordovaStripe.CreateSourceTokenOptions): Promise<CordovaStripe.TokenResponse> {
+      return execP('createSourceToken', opts);
     }
 
-    static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'payWithGooglePay', [options.amount, options.currencyCode]);
+    static customerPaymentMethods(): Promise<{ paymentMethods: CordovaStripe.PaymentMethod[] }> {
+      return execP('customerPaymentMethods');
     }
 
-    static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
+    static customizePaymentAuthUI(opts: any): Promise<void> {
+      return execP('', opts);
     }
 
-    static createPiiToken(personalId: string, success = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createPiiToken', [personalId]);
+    static deleteCustomerSource(opts: { sourceId: string }): Promise<void> {
+      return execP('', opts);
     }
 
-    static createAccountToken(accountParams: AccountParams, success = NOOP, error: ErrorCallback = NOOP) {
-      exec(success, error, 'CordovaStripe', 'createAccountToken', [accountParams]);
+    static echo(options: { value: string }): Promise<{ value: string }> {
+      return execP('echo');
     }
+
+    static finalizeApplePayTransaction(opts: CordovaStripe.FinalizeApplePayTransactionOptions): Promise<void> {
+      return execP('', opts);
+    }
+
+    static identifyCardBrand(opts: CordovaStripe.IdentifyCardBrandOptions): Promise<CordovaStripe.CardBrandResponse> {
+      return execP('identifyCardBrand', opts);
+    }
+
+    static initCustomerSession(opts: { id: string; object: 'ephemeral_key'; associated_objects: Array<{ type: 'customer'; id: string }>; created: number; expires: number; livemode: boolean; secret: string; apiVersion?: string }): Promise<void> {
+      return execP('initCustomerSession', opts);
+    }
+
+    static isApplePayAvailable(): Promise<CordovaStripe.AvailabilityResponse> {
+      return execP('isApplePayAvailable');
+    }
+
+    static  isGooglePayAvailable(): Promise<CordovaStripe.AvailabilityResponse> {
+      return execP('isGooglePayAvailable');
+    }
+
+    static payWithApplePay(options: CordovaStripe.ApplePayOptions): Promise<CordovaStripe.TokenResponse> {
+      return execP('payWithApplePay');
+    }
+
+    static setCustomerDefaultSource(opts: { sourceId: string; type?: string }): Promise<void> {
+      return execP('setCustomerDefaultSource', opts);
+    }
+
+    static setPublishableKey(opts: CordovaStripe.SetPublishableKeyOptions): Promise<void> {
+      return execP('setPublishableKey', opts);
+    }
+
+    static startGooglePayTransaction(): Promise<void> {
+      return execP('startGooglePayTransaction');
+    }
+
+    static validateCVC(opts: CordovaStripe.ValidateCVCOptions): Promise<CordovaStripe.ValidityResponse> {
+      return execP('validateCVC', opts);
+    }
+
+    static validateCardNumber(opts: CordovaStripe.ValidateCardNumberOptions): Promise<CordovaStripe.ValidityResponse> {
+      return execP('validateCardNumber', opts);
+    }
+
+    static validateExpiryDate(opts: CordovaStripe.ValidateExpiryDateOptions): Promise<CordovaStripe.ValidityResponse> {
+      return execP('validateExpiryDate', opts);
+    }
+
+    // /**
+    //  * Set publishable key
+    //  * @param {string} key
+    //  * @param {Function} success
+    //  * @param {Function} error
+    //  */
+    // static setPublishableKey(key: string, success: BlankCallback = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'setPublishableKey', [key]);
+    // }
+    //
+    // /**
+    //  * Create a credit card token
+    //  * @param {CordovaStripe.CardTokenRequest} creditCard
+    //  * @param {CordovaStripe.CardTokenCallback} success
+    //  * @param {CordovaStripe.ErrorCallback} error
+    //  */
+    // static createCardToken(creditCard: CardTokenRequest, success: CardTokenCallback = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'createCardToken', [creditCard]);
+    // }
+    //
+    // /**
+    //  * Create a bank account token
+    //  * @param {CordovaStripe.BankAccountTokenRequest} bankAccount
+    //  * @param {Function} success
+    //  * @param {Function} error
+    //  */
+    // static createBankAccountToken(bankAccount: BankAccountTokenRequest, success: BankAccountTokenCallback = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'createBankAccountToken', [bankAccount]);
+    // }
+    //
+    // /**
+    //  * Validates card number
+    //  * @param cardNumber Card number
+    //  * @param {(isValid: boolean) => void} [success]
+    //  * @param {Function} [error]
+    //  */
+    // static validateCardNumber(cardNumber, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'validateCardNumber', [cardNumber]);
+    // }
+    //
+    // /**
+    //  * Validates the expiry date of a card
+    //  * @param {number} expMonth
+    //  * @param {number} expYear
+    //  * @param {(isValid: boolean) => void} [success]
+    //  * @param {Function} [error]
+    //  */
+    // static validateExpiryDate(expMonth: number, expYear: number, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'validateExpiryDate', [expMonth, expYear]);
+    // }
+    //
+    // /**
+    //  * Validates a CVC of a card
+    //  * @param {string} cvc
+    //  * @param {(isValid: boolean) => void} [success]
+    //  * @param {Function} [error]
+    //  */
+    // static validateCVC(cvc: string, success: (isValid: boolean) => void = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'validateCVC', [cvc]);
+    // }
+    //
+    // /**
+    //  * Gets a card type from a card number
+    //  * @param {string | number} cardNumber
+    //  * @param {(type: string) => void} [success]
+    //  * @param {Function} [error]
+    //  */
+    // static getCardType(cardNumber: string | number, success: (type: string) => void = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'getCardType', [String(cardNumber)]);
+    // }
+    //
+    // /**
+    //  * Pay with ApplePay
+    //  * @param {CordovaStripe.ApplePayOptions} options
+    //  * @param {(token: string, callback: (paymentProcessed: boolean) => void) => void} success
+    //  * @param {Function} error
+    //  */
+    // static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error: ErrorCallback = NOOP) {
+    //   if (!options || !options.merchantId || !options.country || !options.currency || !options.items || !options.items.length) {
+    //     error({
+    //       message: 'Missing one or more payment options.',
+    //     });
+    //     return;
+    //   }
+    //
+    //   options.items = options.items.map(item => {
+    //     item.amount = String(item.amount);
+    //     return item;
+    //   });
+    //
+    //   exec((token: TokenResponse) => {
+    //     success(token, (paymentProcessed: boolean) => {
+    //       exec(NOOP, NOOP, 'CordovaStripe', 'finalizeApplePayTransaction', [Boolean(paymentProcessed)]);
+    //     });
+    //   }, error, 'CordovaStripe', 'initializeApplePayTransaction', [
+    //     options.merchantId,
+    //     options.country,
+    //     options.currency,
+    //     options.items,
+    //   ]);
+    // }
+    //
+    // static initGooglePay(success = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'initGooglePay');
+    // }
+    //
+    // static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'payWithGooglePay', [options.amount, options.currencyCode]);
+    // }
+    //
+    // static createSource(type: SourceType, params: SourceParams, success: (token: TokenResponse) => void = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'createSource', [SourceTypeArray.indexOf(type.toLowerCase() as SourceType), params]);
+    // }
+    //
+    // static createPiiToken(personalId: string, success = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'createPiiToken', [personalId]);
+    // }
+    //
+    // static createAccountToken(accountParams: AccountParams, success = NOOP, error: ErrorCallback = NOOP) {
+    //   exec(success, error, 'CordovaStripe', 'createAccountToken', [accountParams]);
+    // }
   }
 }
 
