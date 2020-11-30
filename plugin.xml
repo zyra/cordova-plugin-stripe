@@ -41,14 +41,12 @@
             </feature>
         </config-file>
 
-        <header-file src="src/ios/CordovaStripe.h"/>
-        <source-file src="src/ios/CordovaStripe.m"/>
-
-        <header-file src="src/ios/AppDelegate+CordovaStripe.h"/>
-        <source-file src="src/ios/AppDelegate+CordovaStripe.m"/>
-
+        <source-file src="src/ios/CordovaStripe.swift"/>
+        <source-file src="src/ios/CustomerKeyProvider.swift"/>
+        <source-file src="src/ios/Helper.swift"/>
+        <source-file src="src/ios/PKAuthViewDelegate.swift"/>
+        <source-file src="src/ios/STPAuthCtx.swift"/>
         <framework src="src/ios/Stripe.framework" custom="true"/>
-
     </platform>
 
     <platform name="browser">
