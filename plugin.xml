@@ -35,6 +35,7 @@
 
     <platform name="ios">
 
+        <framework src="Stripe" type="podspec" spec="~> 21.0.1" />
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
                 <param name="ios-package" value="CordovaStripe"/>
@@ -46,7 +47,6 @@
         <source-file src="src/ios/Helper.swift"/>
         <source-file src="src/ios/PKAuthViewDelegate.swift"/>
         <source-file src="src/ios/STPAuthCtx.swift"/>
-        <framework src="src/ios/Stripe.framework" custom="true"/>
     </platform>
 
     <platform name="browser">

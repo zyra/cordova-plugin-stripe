@@ -1,7 +1,32 @@
 import Foundation
 import Stripe
-import Capacitor
 import PassKit
+
+extension Dictionary where Key == String, Value == Any {
+    func hasOption(_ key: String) -> Bool {
+        return Bool(self[key] != nil);
+    }
+    
+    func getString(_ key: String) -> String? {
+        return self[key] as? String;
+    }
+    
+    func getInt(_ key: String) -> Int? {
+        return self[key] as? Int;
+    }
+    
+    func getObject(_ key: String) -> Dictionary<String, Any>? {
+        return self[key] as? Dictionary<String,Any>
+    }
+    
+    func getBool(_ key: String) -> Bool? {
+        return self[key] != nil;
+    }
+    
+    func getArray<T>(_ key: String, _ arrayType: T.Type) -> Array<T>? {
+        return self[key] as? Array<T>;
+    }
+}
 
 internal enum StripePluginError : Error {
     case InvalidApplePayRequest(String)
@@ -87,11 +112,33 @@ internal func brandToStr(_ brand: STPCardBrand) -> String {
     }
 }
 
-internal func ensurePluginInitialized(_ call: CAPPluginCall) -> Bool {
+internal func parseCommand<T>(_ call: CDVInvokedUrlCommand, _ type: T.Type) -> T? {
+    let arguments: [Any] = call.arguments ?? []
+    var d: T? = nil;
+    for arg in arguments {
+        d = arg as? T
+    }
+    return d;
+}
+
+internal func parseCommand(_ call: CDVInvokedUrlCommand) -> Dictionary<String, Any> {
+    let arguments: [Any] = call.arguments ?? []
+    var dict: Dictionary<String, Any> = [:];
+    for arg in arguments {
+        let d = arg as! Dictionary<String, Any>
+        for (key, value) in d {
+            dict[key] = value;
+        }
+    }
+    return dict;
+}
+
+internal func ensurePluginInitialized(_ commandDelegate: CDVCommandDelegate, _ command: CDVInvokedUrlCommand) -> Bool {
     let key = StripeAPI.defaultPublishableKey
 
     if key == nil || key == "" {
-        call.error("you must call setPublishableKey to initialize the plugin before calling this method")
+        let pluginResult:CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: "you must call setPublishableKey to initialize the plugin before calling this method")
+        commandDelegate.send(pluginResult, callbackId: command.callbackId)
         return false
     }
 
@@ -124,7 +171,7 @@ internal func addressDict(fromObj: [String: Any]) -> [String: String] {
     ]
 }
 
-internal func addressDict(fromCall: CAPPluginCall) -> [String: String] {
+internal func addressDict(fromCall: Dictionary<String, Any>) -> [String: String] {
     return [
         "address_line1": fromCall.getString("address_line1") ?? "",
         "address_line2": fromCall.getString("address_line2") ?? "",
@@ -174,12 +221,12 @@ internal func cardParams(
     return p
 }
 
-internal func cardParams(fromCall: CAPPluginCall) -> STPCardParams {
+internal func cardParams(fromCall: Dictionary<String, Any>) -> STPCardParams {
     var c = [
         "number": fromCall.getString("number"),
         "cvc": fromCall.getString("cvc"),
-        "exp_month": fromCall.getString("exp_month"),
-        "exp_year": fromCall.getString("exp_year"),
+        "exp_month": (fromCall.getInt("exp_month") != nil) ? String(fromCall.getInt("exp_month")!) : "",
+        "exp_year": (fromCall.getInt("exp_year") != nil) ? String(fromCall.getInt("exp_year")!) : "",
         "name": fromCall.getString("name"),
         "currency": fromCall.getString("currency"),
         "country": fromCall.getString("country")
@@ -219,7 +266,7 @@ internal func applePayOpts(obj: [String: Any]) throws -> PKPaymentRequest {
         throw StripePluginError.InvalidApplePayRequest("you must provide at least one item")
     }
 
-    let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantId, country: country, currency: currency)
+    let paymentRequest = StripeAPI.paymentRequest(withMerchantIdentifier: merchantId, country: country, currency: currency)
 
     paymentRequest.paymentSummaryItems = []
 
@@ -243,14 +290,14 @@ internal func applePayOpts(obj: [String: Any]) throws -> PKPaymentRequest {
         )
     }
 
-    if Stripe.canSubmitPaymentRequest(paymentRequest) {
+    if StripeAPI.canSubmitPaymentRequest(paymentRequest) {
         return paymentRequest
     } else {
         throw StripePluginError.InvalidApplePayRequest("invalid request")
     }
 }
 
-internal func applePayOpts(call: CAPPluginCall) throws -> PKPaymentRequest {
+internal func applePayOpts(call: Dictionary<String, Any>) throws -> PKPaymentRequest {
     let obj = call.getObject("applePayOptions")
 
     if obj == nil {
@@ -284,7 +331,7 @@ internal func pmCardToJSON(c: STPPaymentMethodCard) -> [String: Any] {
             "supported": t.supported
         ]
     }
-    
+
     return cval
 }
 
@@ -302,7 +349,7 @@ internal func pmToJSON(m: STPPaymentMethod) -> [String: Any] {
     if let c = m.created {
         val["created"] = c.timeIntervalSince1970
     }
-    
+
     if let c = m.card {
         val["card"] = pmCardToJSON(c: c)
     }
@@ -312,20 +359,20 @@ internal func pmToJSON(m: STPPaymentMethod) -> [String: Any] {
 
 internal func makeBankAccountParams(call: [AnyHashable: Any]!) -> STPBankAccountParams {
     let params = STPBankAccountParams()
-    
+
     params.accountNumber = call["account_number"] as? String ?? ""
     params.country = call["country"] as? String ?? ""
     params.currency = call["currency"] as? String ?? ""
     params.routingNumber = call["routing_number"] as? String ?? ""
     params.accountHolderName = call["account_holder_name"] as? String ?? ""
-        
+
     let accountHolderType = call["account_holder_type"] as? String ?? ""
-    
+
     if accountHolderType == "individual" {
         params.accountHolderType = STPBankAccountHolderType.individual
     } else if accountHolderType == "company" {
         params.accountHolderType = STPBankAccountHolderType.company
     }
-    
+
     return params
 }
