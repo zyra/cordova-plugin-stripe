@@ -380,7 +380,8 @@ class CordovaStripe : CordovaPlugin() {
         } else {
             params = ConfirmPaymentIntentParams.create(clientSecret, redirectUrl)
         }
-
+        
+        this.cordova.setActivityResultCallback(this);
         stripeInstance.confirmPayment(activity, params)
         saveCall(call)
     }
@@ -412,7 +413,8 @@ class CordovaStripe : CordovaPlugin() {
                 params = ConfirmSetupIntentParams.createWithoutPaymentMethod(clientSecret, redirectUrl)
             }
         }
-
+        
+        this.cordova.setActivityResultCallback(this);
         stripeInstance.confirmSetupIntent(activity, params)
         saveCall(call)
     }

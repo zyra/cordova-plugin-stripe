@@ -8,7 +8,7 @@ import java.util.*
 
 internal const val LOAD_PAYMENT_DATA_REQUEST_CODE = 9972
 internal const val STRIPE_GOOGLE_PAY_REQUEST_CODE = 50000
-internal const val TAG = "Capacitor:StripePlugin"
+internal const val TAG = "CordovaStripe"
 
 internal fun buildCard(call: JSONObject): Card.Builder {
     val builder = Card.Builder(
