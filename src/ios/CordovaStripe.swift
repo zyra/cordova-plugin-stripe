@@ -86,6 +86,7 @@ public class CordovaStripe: CDVPlugin {
             var pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR)
             guard let token = token else {
                 pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: "unable to create token: " + error!.localizedDescription)
+                self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
                 return
             }
             
