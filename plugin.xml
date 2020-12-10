@@ -8,7 +8,7 @@
     </js-module>
     <js-module name="CordovaStripe" src="www/CordovaStripe.js"/>
 
-    <platform name="android">
+    <platform name="android" kotlin="1.3.50">
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CordovaStripe">
@@ -21,30 +21,32 @@
                     android:name="com.google.android.gms.wallet.api.enabled"
                     android:value="true"/>
         </config-file>
-        <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe"/>
-        <framework src="com.google.android.gms:play-services-wallet:11.4.2"/>
-        <framework src="com.android.support:support-v4:26.0.1"/>
-        <framework src="com.android.support:appcompat-v7:26.0.1"/>
-        <framework src="com.google.code.gson:gson:2.8.5"/>
-        <framework src="com.stripe:stripe-android:8.1.0"/>
+        <source-file src="src/android/EphKeyProvider.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <source-file src="src/android/Helpers.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <source-file src="src/android/StripePaymentMethodsListener.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <source-file src="src/android/CordovaStripe.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <apply-plugin>kotlin-android</apply-plugin>
+        <apply-plugin>kotlin-android-extensions</apply-plugin>
+        <framework src="com.google.android.gms:play-services-wallet:18.0.0"/>
+        <framework src="com.stripe:stripe-android:12.2.0"/>
+        <framework src="com.google.code.gson:gson:2.8.6"/>
+        <framework src="androidx.appcompat:appcompat:1.1.0"/>
     </platform>
 
     <platform name="ios">
 
+        <framework src="Stripe" type="podspec" spec="~> 21.0.1" />
         <config-file target="config.xml" parent="/*">
             <feature name="CordovaStripe">
                 <param name="ios-package" value="CordovaStripe"/>
             </feature>
         </config-file>
 
-        <header-file src="src/ios/CordovaStripe.h"/>
-        <source-file src="src/ios/CordovaStripe.m"/>
-
-        <header-file src="src/ios/AppDelegate+CordovaStripe.h"/>
-        <source-file src="src/ios/AppDelegate+CordovaStripe.m"/>
-
-        <framework src="src/ios/Stripe.framework" custom="true"/>
-
+        <source-file src="src/ios/CordovaStripe.swift"/>
+        <source-file src="src/ios/CustomerKeyProvider.swift"/>
+        <source-file src="src/ios/Helper.swift"/>
+        <source-file src="src/ios/PKAuthViewDelegate.swift"/>
+        <source-file src="src/ios/STPAuthCtx.swift"/>
     </platform>
 
     <platform name="browser">

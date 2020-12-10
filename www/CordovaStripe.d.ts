@@ -8,6 +8,96 @@ export interface CordovaPlugins {
     stripe: typeof CordovaStripe.Plugin;
 }
 export declare namespace CordovaStripe {
+    interface CommonIntentOptions {
+        clientSecret: string;
+        /**
+         * If provided, the payment intent will be confirmed using this card as a payment method.
+         */
+        card?: Card;
+        /**
+         * If provided, the payment intent will be confirmed using this payment method
+         */
+        paymentMethodId?: string;
+        redirectUrl: string;
+    }
+    type ConfirmSetupIntentOptions = CommonIntentOptions;
+    interface ConfirmPaymentIntentOptions extends CommonIntentOptions {
+        /**
+         * Whether you intend to save the payment method to the customer's account after this payment
+         */
+        saveMethod?: boolean;
+        /**
+         * If provided, the payment intent will be confirmed using a card provided by Apple Pay
+         */
+        applePayOptions?: ApplePayOptions;
+        /**
+         * If provided, the payment intent will be confirmed using a card provided by Google Pay
+         */
+        googlePayOptions?: GooglePayOptions;
+    }
+    type SetPublishableKeyOptions = {
+        key: string;
+    };
+    type ValidateCardNumberOptions = {
+        number: string;
+    };
+    type ValidateExpiryDateOptions = {
+        exp_month: number;
+        exp_year: number;
+    };
+    type ValidateCVCOptions = {
+        cvc: string;
+    };
+    type IdentifyCardBrandOptions = {
+        number: string;
+    };
+    type CreatePiiTokenOptions = {
+        pii: string;
+    };
+    type CreateSourceTokenOptions = {
+        type: SourceType;
+        params: SourceParams;
+    };
+    type FinalizeApplePayTransactionOptions = {
+        success: boolean;
+    };
+    type ValidityResponse = {
+        valid: boolean;
+    };
+    type AvailabilityResponse = {
+        available: boolean;
+    };
+    type CardBrandResponse = {
+        brand: CardBrand;
+    };
+    interface PaymentMethod {
+        created?: number;
+        customerId?: string;
+        id?: string;
+        livemode: boolean;
+        type?: string;
+        card?: Card;
+    }
+    enum UIButtonType {
+        SUBMIT = "submit",
+        CONTINUE = "continue",
+        NEXT = "next",
+        CANCEL = "cancel",
+        RESEND = "resend",
+        SELECT = "select",
+    }
+    interface UIButtonCustomizationOptions {
+        type: UIButtonType;
+        backgroundColor?: string;
+        textColor?: string;
+        fontName?: string;
+        cornerRadius?: number;
+        fontSize?: number;
+    }
+    interface UICustomizationOptions {
+        accentColor?: string;
+        buttonCustomizations?: UIButtonCustomizationOptions[];
+    }
     interface BankAccount {
         id: string;
         object: string;
@@ -32,7 +122,7 @@ export declare namespace CordovaStripe {
         address_state: any;
         address_zip: any;
         address_zip_check: any;
-        brand: string;
+        brand: CardBrand;
         country: string;
         cvc_check: any;
         dynamic_last4: any;
@@ -60,8 +150,8 @@ export declare namespace CordovaStripe {
     }
     interface CardTokenRequest {
         number: string;
-        expMonth: number;
-        expYear: number;
+        exp_month: number;
+        exp_year: number;
         cvc: string;
         name?: string;
         address_line1?: string;
@@ -69,7 +159,7 @@ export declare namespace CordovaStripe {
         address_city?: string;
         address_state?: string;
         address_country?: string;
-        postal_code?: string;
+        address_zip?: string;
         currency?: string;
         /**
          * iOS only
@@ -99,8 +189,21 @@ export declare namespace CordovaStripe {
         items: ApplePayItem[];
     }
     interface GooglePayOptions {
-        amount: string;
+        allowedCardNetworks: CardBrand[];
+        allowedAuthMethods: Array<'PAN_ONLY' | 'CRYPTOGRAM_3DS'>;
+        totalPrice: string;
+        totalPriceStatus: 'final';
         currencyCode: string;
+        merchantName: string;
+        emailRequired?: boolean;
+        allowPrepaidCards?: boolean;
+        billingAddressRequired?: boolean;
+        billingAddressParams?: {
+            format?: 'MIN';
+            phoneNumberRequired?: boolean;
+        };
+        shippingAddressRequired?: boolean;
+        shippingAddressParameters?: {};
     }
     interface ThreeDeeSecureParams {
         /**
@@ -178,6 +281,16 @@ export declare namespace CordovaStripe {
         P24 = "p24",
         VisaCheckout = "visacheckout",
     }
+    enum CardBrand {
+        AMERICAN_EXPRESS = "AMERICAN_EXPRESS",
+        DISCOVER = "DISCOVER",
+        JCB = "JCB",
+        DINERS_CLUB = "DINERS_CLUB",
+        VISA = "VISA",
+        MASTERCARD = "MASTERCARD",
+        UNIONPAY = "UNIONPAY",
+        UNKNOWN = "UNKNOWN",
+    }
     interface Address {
         line1: string;
         line2: string;
@@ -220,72 +333,57 @@ export declare namespace CordovaStripe {
     interface Error {
         message: string;
     }
-    type BlankCallback = () => void;
-    type ErrorCallback = (error: Error) => void;
-    type CardTokenCallback = (token: CardTokenResponse) => void;
-    type BankAccountTokenCallback = (token: BankAccountTokenRequest) => void;
     class Plugin {
-        /**
-         * Set publishable key
-         * @param {string} key
-         * @param {Function} success
-         * @param {Function} error
-         */
-        static setPublishableKey(key: string, success?: BlankCallback, error?: ErrorCallback): void;
-        /**
-         * Create a credit card token
-         * @param {CordovaStripe.CardTokenRequest} creditCard
-         * @param {CordovaStripe.CardTokenCallback} success
-         * @param {CordovaStripe.ErrorCallback} error
-         */
-        static createCardToken(creditCard: CardTokenRequest, success?: CardTokenCallback, error?: ErrorCallback): void;
-        /**
-         * Create a bank account token
-         * @param {CordovaStripe.BankAccountTokenRequest} bankAccount
-         * @param {Function} success
-         * @param {Function} error
-         */
-        static createBankAccountToken(bankAccount: BankAccountTokenRequest, success?: BankAccountTokenCallback, error?: ErrorCallback): void;
-        /**
-         * Validates card number
-         * @param cardNumber Card number
-         * @param {(isValid: boolean) => void} [success]
-         * @param {Function} [error]
-         */
-        static validateCardNumber(cardNumber: any, success?: (isValid: boolean) => void, error?: ErrorCallback): void;
-        /**
-         * Validates the expiry date of a card
-         * @param {number} expMonth
-         * @param {number} expYear
-         * @param {(isValid: boolean) => void} [success]
-         * @param {Function} [error]
-         */
-        static validateExpiryDate(expMonth: number, expYear: number, success?: (isValid: boolean) => void, error?: ErrorCallback): void;
-        /**
-         * Validates a CVC of a card
-         * @param {string} cvc
-         * @param {(isValid: boolean) => void} [success]
-         * @param {Function} [error]
-         */
-        static validateCVC(cvc: string, success?: (isValid: boolean) => void, error?: ErrorCallback): void;
-        /**
-         * Gets a card type from a card number
-         * @param {string | number} cardNumber
-         * @param {(type: string) => void} [success]
-         * @param {Function} [error]
-         */
-        static getCardType(cardNumber: string | number, success?: (type: string) => void, error?: ErrorCallback): void;
-        /**
-         * Pay with ApplePay
-         * @param {CordovaStripe.ApplePayOptions} options
-         * @param {(token: string, callback: (paymentProcessed: boolean) => void) => void} success
-         * @param {Function} error
-         */
-        static payWithApplePay(options: ApplePayOptions, success: (token: TokenResponse, callback: (paymentProcessed: boolean) => void) => void, error?: ErrorCallback): void;
-        static initGooglePay(success?: any, error?: ErrorCallback): void;
-        static payWithGooglePay(options: GooglePayOptions, success: (token: TokenResponse) => void, error?: ErrorCallback): void;
-        static createSource(type: SourceType, params: SourceParams, success?: (token: TokenResponse) => void, error?: ErrorCallback): void;
-        static createPiiToken(personalId: string, success?: any, error?: ErrorCallback): void;
-        static createAccountToken(accountParams: AccountParams, success?: any, error?: ErrorCallback): void;
+        static addCustomerSource(opts: {
+            sourceId: string;
+            type?: string;
+        }): Promise<void>;
+        static cancelApplePay(): Promise<void>;
+        static confirmPaymentIntent(opts: CordovaStripe.ConfirmPaymentIntentOptions): Promise<void>;
+        static confirmSetupIntent(opts: CordovaStripe.CommonIntentOptions): Promise<void>;
+        static createAccountToken(account: CordovaStripe.AccountParams): Promise<CordovaStripe.TokenResponse>;
+        static createBankAccountToken(bankAccount: CordovaStripe.BankAccountTokenRequest): Promise<CordovaStripe.BankAccountTokenResponse>;
+        static createCardToken(card: CordovaStripe.CardTokenRequest): Promise<CordovaStripe.CardTokenResponse>;
+        static createPiiToken(opts: CordovaStripe.CreatePiiTokenOptions): Promise<CordovaStripe.TokenResponse>;
+        static createSourceToken(opts: CordovaStripe.CreateSourceTokenOptions): Promise<CordovaStripe.TokenResponse>;
+        static customerPaymentMethods(): Promise<{
+            paymentMethods: CordovaStripe.PaymentMethod[];
+        }>;
+        static customizePaymentAuthUI(opts: any): Promise<void>;
+        static deleteCustomerSource(opts: {
+            sourceId: string;
+        }): Promise<void>;
+        static echo(options: {
+            value: string;
+        }): Promise<{
+            value: string;
+        }>;
+        static finalizeApplePayTransaction(opts: CordovaStripe.FinalizeApplePayTransactionOptions): Promise<void>;
+        static identifyCardBrand(opts: CordovaStripe.IdentifyCardBrandOptions): Promise<CordovaStripe.CardBrandResponse>;
+        static initCustomerSession(opts: {
+            id: string;
+            object: 'ephemeral_key';
+            associated_objects: Array<{
+                type: 'customer';
+                id: string;
+            }>;
+            created: number;
+            expires: number;
+            livemode: boolean;
+            secret: string;
+            apiVersion?: string;
+        }): Promise<void>;
+        static isApplePayAvailable(): Promise<CordovaStripe.AvailabilityResponse>;
+        static isGooglePayAvailable(): Promise<CordovaStripe.AvailabilityResponse>;
+        static payWithApplePay(options: CordovaStripe.ApplePayOptions): Promise<CordovaStripe.TokenResponse>;
+        static setCustomerDefaultSource(opts: {
+            sourceId: string;
+            type?: string;
+        }): Promise<void>;
+        static setPublishableKey(opts: CordovaStripe.SetPublishableKeyOptions): Promise<void>;
+        static startGooglePayTransaction(): Promise<void>;
+        static validateCVC(opts: CordovaStripe.ValidateCVCOptions): Promise<CordovaStripe.ValidityResponse>;
+        static validateCardNumber(opts: CordovaStripe.ValidateCardNumberOptions): Promise<CordovaStripe.ValidityResponse>;
+        static validateExpiryDate(opts: CordovaStripe.ValidateExpiryDateOptions): Promise<CordovaStripe.ValidityResponse>;
     }
 }
