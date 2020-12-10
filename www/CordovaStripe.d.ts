@@ -84,7 +84,7 @@ export declare namespace CordovaStripe {
         NEXT = "next",
         CANCEL = "cancel",
         RESEND = "resend",
-        SELECT = "select",
+        SELECT = "select"
     }
     interface UIButtonCustomizationOptions {
         type: UIButtonType;
@@ -279,7 +279,7 @@ export declare namespace CordovaStripe {
         AliPay = "alipay",
         AliPayReusable = "alipayreusable",
         P24 = "p24",
-        VisaCheckout = "visacheckout",
+        VisaCheckout = "visacheckout"
     }
     enum CardBrand {
         AMERICAN_EXPRESS = "AMERICAN_EXPRESS",
@@ -289,7 +289,7 @@ export declare namespace CordovaStripe {
         VISA = "VISA",
         MASTERCARD = "MASTERCARD",
         UNIONPAY = "UNIONPAY",
-        UNKNOWN = "UNKNOWN",
+        UNKNOWN = "UNKNOWN"
     }
     interface Address {
         line1: string;
