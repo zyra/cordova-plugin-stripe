@@ -384,6 +384,7 @@ public class CordovaStripe: CDVPlugin {
         }
 
         let pm = STPPaymentHandler.shared()
+        STPAPIClient.shared.publishableKey = StripeAPI.defaultPublishableKey
         pm.confirmPayment(pip, with: self) { (status, pi, err) in
             switch status {
             case .failed:
