@@ -425,6 +425,10 @@ export namespace CordovaStripe {
       return execP('createBankAccountToken', bankAccount);
     }
 
+    static validateCard(card: CordovaStripe.CardTokenRequest): Promise<string> {
+      return execP('validateCard', card);
+    }
+
     static createCardToken(card: CordovaStripe.CardTokenRequest): Promise<CordovaStripe.CardTokenResponse> {
       return execP('createCardToken', card);
     }

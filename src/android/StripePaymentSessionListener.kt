@@ -1,8 +1,11 @@
 package com.zyramedia.cordova.stripe
 
 import android.util.Log
+import com.stripe.android.CustomerSession
 import com.stripe.android.PaymentSession
 import com.stripe.android.PaymentSessionData
+import com.stripe.android.StripeError
+import com.stripe.android.model.PaymentMethod
 
 internal class StripePaymentSessionListener : PaymentSession.PaymentSessionListener {
     override fun onError(errorCode: Int, errorMessage: String) {

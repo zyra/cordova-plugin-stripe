@@ -74,6 +74,54 @@ public class CordovaStripe: CDVPlugin {
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
+    @objc func validateCard(_ command: CDVInvokedUrlCommand) {
+        let card = parseCommand(command);
+        let pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: [
+            "valid": state == STPCardValidationState.valid
+        ])
+
+        let stateNumber = STPCardValidator.validationState(
+                forNumber: call.getString("number"),
+                validatingCardBrand: false
+        )
+        let stateExpDate = STPCardValidator.validationState(
+                forExpirationYear: call.getString("exp_year") ?? "",
+                inMonth: call.getString("exp_month") ?? ""
+        )
+        let stateCvc = STPCardValidator.validationState(
+                forCVC: (call.getString("cvc")) ?? "",
+                cardBrand: strToBrand(call.getString("brand"))
+        )
+        
+        let pluginResult: CDVPluginResult = CDVPluginResult(
+                status: CDVCommandStatus_OK, 
+                messageAs: "success"
+            )
+        if (stateNumber != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "card's number is invalid"
+            )
+        }
+        else if (stateExpDate != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "expiration date is invalid"
+            )
+        }
+        else if (!call.getString('cvc') && stateCvc != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "expiration date is invalid"
+            )
+            call.error("security code is invalid")
+            return
+        }
+        
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+
     @objc func createCardToken(_ command: CDVInvokedUrlCommand) {
         let call = parseCommand(command);
         if !ensurePluginInitialized(self.commandDelegate, command) {

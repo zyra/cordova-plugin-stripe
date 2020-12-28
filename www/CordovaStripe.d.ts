@@ -343,6 +343,7 @@ export declare namespace CordovaStripe {
         static confirmSetupIntent(opts: CordovaStripe.CommonIntentOptions): Promise<void>;
         static createAccountToken(account: CordovaStripe.AccountParams): Promise<CordovaStripe.TokenResponse>;
         static createBankAccountToken(bankAccount: CordovaStripe.BankAccountTokenRequest): Promise<CordovaStripe.BankAccountTokenResponse>;
+        static validateCard(card: CordovaStripe.CardTokenRequest): Promise<string>;
         static createCardToken(card: CordovaStripe.CardTokenRequest): Promise<CordovaStripe.CardTokenResponse>;
         static createPiiToken(opts: CordovaStripe.CreatePiiTokenOptions): Promise<CordovaStripe.TokenResponse>;
         static createSourceToken(opts: CordovaStripe.CreateSourceTokenOptions): Promise<CordovaStripe.TokenResponse>;

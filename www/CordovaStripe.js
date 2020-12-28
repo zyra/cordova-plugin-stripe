@@ -64,6 +64,9 @@ var CordovaStripe;
         Plugin.createBankAccountToken = function (bankAccount) {
             return execP('createBankAccountToken', bankAccount);
         };
+        Plugin.validateCard = function (card) {
+            return execP('validateCard', card);
+        };
         Plugin.createCardToken = function (card) {
             return execP('createCardToken', card);
         };

@@ -27,6 +27,7 @@ internal fun buildCard(call: JSONObject): Card.Builder {
             .addressZip(call.optString("address_zip"))
             .country(call.optString("address_country"))
             .currency(call.optString("currency"))
+            .addressCountry(call.optString("country"))
 }
 
 internal fun cardToJSON(card: Card): JSONObject {
@@ -50,18 +51,21 @@ internal fun cardToJSON(card: Card): JSONObject {
     return cardJs
 }
 
-internal fun bankAccountToJSON(account: BankAccount): JSONObject {
-    val bankObject = JSONObject()
+internal fun bankAccountToJSON(a: BankAccount): JSONObject {
+    val obj = JSONObject()
 
-    bankObject.putOpt("account_holder_name", account.accountHolderName)
-    bankObject.putOpt("account_holder_type", account.accountHolderType)
-    bankObject.putOpt("bank_name", account.bankName)
-    bankObject.putOpt("country", account.countryCode)
-    bankObject.putOpt("currency", account.currency)
-    bankObject.putOpt("last4", account.last4)
-    bankObject.putOpt("routing_number", account.routingNumber)
+    obj.putOpt("account_holder_name", a.accountHolderName)
+    obj.putOpt("account_holder_type", a.accountHolderType)
+    obj.putOpt("bank_name", a.bankName)
+    obj.putOpt("country", a.countryCode)
+    obj.putOpt("currency", a.currency)
+    obj.putOpt("last4", a.last4)
+    obj.putOpt("routing_number", a.routingNumber)
+    obj.putOpt("id", a.id)
+    obj.putOpt("object", "bank_account")
+    obj.putOpt("status", a.status.toString())
 
-    return bankObject
+    return obj
 }
 
 internal fun setupIntentToJSON(si: SetupIntent): JSONObject {
@@ -113,4 +117,31 @@ internal fun jsonToHashMap(obj: JSONObject?): HashMap<String, Any> {
 
         false -> return HashMap()
     }
+}
+
+internal fun pmToJson(pm: PaymentMethod): JSONObject {
+    val obj = JSONObject()
+    obj.putOpt("created", pm.created)
+    obj.putOpt("customerId", pm.customerId)
+    obj.putOpt("id", pm.id)
+    obj.putOpt("livemode", pm.liveMode)
+    obj.putOpt("type", pm.type)
+
+    if (pm.card != null) {
+        val co = JSONObject()
+        val c: PaymentMethod.Card = pm.card!!
+        co.putOpt("brand", c.brand)
+        co.putOpt("country", c.country)
+        co.putOpt("exp_month", c.expiryMonth)
+        co.putOpt("exp_year", c.expiryYear)
+        co.putOpt("funding", c.funding)
+        co.putOpt("last4", c.last4)
+
+        if (c.threeDSecureUsage != null) {
+            co.put("three_d_secure_usage", JSONObject().putOpt("supported", c.threeDSecureUsage!!.isSupported))
+        }
+
+        obj.put("card", co)
+    }
+    return obj
 }
