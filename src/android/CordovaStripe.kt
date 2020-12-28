@@ -477,7 +477,7 @@ class CordovaStripe : CordovaPlugin() {
         val clientSecret = call.getString("clientSecret")
         val saveMethod = call.getBoolean("saveMethod", false)
         val redirectUrl = call.getString("redirectUrl")
-        val stripeAccountId = call.getNullableString("stripeAccountId")
+        val stripeAccountId = call.getNullableString("stripeAccountId", null)
         val session = if(call.getString("setupFutureUsage") == "on_session")  ConfirmPaymentIntentParams.SetupFutureUsage.OnSession  else ConfirmPaymentIntentParams.SetupFutureUsage.OffSession
         var setupFutureUsage = if(saveMethod!!) session else null
         val params: ConfirmPaymentIntentParams
