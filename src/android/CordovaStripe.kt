@@ -16,7 +16,11 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class PluginCall(val data: JSONObject, private val ctx: CallbackContext) {
-    fun getString(key: String, defaultValue: String? = ""): String {
+    fun getString(key: String, defaultValue: String = ""): String {
+        return data.optString(key, defaultValue)
+    }
+
+    fun getNullableString(key: String, defaultValue: String? = ""): String?{
         return data.optString(key, defaultValue)
     }
 
@@ -472,8 +476,8 @@ class CordovaStripe : CordovaPlugin() {
 
         val clientSecret = call.getString("clientSecret")
         val saveMethod = call.getBoolean("saveMethod", false)
-        val redirectUrl = call.getString("redirectUrl", null)
-        val stripeAccountId = call.getString("stripeAccountId")
+        val redirectUrl = call.getString("redirectUrl")
+        val stripeAccountId = call.getNullableString("stripeAccountId")
         val session = if(call.getString("setupFutureUsage") == "on_session")  ConfirmPaymentIntentParams.SetupFutureUsage.OnSession  else ConfirmPaymentIntentParams.SetupFutureUsage.OffSession
         var setupFutureUsage = if(saveMethod!!) session else null
         val params: ConfirmPaymentIntentParams
