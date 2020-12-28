@@ -82,18 +82,19 @@ public class CordovaStripe: CDVPlugin {
                 validatingCardBrand: false
         )
         let stateExpDate = STPCardValidator.validationState(
-                forExpirationYear: call.getString("exp_year") ?? "",
-                inMonth: call.getString("exp_month") ?? ""
+            forExpirationYear: (call.getInt("exp_year") != nil) ? String(call.getInt("exp_year")!) : "",
+            inMonth: (call.getInt("exp_month") != nil) ? String(call.getInt("exp_month")!) : ""
         )
         let stateCvc = STPCardValidator.validationState(
-                forCVC: (call.getString("cvc")) ?? "",
-                cardBrand: strToBrand(call.getString("brand"))
+                forCVC: call.getString("cvc") ?? "",
+                cardBrand: STPCardValidator.brand(forNumber: call.getString("number") ?? "")
         )
         
         var pluginResult: CDVPluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK, 
                 messageAs: "success"
-            )
+        )
+        
         if (stateNumber != STPCardValidationState.valid) {
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_ERROR, 
