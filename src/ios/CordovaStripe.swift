@@ -75,11 +75,8 @@ public class CordovaStripe: CDVPlugin {
     }
 
     @objc func validateCard(_ command: CDVInvokedUrlCommand) {
-        let card = parseCommand(command);
-        let pluginResult: CDVPluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: [
-            "valid": state == STPCardValidationState.valid
-        ])
-
+        let call = parseCommand(command);
+       
         let stateNumber = STPCardValidator.validationState(
                 forNumber: call.getString("number"),
                 validatingCardBrand: false
@@ -93,11 +90,10 @@ public class CordovaStripe: CDVPlugin {
                 cardBrand: strToBrand(call.getString("brand"))
         )
         
-        let pluginResult: CDVPluginResult = CDVPluginResult(
+        var pluginResult: CDVPluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK, 
                 messageAs: "success"
-        )
-
+            )
         if (stateNumber != STPCardValidationState.valid) {
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_ERROR, 
@@ -110,12 +106,11 @@ public class CordovaStripe: CDVPlugin {
                 messageAs: "expiration date is invalid"
             )
         }
-        else if (!call.getString("cvc") && stateCvc != STPCardValidationState.valid) {
+        else if ((call.getString("cvc") != nil) && stateCvc != STPCardValidationState.valid) {
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_ERROR, 
                 messageAs: "security code is invalid"
             )
-            call.error("security code is invalid")
             return
         }
         
