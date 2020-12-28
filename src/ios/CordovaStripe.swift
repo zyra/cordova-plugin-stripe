@@ -96,7 +96,8 @@ public class CordovaStripe: CDVPlugin {
         let pluginResult: CDVPluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK, 
                 messageAs: "success"
-            )
+        )
+
         if (stateNumber != STPCardValidationState.valid) {
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_ERROR, 
@@ -109,10 +110,10 @@ public class CordovaStripe: CDVPlugin {
                 messageAs: "expiration date is invalid"
             )
         }
-        else if (!call.getString('cvc') && stateCvc != STPCardValidationState.valid) {
+        else if (!call.getString("cvc") && stateCvc != STPCardValidationState.valid) {
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_ERROR, 
-                messageAs: "expiration date is invalid"
+                messageAs: "security code is invalid"
             )
             call.error("security code is invalid")
             return
