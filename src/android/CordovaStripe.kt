@@ -3,6 +3,9 @@ package com.zyramedia.cordova.stripe
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import ca.zyra.capacitor.stripe.GetGooglePayEnv
+import ca.zyra.capacitor.stripe.GooglePayDataReq
+import ca.zyra.capacitor.stripe.GooglePayPaymentsClient
 import com.google.android.gms.wallet.*
 import com.stripe.android.*
 import com.stripe.android.model.*
@@ -14,6 +17,10 @@ import org.json.JSONObject
 
 class PluginCall(val data: JSONObject, private val ctx: CallbackContext) {
     fun getString(key: String, defaultValue: String = ""): String {
+        return data.optString(key, defaultValue)
+    }
+
+    fun getNullableString(key: String, defaultValue: String? = ""): String?{
         return data.optString(key, defaultValue)
     }
 
@@ -68,7 +75,7 @@ class PluginCall(val data: JSONObject, private val ctx: CallbackContext) {
     fun success() {
         ctx.success()
     }
-    
+
     fun resolve() {
         ctx.success()
     }
@@ -86,8 +93,8 @@ class CordovaStripe : CordovaPlugin() {
     private lateinit var stripeInstance: Stripe
     private lateinit var publishableKey: String
     private var isTest = true
-    private var googlePayPaymentData: PaymentData? = null
     private var customerSession: CustomerSession? = null
+    private var googlePayCallback: GooglePayCallback? = null
     private val context get() = cordova.context
     private val activity get() = cordova.activity
 
@@ -95,6 +102,10 @@ class CordovaStripe : CordovaPlugin() {
 
     fun saveCall(c: PluginCall) {
         savedCall = c
+    }
+
+    fun freeSavedCall() {
+        savedCall = null
     }
 
     override fun execute(action: String?, args: JSONArray?, callbackContext: CallbackContext?): Boolean {
@@ -114,7 +125,7 @@ class CordovaStripe : CordovaPlugin() {
         return true
     }
 
-    
+
     fun setPublishableKey(call: PluginCall) {
         try {
             val key = call.getString("key")
@@ -127,7 +138,7 @@ class CordovaStripe : CordovaPlugin() {
             stripeInstance = Stripe(context, key)
             publishableKey = key
             isTest = key.contains("test")
-
+            PaymentConfiguration.init(context, key)
             call.success()
         } catch (e: Exception) {
             call.error("unable to set publishable key: " + e.localizedMessage, e)
@@ -135,35 +146,57 @@ class CordovaStripe : CordovaPlugin() {
 
     }
 
-    
+
     fun identifyCardBrand(call: PluginCall) {
         val res = JSONObject()
         res.putOpt("brand", buildCard(call.data).build().brand)
         call.success(res)
     }
 
-    
     fun validateCardNumber(call: PluginCall) {
         val res = JSONObject()
         res.putOpt("valid", buildCard(call.data).build().validateNumber())
         call.success(res)
     }
 
-    
     fun validateExpiryDate(call: PluginCall) {
         val res = JSONObject()
         res.putOpt("valid", buildCard(call.data).build().validateExpiryDate())
         call.success(res)
     }
 
-    
     fun validateCVC(call: PluginCall) {
         val res = JSONObject()
         res.putOpt("valid", buildCard(call.data).build().validateCVC())
         call.success(res)
     }
 
-    
+    fun validateCard(call: PluginCall) {
+        if (!ensurePluginInitialized(call)) {
+            return
+        }
+
+        val card = buildCard(call.data).build()
+
+        if (!card.validateNumber()) {
+            call.error("card's number is invalid")
+            return
+        }
+        else if (!card.validateExpMonth()) {
+            call.error("expiration month is invalid")
+            return
+        }
+        else if (!card.validateExpiryDate()) {
+            call.error("expiration year is invalid")
+            return
+        }
+        else if (!card.cvc.isNullOrBlank() && !card.validateCVC()) {
+            call.error("security code is invalid")
+            return
+        }
+        call.success("success")
+    }
+
     fun createCardToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -175,6 +208,9 @@ class CordovaStripe : CordovaPlugin() {
             call.error("invalid card information")
             return
         }
+
+        val idempotencyKey = call.getString("idempotencyKey")
+        val stripeAccountId = call.getString("stripeAccountId")
 
         val callback = object : ApiResultCallback<Token> {
             override fun onSuccess(result: Token) {
@@ -194,46 +230,61 @@ class CordovaStripe : CordovaPlugin() {
             }
         }
 
-        stripeInstance.createToken(card, callback)
+        stripeInstance.createCardToken(card, idempotencyKey, stripeAccountId, callback)
     }
 
-    
+
     fun createBankAccountToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
         }
 
+        val accountNumber = call.getString("account_number")
+        val accountHolderName = call.getString("account_holder_name")
+        val accountHolderType = call.getString("account_holder_type")
+        val country = call.getString("country")
+        val currency = call.getString("currency")
+        val routingNumber = call.getString("routing_number")
 
-        val bankAccount = BankAccount(
-                call.getString("account_number"),
-                call.getString("country"),
-                call.getString("currency"),
-                call.getString("routing_number")
-        )
+        var stripeAccHolder = BankAccountTokenParams.Type.Individual
 
-        stripeInstance.createBankAccountToken(bankAccount, object : ApiResultCallback<Token> {
+        if (accountHolderType == "company") {
+            stripeAccHolder = BankAccountTokenParams.Type.Company
+        }
+
+        val bankAccount = BankAccountTokenParams(country, currency, accountNumber, stripeAccHolder, accountHolderName, routingNumber)
+
+        val idempotencyKey = call.getString("idempotencyKey")
+        val stripeAccountId = call.getString("stripeAccountId")
+
+        val callback = object : ApiResultCallback<Token> {
             override fun onSuccess(result: Token) {
-                val tokenJs = JSONObject()
+                val js = JSONObject()
 
                 if (result.bankAccount != null) {
                     val jsObj = bankAccountToJSON(result.bankAccount!!)
-                    tokenJs.putOpt("bankAccount", jsObj)
+                    js.putOpt("bankAccount", jsObj)
                 }
 
-                tokenJs.putOpt("id", result.id)
-                tokenJs.putOpt("created", result.created)
-                tokenJs.putOpt("type", result.type)
+                js.put("id", result.id)
+                js.put("created", result.created.getTime())
+                js.put("type", result.type)
+                js.put("object", "token")
+                js.put("livemode", result.livemode)
+                js.put("used", result.used)
 
-                call.success(tokenJs)
+                call.success(js)
             }
 
             override fun onError(e: Exception) {
                 call.error("unable to create bank account token: " + e.localizedMessage, e)
             }
-        })
+        }
+
+        stripeInstance.createBankAccountToken(bankAccount, idempotencyKey, stripeAccountId, callback)
     }
 
-    
+
     fun createSourceToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -257,6 +308,9 @@ class CordovaStripe : CordovaPlugin() {
         val email = call.getString("email")
         val callId = call.getString("callId")
 
+        val idempotencyKey = call.getString("idempotencyKey")
+        val stripeAccountId = call.getString("stripeAccountId")
+
         when (sourceType) {
             0 -> sourceParams = SourceParams.createThreeDSecureParams(amount, currency, returnURL, card)
 
@@ -279,7 +333,7 @@ class CordovaStripe : CordovaPlugin() {
             else -> return
         }
 
-        stripeInstance.createSource(sourceParams, object : ApiResultCallback<Source> {
+        val callback = object : ApiResultCallback<Source> {
             override fun onSuccess(result: Source) {
                 val tokenJs = JSONObject()
                 tokenJs.putOpt("id", result.id)
@@ -291,44 +345,116 @@ class CordovaStripe : CordovaPlugin() {
             override fun onError(e: Exception) {
                 call.error("unable to create source token: " + e.localizedMessage, e)
             }
-        })
+        }
+
+        stripeInstance.createSource(sourceParams, idempotencyKey, stripeAccountId, callback)
     }
 
-    
+
     fun createAccountToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
         }
 
-
         val legalEntity = call.getObject("legalEntity")
-        val businessType = call.getString("businessType")
         val tosShownAndAccepted = call.getBoolean("tosShownAndAccepted")
-        val bt = if (businessType == "company") AccountParams.BusinessType.Company else AccountParams.BusinessType.Individual
-        val params = AccountParams.createAccountParams(tosShownAndAccepted!!, bt, jsonToHashMap(legalEntity))
 
-        stripeInstance.createAccountToken(params, object : ApiResultCallback<Token> {
+        val idempotencyKey = call.getString("idempotencyKey")
+        val stripeAccountId = call.getString("stripeAccountId")
+
+        var address: Address? = null
+
+        if (legalEntity.has("address")) {
+            try {
+                val addressJson = legalEntity.getJSONObject("address")
+                address = Address.fromJson(addressJson)
+            } catch (err: JSONException) {
+                Log.w(TAG, "failed to parse address from legal entity object")
+                Log.w(TAG, err)
+                Log.w(TAG, "submitting request without an address")
+            }
+        }
+
+        var verifyFront: String? = null;
+        var verifyBack: String? = null;
+
+        if (legalEntity.has("verification")) {
+            val verifyObj = legalEntity.getJSONObject("verification")
+            verifyFront = verifyObj.getString("front")
+            verifyBack = verifyObj.getString("back")
+        }
+
+        val params: AccountParams
+        val hasVerify = verifyFront != null || verifyBack != null
+
+        when (legalEntity.getString("businessType")) {
+            "company" -> {
+                val builder = AccountParams.BusinessTypeParams.Company.Builder()
+                    .setAddress(address)
+                    .setName(legalEntity.getString("name"))
+                    .setPhone(legalEntity.getString("phone"))
+
+                if (hasVerify) {
+                    val verifyDoc = AccountParams.BusinessTypeParams.Company.Document(verifyFront, verifyBack)
+                    val verify = AccountParams.BusinessTypeParams.Company.Verification(verifyDoc)
+                    builder.setVerification(verify)
+                }
+
+                params = AccountParams.create(tosShownAndAccepted, builder.build())
+                Log.d(TAG, "preparing account params for company")
+            }
+            "individual" -> {
+                val builder = AccountParams.BusinessTypeParams.Individual.Builder()
+                    .setFirstName(legalEntity.getString("first_name"))
+                    .setLastName(legalEntity.getString("last_name"))
+                    .setEmail(legalEntity.getString("email"))
+                    .setGender(legalEntity.getString("gender"))
+                    .setIdNumber(legalEntity.getString("id_number"))
+                    .setPhone(legalEntity.getString("phone"))
+                    .setSsnLast4(legalEntity.getString("ssn_last4"))
+                    .setAddress(address)
+
+                if (hasVerify) {
+                    val verifyDoc = AccountParams.BusinessTypeParams.Individual.Document(verifyFront, verifyBack)
+                    val verify = AccountParams.BusinessTypeParams.Individual.Verification(verifyDoc)
+                    builder.setVerification(verify)
+                }
+
+                params = AccountParams.create(tosShownAndAccepted, builder.build())
+                Log.d(TAG, "preparing account params for individual")
+            }
+            else -> {
+                params = AccountParams.create(tosShownAndAccepted)
+                Log.d(TAG, "preparing account param with no no details other than acceptance")
+            }
+        }
+
+        val callback = object : ApiResultCallback<Token> {
             override fun onSuccess(result: Token) {
+                Log.d(TAG, "account token was successfully created")
                 val res = JSONObject()
                 res.putOpt("token", result.id)
                 call.success(res)
             }
 
             override fun onError(e: Exception) {
+                Log.d(TAG, "failed to create account token")
                 call.error("unable to create account token: " + e.localizedMessage, e)
             }
-        })
+        }
+
+        stripeInstance.createAccountToken(params, idempotencyKey, stripeAccountId, callback)
     }
 
-    
     fun createPiiToken(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
         }
 
-
         val pii = call.getString("pii")
-        stripeInstance.createPiiToken(pii, object : ApiResultCallback<Token> {
+        val idempotencyKey = call.getString("idempotencyKey")
+        val stripeAccountId = call.getString("stripeAccountId")
+        val callback = object : ApiResultCallback<Token> {
             override fun onSuccess(result: Token) {
                 val res = JSONObject()
                 res.putOpt("id", result.id)
@@ -338,55 +464,99 @@ class CordovaStripe : CordovaPlugin() {
             override fun onError(e: Exception) {
                 call.error("unable to create pii token: " + e.localizedMessage, e)
             }
-        })
+        }
+
+        stripeInstance.createPiiToken(pii, idempotencyKey, stripeAccountId, callback)
     }
 
-    
     fun confirmPaymentIntent(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
         }
 
-
         val clientSecret = call.getString("clientSecret")
         val saveMethod = call.getBoolean("saveMethod", false)
         val redirectUrl = call.getString("redirectUrl")
-
+        val stripeAccountId = call.getNullableString("stripeAccountId", null)
+        val session = if(call.getString("setupFutureUsage") == "on_session")  ConfirmPaymentIntentParams.SetupFutureUsage.OnSession  else ConfirmPaymentIntentParams.SetupFutureUsage.OffSession
+        var setupFutureUsage = if(saveMethod!!) session else null
         val params: ConfirmPaymentIntentParams
 
-        if (call.hasOption("card")) {
-            val cb = buildCard(call.getObject("card")) // TODO fix this, we need to pass call.getObject(card)xs
-            val cardParams = cb.build().toPaymentMethodParamsCard()
-            val pmCreateParams = PaymentMethodCreateParams.create(cardParams)
-            params = ConfirmPaymentIntentParams.createWithPaymentMethodCreateParams(pmCreateParams, clientSecret, redirectUrl, saveMethod!!)
-        } else if (call.hasOption("paymentMethodId")) {
-            params = ConfirmPaymentIntentParams.createWithPaymentMethodId(call.getString("paymentMethodId"), clientSecret, redirectUrl, saveMethod!!)
-        } else if (call.hasOption("sourceId")) {
-            params = ConfirmPaymentIntentParams.createWithSourceId(call.getString("sourceId"), clientSecret, redirectUrl, saveMethod!!)
-        } else if (call.getBoolean("fromGooglePay", false)!!) {
-            try {
-                val js = googlePayPaymentData!!.toJson()
-                val gpayObj = JSONObject(js)
+        this.cordova.setActivityResultCallback(this);
 
-                googlePayPaymentData = null
+        when {
+            call.hasOption("card") -> {
+                var card = call.getObject("card")
+                var address = Address.Builder()
+                    .setLine1(card.optString("address_line1"))
+                    .setLine2(card.optString("address_line2"))
+                    .setCity(card.optString("address_city"))
+                    .setState(card.optString("address_state"))
+                    .setCountry(card.optString("address_country"))
+                    .setPostalCode(card.optString("address_zip"))
+                    .build()
+                var billing_details = PaymentMethod.BillingDetails().toBuilder()
+                    .setEmail(card.optString("email"))
+                    .setName(card.optString("name"))
+                    .setPhone(card.optString("phone"))
+                    .setAddress(address)
+                    .build()
+                val cardParams = buildCard(card)
+                    .build()
+                    .toPaymentMethodParamsCard()
+                val pmCreateParams = PaymentMethodCreateParams.create(cardParams, billing_details)
+                params = ConfirmPaymentIntentParams.createWithPaymentMethodCreateParams(pmCreateParams, clientSecret, redirectUrl, saveMethod!!, setupFutureUsage=setupFutureUsage)
+            }
 
-                val pmcp = PaymentMethodCreateParams.createFromGooglePay(gpayObj)
-                params = ConfirmPaymentIntentParams.createWithPaymentMethodCreateParams(pmcp, clientSecret, redirectUrl, saveMethod!!)
-            } catch (e: JSONException) {
-                call.error("unable to parse json: " + e.localizedMessage, e)
+            call.hasOption("paymentMethodId") -> {
+                params = ConfirmPaymentIntentParams.createWithPaymentMethodId(call.getString("paymentMethodId"), clientSecret, redirectUrl, saveMethod!!)
+            }
+
+            call.hasOption("sourceId") -> {
+                params = ConfirmPaymentIntentParams.createWithSourceId(call.getString("sourceId"), clientSecret, redirectUrl, saveMethod!!)
+            }
+
+            call.hasOption("googlePayOptions") -> {
+                val opts = call.getObject("googlePayOptions")
+                val cb = object : GooglePayCallback() {
+                    override fun onSuccess(res: PaymentData) {
+                        try {
+                            val pmParams = PaymentMethodCreateParams.createFromGooglePay(JSONObject(res.toJson()))
+                            val confirmParams = ConfirmPaymentIntentParams.createWithPaymentMethodCreateParams(pmParams, clientSecret, redirectUrl, saveMethod)
+                            stripeInstance.confirmPayment(activity, confirmParams, stripeAccountId)
+                        } catch (e: JSONException) {
+                            savedCall?.error("unable to parse json: " + e.localizedMessage, e)
+                            freeSavedCall()
+                        }
+                    }
+
+                    override fun onError(err: Exception) {
+                        savedCall?.error(err.localizedMessage, err)
+                        freeSavedCall()
+                    }
+
+                }
+                saveCall(call)
+                val optsJobject = JSObject.fromJSONObject(opts);
+                processGooglePayTx(optsJobject, cb)
                 return
             }
 
-        } else {
-            params = ConfirmPaymentIntentParams.create(clientSecret, redirectUrl)
+            call.hasOption("applePayOptions") -> {
+                call.error("ApplePay is not supported on Android")
+                return
+            }
+
+            else -> {
+                params = ConfirmPaymentIntentParams.create(clientSecret, redirectUrl)
+            }
         }
-        
-        this.cordova.setActivityResultCallback(this);
-        stripeInstance.confirmPayment(activity, params)
+
+        stripeInstance.confirmPayment(activity, params, stripeAccountId)
         saveCall(call)
     }
 
-    
+
     fun confirmSetupIntent(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -413,18 +583,18 @@ class CordovaStripe : CordovaPlugin() {
                 params = ConfirmSetupIntentParams.createWithoutPaymentMethod(clientSecret, redirectUrl)
             }
         }
-        
+
         this.cordova.setActivityResultCallback(this);
         stripeInstance.confirmSetupIntent(activity, params)
         saveCall(call)
     }
 
-    
+
     fun customizePaymentAuthUI(call: PluginCall) {
         call.resolve()
     }
 
-    
+
     fun isGooglePayAvailable(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -432,10 +602,10 @@ class CordovaStripe : CordovaPlugin() {
 
 
         val paymentsClient = Wallet.getPaymentsClient(
-                context,
-                Wallet.WalletOptions.Builder()
-                        .setEnvironment(if (isTest) WalletConstants.ENVIRONMENT_TEST else WalletConstants.ENVIRONMENT_PRODUCTION)
-                        .build()
+            context,
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(if (isTest) WalletConstants.ENVIRONMENT_TEST else WalletConstants.ENVIRONMENT_PRODUCTION)
+                .build()
         )
 
         val allowedAuthMethods = JSONArray()
@@ -455,14 +625,14 @@ class CordovaStripe : CordovaPlugin() {
 
         val req = IsReadyToPayRequest.fromJson(isReadyToPayRequestJson.toString())
         paymentsClient.isReadyToPay(req)
-                .addOnCompleteListener { task ->
-                    val obj = JSONObject()
-                    obj.putOpt("available", task.isSuccessful)
-                    call.success(obj)
-                }
+            .addOnCompleteListener { task ->
+                val obj = JSONObject()
+                obj.putOpt("available", task.isSuccessful)
+                call.success(obj)
+            }
     }
 
-    
+
     fun startGooglePayTransaction(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -475,10 +645,10 @@ class CordovaStripe : CordovaPlugin() {
         Log.d(TAG, "startGooglePayTransaction | isTest: " + (if (isTest) "TRUE" else "FALSE") + " | env: " + if (env == WalletConstants.ENVIRONMENT_TEST) "TEST" else "PROD")
 
         val paymentsClient = Wallet.getPaymentsClient(
-                context,
-                Wallet.WalletOptions.Builder()
-                        .setEnvironment(env)
-                        .build()
+            context,
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(env)
+                .build()
         )
 
         try {
@@ -520,18 +690,18 @@ class CordovaStripe : CordovaPlugin() {
             val shippingAddressParams = call.getObject("shippingAddressParameters", JSONObject())
 
             val params = JSONObject()
-                    .putOpt("allowedAuthMethods", authMethods)
-                    .putOpt("allowedCardNetworks", cardNetworks)
-                    .putOpt("billingAddressRequired", billingAddressRequired)
-                    .putOpt("allowPrepaidCards", allowPrepaidCards)
-                    .putOpt("billingAddressParameters", billingAddressParams)
+                .putOpt("allowedAuthMethods", authMethods)
+                .putOpt("allowedCardNetworks", cardNetworks)
+                .putOpt("billingAddressRequired", billingAddressRequired)
+                .putOpt("allowPrepaidCards", allowPrepaidCards)
+                .putOpt("billingAddressParameters", billingAddressParams)
 
             val tokenizationSpec = GooglePayConfig(publishableKey).tokenizationSpecification
 
             val cardPaymentMethod = JSONObject()
-                    .putOpt("type", "CARD")
-                    .putOpt("parameters", params)
-                    .putOpt("tokenizationSpecification", tokenizationSpec)
+                .putOpt("type", "CARD")
+                .putOpt("parameters", params)
+                .putOpt("tokenizationSpecification", tokenizationSpec)
 
             val txInfo = JSONObject()
             txInfo.putOpt("totalPrice", totalPrice)
@@ -539,11 +709,11 @@ class CordovaStripe : CordovaPlugin() {
             txInfo.putOpt("currencyCode", currencyCode)
 
             val paymentDataReq = JSONObject()
-                    .putOpt("apiVersion", 2)
-                    .putOpt("apiVersionMinor", 0)
-                    .putOpt("allowedPaymentMethods", JSONArray().put(cardPaymentMethod))
-                    .putOpt("transactionInfo", txInfo)
-                    .putOpt("emailRequired", emailRequired)
+                .putOpt("apiVersion", 2)
+                .putOpt("apiVersionMinor", 0)
+                .putOpt("allowedPaymentMethods", JSONArray().put(cardPaymentMethod))
+                .putOpt("transactionInfo", txInfo)
+                .putOpt("emailRequired", emailRequired)
 
             if (merchantName != null) {
                 paymentDataReq.putOpt("merchantInfo", JSONObject().putOpt("merchantName", merchantName))
@@ -561,9 +731,9 @@ class CordovaStripe : CordovaPlugin() {
             val req = PaymentDataRequest.fromJson(paymentDataReqStr)
 
             AutoResolveHelper.resolveTask(
-                    paymentsClient.loadPaymentData(req),
-                    activity,
-                    LOAD_PAYMENT_DATA_REQUEST_CODE
+                paymentsClient.loadPaymentData(req),
+                activity,
+                LOAD_PAYMENT_DATA_REQUEST_CODE
             )
 
             saveCall(call)
@@ -573,7 +743,7 @@ class CordovaStripe : CordovaPlugin() {
 
     }
 
-    
+
     fun initCustomerSession(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -589,7 +759,7 @@ class CordovaStripe : CordovaPlugin() {
         }
     }
 
-    
+
     fun customerPaymentMethods(call: PluginCall) {
         if (!ensurePluginInitialized(call)) {
             return
@@ -603,7 +773,7 @@ class CordovaStripe : CordovaPlugin() {
         }
 
         val l = StripePaymentMethodsListener(callback = object : PaymentMethodsCallback() {
-            override fun onSuccess(paymentMethods: MutableList<PaymentMethod>) {
+            override fun onSuccess(paymentMethods: List<PaymentMethod>) {
                 val arr = JSONArray()
 
                 for (pm in paymentMethods) {
@@ -621,9 +791,9 @@ class CordovaStripe : CordovaPlugin() {
 
                         if (c.checks != null) {
                             co.putOpt("checks", JSONObject()
-                                    .putOpt("address_line1_check", c.checks!!.addressLine1Check)
-                                    .putOpt("address_postal_code_check", c.checks!!.addressPostalCodeCheck)
-                                    .putOpt("cvc_check", c.checks!!.cvcCheck)
+                                .putOpt("address_line1_check", c.checks!!.addressLine1Check)
+                                .putOpt("address_postal_code_check", c.checks!!.addressPostalCodeCheck)
+                                .putOpt("cvc_check", c.checks!!.cvcCheck)
                             )
                         }
 
@@ -656,7 +826,7 @@ class CordovaStripe : CordovaPlugin() {
         cs.getPaymentMethods(PaymentMethod.Type.Card, l)
     }
 
-    
+
     fun setCustomerDefaultSource(call: PluginCall) {
         if (customerSession == null) {
             call.error("you must call initCustomerSession first")
@@ -682,7 +852,7 @@ class CordovaStripe : CordovaPlugin() {
         })
     }
 
-    
+
     fun addCustomerSource(call: PluginCall) {
         if (customerSession == null) {
             call.error("you must call initCustomerSession first")
@@ -708,7 +878,7 @@ class CordovaStripe : CordovaPlugin() {
         })
     }
 
-    
+
     fun deleteCustomerSource(call: PluginCall) {
         if (customerSession == null) {
             call.error("you must call initCustomerSession first")
@@ -751,50 +921,42 @@ class CordovaStripe : CordovaPlugin() {
 
     private fun handleGooglePayActivityResult(resultCode: Int, data: Intent?) {
         Log.v(TAG, "handleGooglePayActivityResult called with resultCode: $resultCode")
-        val googlePayCall = savedCall
 
-        if (googlePayCall == null) {
-            Log.e(TAG, "no saved PluginCall was found")
+        if (googlePayCallback == null) {
+            Log.e(TAG, "GooglePay :: got a result but there is no callback saved")
             return
         }
+
+        val cb = googlePayCallback!!
+        googlePayCallback = null
 
         when (resultCode) {
             Activity.RESULT_OK -> {
                 if (data == null) {
-                    googlePayCall.error("an unexpected error occurred")
-                    Log.e(TAG, "data is null")
+                    Log.e(TAG, "GooglePay :: result was ok but data was null")
+                    cb.onError(Exception("unexpected error occurred"))
                     return
                 }
 
                 val paymentData = PaymentData.getFromIntent(data)
 
                 if (paymentData == null) {
-                    Log.e(TAG, "paymentData is null")
-                    googlePayCall.error("an unexpected error occurred")
+                    Log.e(TAG, "GooglePay :: result was ok but PaymentData was null")
+                    cb.onError(Exception("unexpected error occurred"))
                     return
                 }
 
-                googlePayPaymentData = paymentData
-
-                googlePayCall.resolve()
+                cb.onSuccess(paymentData)
             }
 
             Activity.RESULT_CANCELED, AutoResolveHelper.RESULT_ERROR -> {
                 val status = AutoResolveHelper.getStatusFromIntent(data)
-                val obj = JSONObject()
 
                 if (status != null) {
-                    obj.putOpt("canceled", status.isCanceled)
-                    obj.putOpt("interrupted", status.isInterrupted)
-                    obj.putOpt("success", status.isSuccess)
-                    obj.putOpt("code", status.statusCode)
-                    obj.putOpt("message", status.statusMessage)
-                    obj.putOpt("resolution", status.resolution)
+                    cb.onError(Exception(status.statusMessage))
                 } else {
-                    obj.putOpt("canceled", true)
+                    cb.onError(Exception("transaction was cancelled"))
                 }
-
-                googlePayCall.success(obj)
             }
         }
     }
@@ -846,5 +1008,34 @@ class CordovaStripe : CordovaPlugin() {
                 call.error("unable to complete transaction: " + e.localizedMessage, e)
             }
         })
+    }
+
+    private fun processGooglePayTx(opts: JSObject, callback: GooglePayCallback) {
+        val env = GetGooglePayEnv(isTest)
+
+        Log.d(TAG, "initGooglePay :: [Testing = $isTest] :: [ENV = $env]")
+
+        val paymentsClient = GooglePayPaymentsClient(context, env)
+
+        try {
+            val paymentDataReq = GooglePayDataReq(publishableKey, opts)
+
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "initGooglePay :: [payment data = $paymentDataReq]")
+            }
+
+            val req = PaymentDataRequest.fromJson(paymentDataReq)
+
+            googlePayCallback = callback
+
+            AutoResolveHelper.resolveTask(
+                paymentsClient.loadPaymentData(req),
+                activity,
+                LOAD_PAYMENT_DATA_REQUEST_CODE
+            )
+        } catch (e: JSONException) {
+            Log.e(TAG, "Failed to parse json object", e)
+            callback.onError(e)
+        }
     }
 }

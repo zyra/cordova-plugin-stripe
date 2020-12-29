@@ -74,6 +74,51 @@ public class CordovaStripe: CDVPlugin {
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
+    @objc func validateCard(_ command: CDVInvokedUrlCommand) {
+        let call = parseCommand(command);
+       
+        let stateNumber = STPCardValidator.validationState(
+                forNumber: call.getString("number"),
+                validatingCardBrand: false
+        )
+        let stateExpDate = STPCardValidator.validationState(
+            forExpirationYear: (call.getInt("exp_year") != nil) ? String(call.getInt("exp_year")!) : "",
+            inMonth: (call.getInt("exp_month") != nil) ? String(call.getInt("exp_month")!) : ""
+        )
+        let stateCvc = STPCardValidator.validationState(
+                forCVC: call.getString("cvc") ?? "",
+                cardBrand: STPCardValidator.brand(forNumber: call.getString("number") ?? "")
+        )
+        
+        var pluginResult: CDVPluginResult = CDVPluginResult(
+                status: CDVCommandStatus_OK, 
+                messageAs: "success"
+        )
+        
+        if (stateNumber != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "card's number is invalid"
+            )
+        }
+        else if (stateExpDate != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "expiration date is invalid"
+            )
+        }
+        else if ((call.getString("cvc") != nil) && stateCvc != STPCardValidationState.valid) {
+            pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR, 
+                messageAs: "security code is invalid"
+            )
+            return
+        }
+        
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+
     @objc func createCardToken(_ command: CDVInvokedUrlCommand) {
         let call = parseCommand(command);
         if !ensurePluginInitialized(self.commandDelegate, command) {
@@ -384,6 +429,7 @@ public class CordovaStripe: CDVPlugin {
         }
 
         let pm = STPPaymentHandler.shared()
+        STPAPIClient.shared.publishableKey = StripeAPI.defaultPublishableKey
         pm.confirmPayment(pip, with: self) { (status, pi, err) in
             switch status {
             case .failed:

@@ -8,7 +8,7 @@
     </js-module>
     <js-module name="CordovaStripe" src="www/CordovaStripe.js"/>
 
-    <platform name="android" kotlin="1.3.50">
+    <platform name="android" kotlin="1.4.20">
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CordovaStripe">
@@ -21,14 +21,17 @@
                     android:name="com.google.android.gms.wallet.api.enabled"
                     android:value="true"/>
         </config-file>
+        <source-file src="src/android/JSArray.java" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <source-file src="src/android/JSObject.java" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
         <source-file src="src/android/EphKeyProvider.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
         <source-file src="src/android/Helpers.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
         <source-file src="src/android/StripePaymentMethodsListener.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
+        <source-file src="src/android/GooglePayHelper.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
         <source-file src="src/android/CordovaStripe.kt" target-dir="app/src/main/kotlin/com/zyramedia/cordova/stripe"/>
         <apply-plugin>kotlin-android</apply-plugin>
         <apply-plugin>kotlin-android-extensions</apply-plugin>
         <framework src="com.google.android.gms:play-services-wallet:18.0.0"/>
-        <framework src="com.stripe:stripe-android:12.2.0"/>
+        <framework src="com.stripe:stripe-android:16.1.1"/>
         <framework src="com.google.code.gson:gson:2.8.6"/>
         <framework src="androidx.appcompat:appcompat:1.1.0"/>
     </platform>
