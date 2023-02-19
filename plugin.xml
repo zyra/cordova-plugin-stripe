@@ -14,7 +14,8 @@
         </config-file>
 
         <source-file src="src/android/CordovaStripe.java" target-dir="src/com/zyramedia/cordova/stripe" />
-	<framework src="com.stripe:stripe-android:4.1.2" />
+	<framework src="com.stripe:stripe-android:20.19.3" />
+    <framework src="com.stripe:stripecardscan:20.19.3" />
 
     </platform>
 

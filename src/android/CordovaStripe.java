@@ -15,11 +15,18 @@ import com.stripe.android.Stripe;
 import com.stripe.android.model.BankAccount;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
+import com.stripe.android.paymentsheet.PaymentSheet;
+import com.stripe.android.paymentsheet.PaymentSheetResult;
+
+import android.util.Log;
 
 
 public class CordovaStripe extends CordovaPlugin {
 
   private Stripe stripeInstance;
+
+  private PaymentSheet paymentSheet;
+    PaymentSheet.CustomerConfiguration customerConfig;
 
   public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
@@ -43,6 +50,10 @@ public class CordovaStripe extends CordovaPlugin {
       validateCVC(data.getString(0), callbackContext);
     } else if (action.equals("getCardType")) {
       getCardType(data.getString(0), callbackContext);
+    } else if (action.equals("presentPaymentSheet")) {
+      String publishableKey = data.getString(0);
+      String setupIntentClientSecret = data.getString(1);
+      presentPaymentSheet(setupIntentClientSecret, publishableKey, callbackContext);
     } else {
       return false;
     }
@@ -229,6 +240,40 @@ public class CordovaStripe extends CordovaPlugin {
     } 
     catch (JSONException e) {
       return null;
+    }
+  }
+
+  private void presentPaymentSheet(String setupIntentClientSecret, String publishableKey, CallbackContext callbackContext) {
+
+    paymentSheet = new PaymentSheet(this.cordova.getActivity(), this::onPaymentSheetResult);
+
+    final PaymentSheet.Configuration configuration = new PaymentSheet.Configuration.Builder("Example, Inc.")
+        .customer(customerConfig)
+        .build();
+        paymentSheet.presentWithPaymentIntent(
+        setupIntentClientSecret,
+        configuration
+    );
+//        if (message != null && message.length() > 0) {
+//            callbackContext.success(message);
+//        } else {
+//            callbackContext.error("Expected one non-empty string argument.");
+//        }
+}
+
+private void onPaymentSheetResult(
+    final PaymentSheetResult paymentSheetResult
+  ) {
+    if (paymentSheetResult instanceof PaymentSheetResult.Canceled) {
+      Log.d("App", "Canceled");
+//          callbackContext.success("Canceled!");
+    } else if (paymentSheetResult instanceof PaymentSheetResult.Failed) {
+      Log.e("App", "Got error: ", ((PaymentSheetResult.Failed) paymentSheetResult).getError());
+//          callbackContext.success(((PaymentSheetResult.Failed) paymentSheetResult).getError());
+    } else if (paymentSheetResult instanceof PaymentSheetResult.Completed) {
+      // Display for example, an order confirmation screen
+      Log.d("App", "Completed");
+//          callbackContext.success("Success!");
     }
   }
 

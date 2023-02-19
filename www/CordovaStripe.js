@@ -123,6 +123,12 @@ module.exports = {
     exec(success, error, "CordovaStripe", "validateCVC", [cvc]);
   },
 
+  presentPaymentSheet: function (arg0, success, error) {
+    success = success || noop;
+    error = error || noop;
+    exec(success, error, 'StripePay', 'presentPaymentSheet', [arg0]);
+  },
+
   /**
    * Gets a card type from a card number
    * @param {string} cardNumber Credit card number
