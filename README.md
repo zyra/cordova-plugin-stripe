@@ -1,12 +1,5 @@
-> <strong>This repository is not actively maintained</strong> and full functionality is not guaranteed.
->
-> Developing Cordova plugins is no longer a priority.
-> 
-> Check this [Capacitor Stripe plugin repo](https://github.com/capacitor-community/stripe) for a maintained alternative. 
->
-> This repo will be updated eventually by porting over the Capacitor plugin code. PRs are welcome.
- 
- ---
+> [!WARNING]
+> This Cordova plugin is deprecated and no longer maintained. For Ionic and Capacitor applications, migrate to [`@capacitor-community/stripe`](https://github.com/capacitor-community/stripe). The source remains available for historical reference, but no fixes or support will be provided.
 
 
 # Cordova Stripe Plugin
